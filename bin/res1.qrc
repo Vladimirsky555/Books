@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>doc/basic.book</file>
+        <file>doc/sw.book</file>
+        <file>doc/tribal_messianship.book</file>
+        <file>doc/other.book</file>
+    </qresource>
+</RCC>

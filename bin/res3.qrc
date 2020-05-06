@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/">
+        <file>doc/tf_eng1.book</file>
+    </qresource>
+</RCC>

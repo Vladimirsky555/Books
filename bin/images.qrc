@@ -1,0 +1,20 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/app.ico</file>
+        <file>images/book.png</file>
+        <file>images/edit.png</file>
+        <file>images/search.png</file>
+        <file>images/search_.png</file>
+        <file>images/information.png</file>
+        <file>images/save.jpg</file>
+        <file>images/add1.png</file>
+        <file>images/delete1.png</file>
+        <file>images/ok.png</file>
+        <file>images/reading.png</file>
+        <file>images/font.png</file>
+        <file>images/study.png</file>
+        <file>images/labels.png</file>
+        <file>images/search2.png</file>
+        <file>images/export.png</file>
+    </qresource>
+</RCC>
