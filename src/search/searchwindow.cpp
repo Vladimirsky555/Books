@@ -4,7 +4,6 @@
 #include <QScrollBar>
 #include <QFontDialog>
 
-
 SearchWindow::SearchWindow(QList<QString> list, QList<loadItem> LoadItems, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SearchWindow)
@@ -16,7 +15,6 @@ SearchWindow::SearchWindow(QList<QString> list, QList<loadItem> LoadItems, QWidg
     currentText = NULL;
 
     setWindowTitle("Поисковик");
-
 
     this->list = list;
     this->LoadItems = LoadItems;
@@ -45,7 +43,7 @@ bool SearchWindow::checkRegExp(QRegExp rx)
 {
     if(rx.isValid() && !rx.isEmpty() && !rx.exactMatch("")){
         return true;
-    }else{
+    } else {
         QMessageBox::information(this,
                                  "Информсообщение",
                                  trUtf8("Некорректный шаблон регулярного выражения!"));
@@ -61,7 +59,6 @@ void SearchWindow::on_edtSearch_textChanged(const QString &arg1)
 
 void SearchWindow::fillList()
 {
-
     list.append(":/doc/basic.book");
     list.append(":/doc/tribal_messianship.book");
     list.append(":/doc/tfs.book");
@@ -184,7 +181,6 @@ void SearchWindow::textFind()
         }
     }
 
-
     //Cортировка
     for(int i = 0; i < searchItems.count(); i++)
     {
@@ -199,7 +195,6 @@ void SearchWindow::textFind()
         }
     }
 
-
     for(int i = 0; i < searchItems.size(); i++){
         n++;
         searchItems[i].n = n;
@@ -210,7 +205,6 @@ void SearchWindow::textFind()
                                 + ", " + searchItems[i].text4);
         ui->lstResults->item(i)->setIcon(QIcon(":/images/search_.png"));
     }
-
 
     ui->lstResults->addItem(" ");
     ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений"
@@ -228,8 +222,6 @@ void SearchWindow::shutdown()
 {
     close();
 }
-
-
 
 //Реализация поиска
 void SearchWindow::on_btnFind_clicked()
@@ -337,7 +329,6 @@ void SearchWindow::on_btnFindZagolovki_clicked()
                         cnt++;
                     }
 
-
                     if(cnt != 0){
                         searchItem s;
                         s.text1 = listItem;
@@ -352,9 +343,7 @@ void SearchWindow::on_btnFindZagolovki_clicked()
 
                     cnt = 0;
                 }
-
             }
-
         }
     }
 
@@ -368,7 +357,6 @@ void SearchWindow::on_btnFindZagolovki_clicked()
                             + ", " + searchItems[i].text4);
 
     }
-
 
     ui->edtText->append(" ");
     ui->edtText->append(" ");
@@ -406,7 +394,6 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &)
             }
         }
 
-
         currentBook = getItemByName(searchItems[index].text2);
         currentList = currentBook->getItemByName(searchItems[index].text3);
         currentText = currentList->getItemByName(searchItems[index].text4);
@@ -424,15 +411,13 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &)
                 pos += rx.matchedLength();
                 cnt++;
 
-                ui->lstText->addItem(QString::number(cnt)+ " [" +
-                                     QString::number(i+1) + " строка" + "] ");
+                ui->lstText->addItem(QString::number(cnt)+ " [" + QString::number(i+1) + " строка" + "] ");
                 textItem t;
                 t.id = i+1;
                 textItems.append(t);
                 }
 
         }
-
 
     emit sendAll(currentBook,currentList,currentText,searchItems[index].text6);
 
@@ -443,7 +428,6 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &)
 
     currentTitle = searchItems[index].text3;
 }
-
 
 //Реализация выбора для поисковика
 void SearchWindow::on_btnChoose_clicked()
@@ -472,7 +456,6 @@ void SearchWindow::on_edtSearch_returnPressed()
     textFind();
 }
 
-
 void SearchWindow::on_lstText_clicked(const QModelIndex &index)
 {
     ui->edtText->clear();
@@ -482,10 +465,8 @@ void SearchWindow::on_lstText_clicked(const QModelIndex &index)
     //Найденные строки помещаю в QStringlist p
     //По другому реализовать пробелы между строками не получилось
     QStringList p;
-    int tmpId = 0;
     for(int i = textItems[index.row()].id - 1; i < ui->edtText->document()->blockCount(); i++){
         p.append(ui->edtText->document()->findBlockByLineNumber(i).text());
-        tmpId++;
     }
 
     //Очищаю, теперь можно вставлять искомую строку и все остальные
@@ -502,7 +483,6 @@ void SearchWindow::on_lstText_clicked(const QModelIndex &index)
     ui->edtText->setHtml(tmp);
     p.clear();
 }
-
 
 void SearchWindow::on_btnFont_clicked()
 {
