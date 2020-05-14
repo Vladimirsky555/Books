@@ -489,11 +489,17 @@ void SearchWindow::on_lstText_clicked(const QModelIndex &index)
     }
 
     //Очищаю, теперь можно вставлять искомую строку и все остальные
+    //Добавляю строчки в темповую переменную, чтобы бегунок был вверху
+    //Если сразу писать в окно, то бегунок будет внизу, что неудобно, придётся каждый раз его поднимать вручную
+    QString tmp;
     ui->edtText->clear();
     for(int i = 0; i < p.count(); i++){
-    ui->edtText->append(QString::number(textItems[index.row()].id + i) + ". " + p[i]);
-  }
+        tmp += QString::number(textItems[index.row()].id + i) + ". " + p[i];
+        tmp += "<br>";
+        tmp += "<br>";
+    }
 
+    ui->edtText->setHtml(tmp);
     p.clear();
 }
 
