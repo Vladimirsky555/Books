@@ -7,22 +7,19 @@
 
 #define FILENAME "notes.db"
 
-ItemInfoForm::ItemInfoForm(QString t, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ItemInfoForm)
+ItemInfoForm::ItemInfoForm(QString book, QString title, QString theme, QWidget *parent) :
+    QWidget(parent), ui(new Ui::ItemInfoForm)
 {
     ui->setupUi(this);
-
     setWindowTitle("Новая запись");
 
-    this->t = t;
-
+    current = NULL;
+    this->book = book;
+    this->title = title;
+    this->theme = theme;
 
     loadFromFile();
-
-    refreshList();
-
-    current = NULL;
+    refreshList();    
 }
 
 ItemInfoForm::~ItemInfoForm()
@@ -36,35 +33,34 @@ void ItemInfoForm::loadFromFile() {
     if (!f.exists()) return;
 
     f.open(QFile::ReadOnly);
-    QDataStream reader(&f);
+    QDataStream str(&f);
 
-    while (!reader.atEnd()) {
+    while (!str.atEnd()) {
         QByteArray data;
-        reader >> data;
-
-        arr.append(new ItemInfo(data));
+        str >> data;
+        noteList.append(new ItemInfo(data));
     }
 
     f.close();
 }
 
 void ItemInfoForm::saveToFile() {
-    QFile f(FILENAME);
+    QFile file(FILENAME);
 
-    f.open(QFile::WriteOnly | QFile::Truncate);
-    QDataStream writer(&f);
+    file.open(QFile::WriteOnly | QFile::Truncate);
+    QDataStream str(&file);
 
-    for (int i = 0; i < arr.size(); i++) {
-        writer << arr[i]->save();
+    for (int i = 0; i < noteList.size(); i++) {
+        str << noteList[i]->save();
     }
 
-    f.close();
+    file.close();
 }
 
 void ItemInfoForm::refreshList() {
-    ui->lstUsers->clear();
-    for (int i = 0; i < arr.size(); i++) {
-        ui->lstUsers->addItem(arr[i]->getView());
+    ui->lstNotes->clear();
+    for (int i = 0; i < noteList.size(); i++) {
+        ui->lstNotes->addItem(noteList.at(i)->getView());
     }
 
     disableWidget();
@@ -76,7 +72,6 @@ void ItemInfoForm::disableWidget() {
     ui->edtText->clear();
     ui->widget->setEnabled(false);
     ui->widget_2->setEnabled(false);
-
     current = NULL;
 }
 
@@ -93,19 +88,21 @@ void ItemInfoForm::on_btnCancel_clicked()
 void ItemInfoForm::on_btnAdd_clicked()
 {
     disableWidget();
-    ui->edtTheme->appendPlainText(this->t);
+    ui->edtTheme->appendPlainText(book + ",");
+    ui->edtTheme->appendPlainText(title + ",");
+    ui->edtTheme->appendPlainText(theme + ".");
     ui->widget->setEnabled(true);
     ui->widget_2->setEnabled(true);
 }
 
 void ItemInfoForm::on_btnRemove_clicked()
 {
-    if (ui->lstUsers->currentRow() == -1) return;
+    if (ui->lstNotes->currentRow() == -1) return;
 
-    int index = ui->lstUsers->currentRow();
-    ItemInfo *i = arr[index];
+    int index = ui->lstNotes->currentRow();
+    ItemInfo *i = noteList[index];
 
-    arr.removeAt(index);
+    noteList.removeAt(index);
     delete i;
 
     disableWidget();
@@ -113,14 +110,13 @@ void ItemInfoForm::on_btnRemove_clicked()
     refreshList();
 }
 
-
-void ItemInfoForm::on_lstUsers_clicked()
+void ItemInfoForm::on_lstNotes_clicked(const QModelIndex &index)
 {
-    if (ui->lstUsers->currentRow() == -1) return;
-
-    current = arr[ui->lstUsers->currentRow()];
     ui->edtTheme->clear();
-    ui->edtTheme->appendPlainText(current->getTheme());
+    if (index.row() == -1) return;
+    current = noteList[index.row()];
+
+    ui->edtTheme->appendPlainText(current->getView_without_date());
     ui->edtCalendar->setSelectedDate(current->getDate());
     ui->edtText->setPlainText(current->getText());
 
@@ -128,71 +124,55 @@ void ItemInfoForm::on_lstUsers_clicked()
     ui->widget_2->setEnabled(true);
 }
 
-void ItemInfoForm::on_btnOk_clicked()
+void ItemInfoForm::on_btnSave_clicked()
 {
-    if (ui->edtTheme->toPlainText() == "" ||
-            ui->edtTheme->toPlainText() == "") {
-        QMessageBox box;
-        box.setText("Все поля обязательны");
-        box.exec();
+    if (theme == "") {
+        QMessageBox::information(this, "Информация","Все поля обязательны");
         return;
     }
 
-    //Создание нового пользователя
+    //Создание новой записи
     if (current == NULL) {
-        for (int i = 0; i < arr.size(); i++) {
-            if (arr[i]->getTheme() == ui->edtTheme->toPlainText()) {
-                QMessageBox box;
-                box.setText("Поменяйте тему записи");
-                box.exec();
-                return;
+        for (int i = 0; i < noteList.size(); i++) {
+            if (noteList.at(i)->getTheme() == theme) {
+                QMessageBox::information(this, "Информация","Это ещё одна запись в этом разделе!");
             }
         }
 
-        arr.append(new ItemInfo(ui->edtTheme->toPlainText(),
-                                ui->edtCalendar->selectedDate(),
-                                ui->edtText->toPlainText()));
+        noteList.append(new ItemInfo(book,title, theme,ui->edtCalendar->selectedDate(),ui->edtText->toPlainText()));
         saveToFile();
         refreshList();
-    } else { //Обновление пользователя
-        if (current->getTheme() != ui->edtTheme->toPlainText()) {
-            for (int i = 0; i < arr.size(); i++) {
-                if (arr[i]->getTheme() == ui->edtTheme->toPlainText()) {
-                    QMessageBox box;
-                    box.setText("Поменяйте тему записи");
-                    box.exec();
-                    return;
+    } else { //Обновление темы
+        if (current->getTheme() != theme) {
+            for (int i = 0; i < noteList.size(); i++) {
+                if (noteList.at(i)->getTheme() == theme) {
+                    QMessageBox::information(this, "Информация","Это ещё одна запись в этом разделе!");
                 }
             }
         }
 
-        current->setTheme(ui->edtTheme->toPlainText());
+        current->setTitle(title);
+        current->setTheme(theme);
         current->setDate(ui->edtCalendar->selectedDate());
         current->setText(ui->edtText->toPlainText());
-
 
         saveToFile();
         refreshList();
     }
 }
 
-
-
 void ItemInfoForm::on_edtCalendar_clicked(const QDate &date)
 {
-    ui->lstUsers->clear();
+    ui->lstNotes->clear();
 
-    for (int i = 0; i < arr.size(); i++) {
-        if(arr[i]->getDate() == date){
-        ui->lstUsers->addItem(arr[i]->getView());
+    for (int i = 0; i < noteList.size(); i++) {
+        if(noteList[i]->getDate() == date){
+        ui->lstNotes->addItem(noteList[i]->getView());
         }
     }
 }
 
-void ItemInfoForm::on_pushButton_clicked()
+void ItemInfoForm::on_btnList_clicked()
 {
     refreshList();
 }
-
-
-

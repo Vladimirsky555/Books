@@ -6,34 +6,89 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>796</width>
-    <height>455</height>
+    <width>901</width>
+    <height>482</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="bin/images.qrc">
+   <iconset resource="../../bin/images.qrc">
     <normaloff>:/images/edit.png</normaloff>:/images/edit.png</iconset>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <property name="leftMargin">
+    <number>5</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>5</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_6">
+     <property name="spacing">
+      <number>5</number>
+     </property>
      <property name="bottomMargin">
       <number>9</number>
      </property>
      <item>
-      <widget class="QListWidget" name="lstUsers">
+      <widget class="QLabel" name="label_4">
        <property name="font">
         <font>
-         <pointsize>12</pointsize>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Список записей</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="lstNotes">
+       <property name="font">
+        <font>
+         <pointsize>9</pointsize>
         </font>
        </property>
       </widget>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QPushButton" name="btnList">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Список всех заметок</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item>
         <widget class="QPushButton" name="btnRemove">
          <property name="font">
@@ -74,6 +129,9 @@
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_5">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <property name="bottomMargin">
       <number>1</number>
      </property>
@@ -81,24 +139,36 @@
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <item>
           <widget class="QWidget" name="widget_2" native="true">
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <property name="leftMargin">
              <number>0</number>
             </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
             <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
              <widget class="QLabel" name="label">
               <property name="font">
                <font>
-                <pointsize>14</pointsize>
+                <pointsize>11</pointsize>
                </font>
               </property>
               <property name="text">
-               <string>Глава/Раздел</string>
+               <string>Книга/Глава/Раздел</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
               </property>
              </widget>
             </item>
@@ -106,7 +176,7 @@
              <widget class="QPlainTextEdit" name="edtTheme">
               <property name="font">
                <font>
-                <pointsize>12</pointsize>
+                <pointsize>10</pointsize>
                </font>
               </property>
              </widget>
@@ -114,31 +184,28 @@
            </layout>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="pushButton">
-           <property name="font">
-            <font>
-             <pointsize>12</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Список всех заметок</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_4">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <property name="leftMargin">
+          <number>5</number>
+         </property>
          <item>
           <widget class="QLabel" name="label_2">
            <property name="font">
             <font>
-             <pointsize>14</pointsize>
+             <pointsize>11</pointsize>
             </font>
            </property>
            <property name="text">
             <string>Дата</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -152,15 +219,27 @@
      <item>
       <widget class="QWidget" name="widget" native="true">
        <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>7</number>
+        </property>
         <item>
          <widget class="QLabel" name="label_3">
           <property name="font">
            <font>
-            <pointsize>14</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
           <property name="text">
            <string>Текст заметки</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>
@@ -168,13 +247,29 @@
          <widget class="QPlainTextEdit" name="edtText">
           <property name="font">
            <font>
-            <pointsize>12</pointsize>
+            <pointsize>11</pointsize>
            </font>
           </property>
          </widget>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
+          <property name="spacing">
+           <number>6</number>
+          </property>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
           <item>
            <widget class="QPushButton" name="btnCancel">
             <property name="font">
@@ -188,7 +283,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="btnOk">
+           <widget class="QPushButton" name="btnSave">
             <property name="font">
              <font>
               <pointsize>12</pointsize>
@@ -214,7 +309,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="bin/images.qrc"/>
+  <include location="../../bin/images.qrc"/>
  </resources>
  <connections/>
 </ui>

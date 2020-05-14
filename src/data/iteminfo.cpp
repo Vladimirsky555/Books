@@ -3,59 +3,96 @@
 #include <QIODevice>
 #include <QDataStream>
 
-ItemInfo::ItemInfo(QObject *parent) : QObject(0)
+ItemInfo::ItemInfo(QObject *parent) :
+    QObject(parent)
 {
+    this->book = "";
+    this->title = "";
     this->theme = "";
     this->date = QDate::currentDate();
     this->text = "";
 }
 
-
-ItemInfo::ItemInfo(QByteArray data, QObject *parent)  : QObject(parent) {
-    QDataStream reader(&data, QIODevice::ReadOnly);
-
-    reader >> this->theme >> this->date >> this->text;
+ItemInfo::ItemInfo(QByteArray data, QObject *parent)  : QObject(parent)
+{
+    QDataStream str(&data, QIODevice::ReadOnly);
+    str >> book >> title >> theme >> date >> text;
 }
 
-ItemInfo::ItemInfo(QString theme, QDate date, QString text, QObject *parent)  : QObject(parent) {
+void ItemInfo::setBook(QString book)
+{
+    this->book = book;
+}
+
+ItemInfo::ItemInfo(QString book, QString title, QString theme, QDate date, QString text, QObject *parent)
+    : QObject(parent) {
+    this->book = book;
+    this->title = title;
     this->theme = theme;
     this->date = date;
     this->text = text;
 }
 
-void ItemInfo::setTheme(QString theme) {
+void ItemInfo::setTitle(QString title)
+{
+    this->title = title;
+}
+
+void ItemInfo::setTheme(QString theme)
+{
     this->theme = theme;
 }
 
-void ItemInfo::setDate(QDate date) {
+void ItemInfo::setDate(QDate date)
+{
     this->date = date;
 }
 
-void ItemInfo::setText(QString text) {
+void ItemInfo::setText(QString text)
+{
     this->text = text;
 }
 
-QString ItemInfo::getTheme() {
+QString ItemInfo::getBook()
+{
+    return this->book;
+}
+
+QString ItemInfo::getTitle()
+{
+    return this->title;
+}
+
+QString ItemInfo::getTheme()
+{
     return theme;
 }
 
-QDate ItemInfo::getDate() {
+QDate ItemInfo::getDate()
+{
     return date;
 }
 
-QString ItemInfo::getText() {
+QString ItemInfo::getText()
+{
     return text;
 }
 
-QByteArray ItemInfo::save() {
+QByteArray ItemInfo::save()
+{
     QByteArray arr;
-    QDataStream writer(&arr, QIODevice::WriteOnly);
-
-    writer << this->theme << this->date << this->text;
-
+    QDataStream str(&arr, QIODevice::WriteOnly);
+    str << book << title << theme << date << text;
     return arr;
 }
 
-QString ItemInfo::getView() {
-    return date.toString() + " - " + theme ;
+QString ItemInfo::getView()
+{
+    return date.toString(Qt::ISODate) + ": " +book + ", " + title + ", " + theme ;
 }
+
+QString ItemInfo::getView_without_date()
+{
+     return book + ", " + title + ", " + theme ;
+}
+

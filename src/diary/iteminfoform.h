@@ -12,14 +12,16 @@ class ItemInfoForm : public QWidget
 {
     Q_OBJECT
 
-    QList<ItemInfo*> arr;
+    QList<ItemInfo*> noteList;
     ItemInfo* current;
 
 public:
-    QString t;
+    QString book;
+    QString title;
+    QString theme;
 
 public:
-    explicit ItemInfoForm(QString t, QWidget *parent = 0);
+    explicit ItemInfoForm(QString book, QString title, QString theme, QWidget *parent = 0);
     ~ItemInfoForm();
 
     void loadFromFile();
@@ -33,13 +35,10 @@ private slots:
     void on_btnCancel_clicked();
     void on_btnAdd_clicked();
     void on_btnRemove_clicked();
-    void on_lstUsers_clicked();
-    void on_btnOk_clicked();
+    void on_lstNotes_clicked(const QModelIndex &index);
+    void on_btnSave_clicked();
     void on_edtCalendar_clicked(const QDate &date);
-    void on_pushButton_clicked();
-
-
-
+    void on_btnList_clicked();
 
 private:
     Ui::ItemInfoForm *ui;

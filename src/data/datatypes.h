@@ -88,6 +88,8 @@ class ItemInfo : public QObject
 {
     Q_OBJECT
 
+    QString book;
+    QString title;
     QString theme;
     QDate date;
     QString text;
@@ -95,16 +97,22 @@ class ItemInfo : public QObject
 public:
     explicit ItemInfo(QObject *parent = nullptr);
     ItemInfo(QByteArray data, QObject *parent = nullptr);
-    ItemInfo(QString theme, QDate date, QString text, QObject *parent = nullptr);
+    ItemInfo(QString book, QString title, QString theme, QDate date, QString text, QObject *parent = NULL);
 
+    void setBook(QString book);
+    void setTitle(QString title);
     void setTheme(QString theme);
     void setDate(QDate date);
     void setText(QString text);
 
+    QString getBook();
+    QString getTitle();
     QString getTheme();
     QDate getDate();
     QString getText();
     QString getView();
+    QString getView_without_date();
+
     QByteArray save();
 };
 #endif // DATATYPES_H

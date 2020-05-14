@@ -230,11 +230,8 @@ void MainWindow::setEnabledAll()
 
 void MainWindow::on_actionNotes_triggered()
 {
-    widget_o = new ItemInfoForm(currentText->getName());
-
-    connect(this, SIGNAL(shutdown()),
-            widget_o, SLOT(shutdown()));
-
+    widget_o = new ItemInfoForm(currentBook->getName(), currentList->getName(), currentText->getName());
+    connect(this, SIGNAL(shutdown()),widget_o, SLOT(shutdown()));
     widget_o->show();
 }
 
@@ -242,10 +239,7 @@ void MainWindow::on_actionNotes_triggered()
 void MainWindow::on_actionContent_triggered()
 {
     widget_list = new List(title, currentBook->getAllItems());
-
-    connect(this, SIGNAL(shutdown()),
-            widget_list, SLOT(shutdown()));
-
+    connect(this, SIGNAL(shutdown()),widget_list, SLOT(shutdown()));
     widget_list->exec();
 }
 
