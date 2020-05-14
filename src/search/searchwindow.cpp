@@ -475,7 +475,11 @@ void SearchWindow::on_lstText_clicked(const QModelIndex &index)
     QString tmp;
     ui->edtText->clear();
     for(int i = 0; i < p.count(); i++){
-        tmp += QString::number(textItems[index.row()].id + i) + ". " + p[i];
+        if(p.at(i) != ""){
+            tmp += "<span style='color:#B22222'>" +
+                    QString::number(textItems[index.row()].id + i) + ". "  +
+                    "</span>" + p[i];
+        }
         tmp += "<br>";
         tmp += "<br>";
     }
