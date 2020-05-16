@@ -130,10 +130,9 @@ void MainWindow::setAll(BookItem* book, ListItem* bookChapter, TextItem* bookSec
     for(int i = 0; i < books.count(); i++){
         if(books.at(i) == currentBook)
         ui->cbxBooks->setCurrentIndex(i);//Устанавливаем книгу в комбобокс через индекс
-        qDebug() << books.at(i)->getName() << currentBook->getName() << i;
     }
 
-   ui->edtText->setHtml(bookSection->getData());
+   ui->edtText->setHtml(currentText->getData());
 
    ui->lstRecords->setEnabled(true);
    ui->lstSub->setEnabled(true);
