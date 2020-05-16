@@ -74,10 +74,12 @@ public:
     QByteArray saveIt();
 };
 
+//Каталог книг, которому соответствует бинарный файл в ресурсах, поэтому load
+//Загружается при запуске программы
 class loadItem {
 public:
     QList<BookItem*> books;
-    QString name;
+    QString path;
 
 public:
     loadItem(){}

@@ -77,7 +77,7 @@ private slots:
     void on_btnFindZagolovki_clicked();
 
     void on_edtSearch_textChanged(const QString &arg1);
-    void on_lstResults_clicked(const QModelIndex &);
+    void on_lstResults_clicked(const QModelIndex &index);
     void changeList(QList<QString>);
     void on_btnChoose_clicked();
     void on_lstText_clicked(const QModelIndex &index);

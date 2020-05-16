@@ -134,7 +134,7 @@ void SearchWindow::textFind()
     for(int k = 0; k < list.count(); k++){
 
         for(int i = 0; i < LoadItems.size(); i++){
-            if(list[k] == LoadItems[i].name){
+            if(list[k] == LoadItems[i].path){
                 books = LoadItems[i].books;
             }
         }
@@ -253,7 +253,7 @@ void SearchWindow::on_btnFindZagolovki_clicked()
     for(int k = 0; k < list.count(); k++){
 
         for(int i = 0; i < LoadItems.size(); i++){
-            if(list[k] == LoadItems[i].name){
+            if(list[k] == LoadItems[i].path){
                 books = LoadItems[i].books;
             }
         }
@@ -368,37 +368,34 @@ void SearchWindow::on_btnFindZagolovki_clicked()
     ui->edtText->append("Поиск завершен!");
 }
 
-void SearchWindow::on_lstResults_clicked(const QModelIndex &)
+void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
 {
     ui->lstText->setEnabled(true);
     ui->lstText->clear();
 
     textItems.clear();
-    int index = ui->lstResults->currentRow();
+    int id = index.row();
 
-    if(index >= searchItems.size()){
-        QMessageBox box;
-        box.setText("Спасибо!");
-        box.exec();
+    if(index.row() >= searchItems.size()){
+        QMessageBox::information(this, "Информация!", "Спасибо!");
         return;
     }
 
-        for(int i = 0; i < LoadItems.size(); i++)
-        {
-            if(LoadItems[i].name == searchItems[index].booksPath)
-            {
-                books = LoadItems[i].books;
+        for(int i = 0; i < LoadItems.size(); i++){
+            if(LoadItems.at(i).path == searchItems.at(id).booksPath){
+                books = LoadItems.at(i).books;
             }
         }
 
-        currentBook = getItemByName(searchItems[index].bookName);
-        currentList = currentBook->getItemByName(searchItems[index].bookChapter);
-        currentText = currentList->getItemByName(searchItems[index].bookSection);
+        currentBook = getItemByName(searchItems[id].bookName);
+        currentList = currentBook->getItemByName(searchItems[id].bookChapter);
+        currentText = currentList->getItemByName(searchItems[id].bookSection);
 
         currentTxt = currentText->getData();
         ui->edtText->setHtml(currentTxt);
 
         //Вводим переменную, считающую сколько раз встречается слово в строке
+        //Анализируем текст по клику на предмет наличия искомой фразы или слова
         int cnt = 0;
         for(int i = 0; i < ui->edtText->document()->blockCount(); i++){
             QRegExp rx(ui->edtSearch->text());
@@ -408,22 +405,25 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &)
                 pos += rx.matchedLength();
                 cnt++;
 
+                 //В нижнем правом окошке выдаем информацию в каких строках
+                //и сколько раз встретилось искомое слово
                 ui->lstText->addItem(QString::number(cnt)+ " [" + QString::number(i+1) + " строка" + "] ");
                 textItem t;
                 t.id = i+1;
                 textItems.append(t);
                 }
-
         }
 
-    emit sendAll(currentBook,currentList,currentText,searchItems[index].booksPath);
+    //Отправляем в главное окно результаты поиска по клику для синхронизации
+    emit sendAll(currentBook,currentList,currentText,searchItems[id].booksPath);
 
-    ui->edtSource->setText(searchItems[index].booksCategory + ", " +
-                           searchItems[index].bookName + ", " +
-                           searchItems[index].bookChapter + ", " +
-                           searchItems[index].bookSection);
+    //Выводим всю информацию об источнике искомой фразы
+    ui->edtSource->setText(searchItems[id].booksCategory + ", " +
+                                          searchItems[id].bookName + ", " +
+                                         searchItems[id].bookChapter + ", " +
+                                         searchItems[id].bookSection);
 
-    currentTitle = searchItems[index].bookChapter;
+    currentTitle = searchItems[id].bookChapter;
 }
 
 //Реализация выбора для поисковика
@@ -435,7 +435,7 @@ void SearchWindow::on_btnChoose_clicked()
     widget_findchooser = new FindChooser(list);
 
     connect(widget_findchooser, SIGNAL(changeList(QList<QString>)),
-            this, SLOT(changeList(QList<QString>)));
+                 this, SLOT(changeList(QList<QString>)));
 
     widget_findchooser->exec();
 }

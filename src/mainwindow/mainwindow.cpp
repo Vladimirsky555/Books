@@ -50,11 +50,11 @@ MainWindow::MainWindow(QWidget *parent) :
     //Загружаем все файлы, только один раз
     for(int i = 0; i < list.size(); i++)
     {
-        loadItem l;
-        l.name = list[i];
+        loadItem catalog;
+        catalog.path = list[i];
         loadFromFile(list[i]);
-        l.books = books;
-        LoadItems.append(l);
+        catalog.books = books;
+        LoadItems.append(catalog);
     }
 
     books = LoadItems[0].books;
@@ -109,32 +109,35 @@ void MainWindow::sendPattern(QString value)
     ui->edtPattern->setText(value);
 }
 
-void MainWindow::setAll(BookItem* b,ListItem* l,TextItem* t, QString value)
+void MainWindow::setAll(BookItem* bookName, ListItem* bookChapter, TextItem* bookSection, QString booksPath)
 {
+    int loadId;//Индекс каталога в массиве каталогов
     for(int i = 0; i < LoadItems.size(); i++){
-        if(value == LoadItems[i].name){
+        if(booksPath == LoadItems[i].path){
             books = LoadItems[i].books;
+            loadId = i;
         }
     }
 
-    currentBook = b;
-    currentList = l;
-    currentText = t;
+    currentBook = bookName;
+    currentList = bookChapter;
+    currentText = bookSection;
 
+    ui->cbxList->setCurrentIndex(loadId);//Устанавливаем каталог в комбобокс, через индекс
     refreshBooks();
     refreshRecords();
     refreshSub();
 
-    ui->lstRecords->setEnabled(true);
-    ui->lstSub->setEnabled(true);
-    ui->edtText->setEnabled(true);
+   ui->edtText->setHtml(bookSection->getData());
 
-   ui->edtText->setHtml(t->getData());
+   ui->lstRecords->setEnabled(true);
+   ui->lstSub->setEnabled(true);
+   ui->edtText->setEnabled(true);
 }
 
-void MainWindow::on_edtPattern_textChanged(const QString &arg1)
+void MainWindow::on_edtPattern_textChanged(const QString &arg)
 {
-    highlighter->setPattern(arg1);
+    highlighter->setPattern(arg);
     highlighter->rehighlight();
 }
 
@@ -153,7 +156,6 @@ void MainWindow::refreshBooks()
 
 void MainWindow::refreshRecords(){
     ui->lstRecords->clear();
-
 
         for(int i = 0; i < currentBook->getItemsCount(); i++){
             ui->lstRecords->addItem(currentBook->getItemById(i)->getName());
@@ -175,8 +177,6 @@ void MainWindow::refreshSub(){
     ui->edtText->setEnabled(false);
 }
 
-
-
 //Клики по полю
 void MainWindow::on_btnR_clicked()
 {
@@ -187,9 +187,6 @@ void MainWindow::on_btnR_clicked()
     ui->lstSub->setEnabled(true);
     refreshRecords();
 }
-
-
-
 
 void MainWindow::on_lstRecords_clicked()
 {
@@ -202,7 +199,6 @@ void MainWindow::on_lstRecords_clicked()
     ui->edtText->setEnabled(true);
     refreshSub();
 }
-
 
 void MainWindow::on_lstSub_clicked(const QModelIndex &)
 {
@@ -218,8 +214,6 @@ void MainWindow::on_lstSub_clicked(const QModelIndex &)
     ui->edtText->setHtml(currentText->getData());
 }
 
-
-
 void MainWindow::setEnabledAll()
 {
     ui->edtText->setEnabled(false);
@@ -227,14 +221,12 @@ void MainWindow::setEnabledAll()
     ui->lstRecords->setEnabled(false);
 }
 
-
 void MainWindow::on_actionNotes_triggered()
 {
     widget_o = new ItemInfoForm(currentBook->getName(), currentList->getName(), currentText->getName());
     connect(this, SIGNAL(shutdown()),widget_o, SLOT(shutdown()));
     widget_o->show();
 }
-
 
 void MainWindow::on_actionContent_triggered()
 {
