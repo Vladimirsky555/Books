@@ -19,7 +19,7 @@
    <string>Form</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="bin/images.qrc">
+   <iconset resource="../../bin/images.qrc">
     <normaloff>:/images/search.png</normaloff>:/images/search.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -63,6 +63,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="btnFindZagolovki">
+        <property name="statusTip">
+         <string extracomment="Поиск по заголовкам"/>
+        </property>
         <property name="text">
          <string comment="поиск" extracomment="поиск по заголовкам"/>
         </property>
@@ -136,7 +139,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="bin/images.qrc">
+        <iconset resource="../../bin/images.qrc">
          <normaloff>:/images/font.png</normaloff>:/images/font.png</iconset>
        </property>
        <property name="iconSize">
@@ -193,7 +196,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="bin/images.qrc"/>
+  <include location="../../bin/images.qrc"/>
  </resources>
  <connections/>
 </ui>

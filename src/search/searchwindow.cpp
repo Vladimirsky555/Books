@@ -4,19 +4,17 @@
 #include <QScrollBar>
 #include <QFontDialog>
 
-SearchWindow::SearchWindow(QList<QString> list, QList<loadItem> LoadItems, QWidget *parent) :
+SearchWindow::SearchWindow(QStringList pathList, QList<loadItem> LoadItems, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SearchWindow)
 {
     ui->setupUi(this);
-
-    currentBook = NULL;
-    currentList = NULL;
-    currentText = NULL;
-
     setWindowTitle("Поисковик");
 
-    this->list = list;
+    this->currentBook = NULL;
+    this->currentList = NULL;
+    this->currentText = NULL;
+    this->pathList = pathList;
     this->LoadItems = LoadItems;
 
     highlighter1 = new QRegexpHighlighter(this);
@@ -28,8 +26,6 @@ SearchWindow::SearchWindow(QList<QString> list, QList<loadItem> LoadItems, QWidg
     ui->edtSource->setEnabled(false);
     ui->lstResults->setEnabled(false);
     ui->lstText->setEnabled(false);
-
-
 }
 
 SearchWindow::~SearchWindow()
@@ -37,77 +33,6 @@ SearchWindow::~SearchWindow()
     delete ui;
 }
 
-
-//Вспомогательные функции
-bool SearchWindow::checkRegExp(QRegExp rx)
-{
-    if(rx.isValid() && !rx.isEmpty() && !rx.exactMatch("")){
-        return true;
-    } else {
-        QMessageBox::information(this,
-                                 "Информсообщение",
-                                 trUtf8("Некорректный шаблон регулярного выражения!"));
-        return false;
-    }
-}
-
-void SearchWindow::on_edtSearch_textChanged(const QString &arg1)
-{
-    highlighter1->setPattern(arg1);
-    highlighter1->rehighlight();
-}
-
-void SearchWindow::fillList()
-{
-    list.append(":/doc/basic.book");
-    list.append(":/doc/tribal_messianship.book");
-    list.append(":/doc/tfs.book");
-    list.append(":/doc/tfs_quotes.book");
-    list.append(":/doc/sw.book");
-    list.append(":/doc/other.book");
-    list.append(":/doc/tf_eng1.book");
-    list.append(":/doc/tf_eng2.book");
-    list.append(":/doc/bible.book");
-}
-
-
-QString SearchWindow::defineCurrentList(QString el)
-{
-    QString listItem;
-
-    if(el == ":/doc/basic.book"){
-        listItem = "Базовые книги";
-    }else if(el == ":/doc/tribal_messianship.book"){
-        listItem = "Родовое мессианство";
-    }else if(el == ":/doc/tfs.book"){
-        listItem = "Сборники речей";
-    }else if(el == ":/doc/tfs_quotes.book"){
-        listItem = "Сборники цитат";
-    }else if(el == ":/doc/sw.book"){
-        listItem = "О духовном мире";
-    }else if(el == ":/doc/other.book"){
-        listItem = "Прочие...";
-    }else if(el == ":/doc/tf_eng1.book"){
-        listItem = "True Father's Speech(1936-1986)";
-    }else if(el == ":/doc/tf_eng2.book"){
-        listItem = "True Father's Speech(1987-2006)";
-    }else if(el == ":/doc/bible.book"){
-        listItem = "Библия";
-    }
-
-    return listItem;
-}
-
-BookItem *SearchWindow::getItemByName(QString value)
-{
-    for(int i = 0; i < books.size(); i++){
-        if(books[i]->getName() == value){
-            return books[i];
-        }
-    }
-
-    return NULL;
-}
 
 void SearchWindow::textFind()
 {
@@ -126,20 +51,21 @@ void SearchWindow::textFind()
 
     ui->edtText->append("Режим исследования текстов!");
     ui->edtText->append("");
-    ui->edtText->append("В квадратных скобках - число, указывающее на то, сколько раз в тексте встретились слово или фраза.");
+    ui->edtText->append("В квадратных скобках - число, указывающее на то, "
+                        "сколько раз в тексте встретились слово или фраза.");
 
     int c = 0;
     int n = 0;
 
-    for(int k = 0; k < list.count(); k++){
+    for(int k = 0; k < pathList.count(); k++){
 
         for(int i = 0; i < LoadItems.size(); i++){
-            if(list[k] == LoadItems[i].path){
+            if(pathList[k] == LoadItems[i].path){
                 books = LoadItems[i].books;
             }
         }
 
-        QString listItem = defineCurrentList(list[k]);
+        QString listItem = defineCurrentList(pathList[k]);
 
         int cnt = 0;
 
@@ -169,7 +95,7 @@ void SearchWindow::textFind()
                         s.bookChapter = currentList->getName();
                         s.bookSection = currentText->getName();
                         s.searchPhrase = ui->edtSearch->text();
-                        s.booksPath = list[k];
+                        s.booksPath = pathList[k];
                         s.num = cnt;
                         searchItems.append(s);
                     }
@@ -193,28 +119,32 @@ void SearchWindow::textFind()
         }
     }
 
+    //Отображение списка результатов в нижнем виджете
     for(int i = 0; i < searchItems.size(); i++){
         n++;
         searchItems[i].n = n;
-        ui->lstResults->addItem(QString::number(n) + ": " +
-                                "[" + QString::number(searchItems[i].num) + "] " +
+        ui->lstResults->addItem(QString::number(n) + ": " + //Порядковый номер
+                                "[" + QString::number(searchItems[i].num) + "] " + //Число совпадений в тексте
                                 searchItems[i].booksCategory + ", " + searchItems[i].bookName + ", " +
                                 searchItems[i].bookChapter + ", " + searchItems[i].bookSection);
         ui->lstResults->item(i)->setIcon(QIcon(":/images/search_.png"));
     }
 
+    //Отображение информации о результатах в конце списка нижнего виджета
     ui->lstResults->addItem(" ");
-    ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений"
-                            + " в " + QString::number(n) + " текстах");
+    ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
+                            ui->edtSearch->text() + "\"" + " в " + QString::number(n) + " текстах");
     ui->lstResults->addItem("Поиск завершен!");
 
+    //Отображение информации о результатах в окне поиска
     ui->edtText->append(" ");
     ui->edtText->append(" ");
-    ui->edtText->append(QString::number(c) + " повторений"
-                        + " в " + QString::number(n) + " текстах");
+    ui->edtText->append(QString::number(c) + " повторений фразы (слова) " + "\"" +
+                                        ui->edtSearch->text() + "\" в "  + QString::number(n) + " текстах");
     ui->edtText->append("Поиск завершен!");
 }
 
+//Функция, закрывающая окно поиска, если закрыть главное окно
 void SearchWindow::shutdown()
 {
     close();
@@ -250,15 +180,15 @@ void SearchWindow::on_btnFindZagolovki_clicked()
     int c = 0;
     int n = 0;
 
-    for(int k = 0; k < list.count(); k++){
+    for(int k = 0; k < pathList.count(); k++){
 
         for(int i = 0; i < LoadItems.size(); i++){
-            if(list[k] == LoadItems[i].path){
+            if(pathList[k] == LoadItems[i].path){
                 books = LoadItems[i].books;
             }
         }
 
-        QString listItem = defineCurrentList(list[k]);
+        QString listItem = defineCurrentList(pathList[k]);
 
         int cnt = 0;
 
@@ -281,7 +211,7 @@ void SearchWindow::on_btnFindZagolovki_clicked()
                 s.bookChapter = "";
                 s.bookSection = "";
                 s.searchPhrase = ui->edtSearch->text();
-                s.booksPath = list[k];
+                s.booksPath = pathList[k];
                 s.num = cnt;
                 searchItems.append(s);
             }
@@ -307,7 +237,7 @@ void SearchWindow::on_btnFindZagolovki_clicked()
                     s.bookChapter = currentList->getName();;
                     s.bookSection = "";
                     s.searchPhrase = ui->edtSearch->text();
-                    s.booksPath = list[k];
+                    s.booksPath = pathList[k];
                     s.num = cnt;
                     searchItems.append(s);
                 }
@@ -333,7 +263,7 @@ void SearchWindow::on_btnFindZagolovki_clicked()
                         s.bookChapter = currentList->getName();
                         s.bookSection = currentText->getName();
                         s.searchPhrase = ui->edtSearch->text();
-                        s.booksPath = list[k];
+                        s.booksPath = pathList[k];
                         s.num = cnt;
                         searchItems.append(s);
                     }
@@ -343,7 +273,6 @@ void SearchWindow::on_btnFindZagolovki_clicked()
             }
         }
     }
-
 
     for(int i = 0; i < searchItems.size(); i++){
         n++;
@@ -355,16 +284,12 @@ void SearchWindow::on_btnFindZagolovki_clicked()
 
     }
 
+    //Отображение информации о результатах в окне поиска
     ui->edtText->append(" ");
     ui->edtText->append(" ");
-    ui->edtText->append("Итого: " + QString::number(c) + " повторений"
-                        + " в " + QString::number(n) + " текстах");
-    ui->edtText->append("Поиск завершен!");
-
-    ui->edtText->append(" ");
-    ui->edtText->append(" ");
-    ui->edtText->append(QString::number(c) + " повторений"
-                        + " в " + QString::number(n) + " текстах");
+    ui->edtText->append("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
+                                        ui->edtSearch->text() + "\" в " +  "заголовках всех текстов!");
+     ui->edtText->append(" ");
     ui->edtText->append("Поиск завершен!");
 }
 
@@ -429,10 +354,10 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
 //Реализация выбора для поисковика
 void SearchWindow::on_btnChoose_clicked()
 {
-    list.clear();
+    pathList.clear();
     fillList();
 
-    widget_findchooser = new FindChooser(list);
+    widget_findchooser = new FindChooser(pathList);
 
     connect(widget_findchooser, SIGNAL(changeList(QList<QString>)),
                  this, SLOT(changeList(QList<QString>)));
@@ -443,8 +368,8 @@ void SearchWindow::on_btnChoose_clicked()
 void SearchWindow::changeList(QList<QString> list)
 {
     books.clear();
-    this->list.clear();
-    this->list = list;
+    this->pathList.clear();
+    this->pathList = list;
 }
 
 void SearchWindow::on_edtSearch_returnPressed()
@@ -504,3 +429,74 @@ void SearchWindow::on_btnFont_clicked()
     }
 }
 
+
+//Вспомогательные функции
+bool SearchWindow::checkRegExp(QRegExp rx)
+{
+    if(rx.isValid() && !rx.isEmpty() && !rx.exactMatch("")){
+        return true;
+    } else {
+        QMessageBox::information(this,
+                                 "Информсообщение",
+                                 trUtf8("Некорректный шаблон регулярного выражения!"));
+        return false;
+    }
+}
+
+void SearchWindow::on_edtSearch_textChanged(const QString &arg1)
+{
+    highlighter1->setPattern(arg1);
+    highlighter1->rehighlight();
+}
+
+void SearchWindow::fillList()
+{
+    pathList.append(":/doc/basic.book");
+    pathList.append(":/doc/tribal_messianship.book");
+    pathList.append(":/doc/tfs.book");
+    pathList.append(":/doc/tfs_quotes.book");
+    pathList.append(":/doc/sw.book");
+    pathList.append(":/doc/other.book");
+    pathList.append(":/doc/tf_eng1.book");
+    pathList.append(":/doc/tf_eng2.book");
+    pathList.append(":/doc/bible.book");
+}
+
+
+QString SearchWindow::defineCurrentList(QString el)
+{
+    QString listItem;
+
+    if(el == ":/doc/basic.book"){
+        listItem = "Базовые книги";
+    }else if(el == ":/doc/tribal_messianship.book"){
+        listItem = "Родовое мессианство";
+    }else if(el == ":/doc/tfs.book"){
+        listItem = "Сборники речей";
+    }else if(el == ":/doc/tfs_quotes.book"){
+        listItem = "Сборники цитат";
+    }else if(el == ":/doc/sw.book"){
+        listItem = "О духовном мире";
+    }else if(el == ":/doc/other.book"){
+        listItem = "Прочие...";
+    }else if(el == ":/doc/tf_eng1.book"){
+        listItem = "True Father's Speech(1936-1986)";
+    }else if(el == ":/doc/tf_eng2.book"){
+        listItem = "True Father's Speech(1987-2006)";
+    }else if(el == ":/doc/bible.book"){
+        listItem = "Библия";
+    }
+
+    return listItem;
+}
+
+BookItem *SearchWindow::getItemByName(QString value)
+{
+    for(int i = 0; i < books.size(); i++){
+        if(books[i]->getName() == value){
+            return books[i];
+        }
+    }
+
+    return NULL;
+}

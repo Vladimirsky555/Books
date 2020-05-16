@@ -34,25 +34,25 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->cbxList->addItem("True Father's Speech(1987-2006)");
     ui->cbxList->addItem("Библия");
 
-    //Создаем массив называний файлов для загрузки
-    list.append(":/doc/basic.book");
-    list.append(":/doc/tribal_messianship.book");
-    list.append(":/doc/tfs.book");
-    list.append(":/doc/tfs_quotes.book");
-    list.append(":/doc/sw.book");
-    list.append(":/doc/other.book");
-    list.append(":/doc/tf_eng1.book");
-    list.append(":/doc/tf_eng2.book");
-    list.append(":/doc/bible.book");
+    //Создаем массив названий файлов для загрузки
+    pathList.append(":/doc/basic.book");
+    pathList.append(":/doc/tribal_messianship.book");
+    pathList.append(":/doc/tfs.book");
+    pathList.append(":/doc/tfs_quotes.book");
+    pathList.append(":/doc/sw.book");
+    pathList.append(":/doc/other.book");
+    pathList.append(":/doc/tf_eng1.book");
+    pathList.append(":/doc/tf_eng2.book");
+    pathList.append(":/doc/bible.book");
 
 
 
     //Загружаем все файлы, только один раз
-    for(int i = 0; i < list.size(); i++)
+    for(int i = 0; i < pathList.size(); i++)
     {
         loadItem catalog;
-        catalog.path = list[i];
-        loadFromFile(list[i]);
+        catalog.path = pathList[i];
+        loadFromFile(pathList[i]);
         catalog.books = books;
         LoadItems.append(catalog);
     }
@@ -188,13 +188,14 @@ void MainWindow::on_btnR_clicked()
     refreshRecords();
 }
 
-void MainWindow::on_lstRecords_clicked()
+void MainWindow::on_lstRecords_clicked(const QModelIndex &index)
 {
     ui->actionNotes->setEnabled(false);
     ui->btnFont->setEnabled(true);
+    int id = index.row();
 
-    if (ui->lstRecords->currentRow() == -1) return;
-    currentList = currentBook->getItemById(ui->lstRecords->currentRow());
+    if (id == -1) return;
+    currentList = currentBook->getItemById(id);
     ui->lstSub->setEnabled(true);
     ui->edtText->setEnabled(true);
     refreshSub();
@@ -301,7 +302,6 @@ void MainWindow::on_cbxList_currentIndexChanged(int index)
         title = "Базовые книги";
     }
 
-
     setWindowTitle(title);
     refreshBooks();
 }
@@ -316,7 +316,7 @@ void MainWindow::on_actionInfoDialog_triggered()
 
 void MainWindow::on_actionSearch_triggered()
 {
-    search_window = new SearchWindow(list, LoadItems);
+    search_window = new SearchWindow(pathList, LoadItems);
 
     connect(search_window, SIGNAL(sendPattern(QString)),
             this, SLOT(setPattern(QString)));
@@ -347,7 +347,7 @@ void MainWindow::on_btnFont_clicked()
         ui->edtText->setText(txt);
 
     } else {
-        QMessageBox::information(this,"Сообщение","Шрифт не выбран");
+        QMessageBox::information(this,"Сообщение","Шрифт не выбран!");
     }
 }
 
@@ -359,7 +359,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 
-//Экспорт речей в файл
+//Экспорт названия книги, заголовка и текста в файл
 void MainWindow::on_actionExport_triggered()
 {
     //Save the file to disk
@@ -380,3 +380,5 @@ void MainWindow::on_actionExport_triggered()
 
     file.close();
 }
+
+
