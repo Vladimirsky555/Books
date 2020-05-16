@@ -109,24 +109,29 @@ void MainWindow::sendPattern(QString value)
     ui->edtPattern->setText(value);
 }
 
-void MainWindow::setAll(BookItem* bookName, ListItem* bookChapter, TextItem* bookSection, QString booksPath)
+void MainWindow::setAll(BookItem* book, ListItem* bookChapter, TextItem* bookSection, QString booksPath)
 {
-    int loadId;//Индекс каталога в массиве каталогов
     for(int i = 0; i < LoadItems.size(); i++){
         if(booksPath == LoadItems[i].path){
             books = LoadItems[i].books;
-            loadId = i;
+            ui->cbxList->setCurrentIndex(i);//Устанавливаем каталог в комбобокс, через индекс
         }
     }
 
-    currentBook = bookName;
+    currentBook = book;
     currentList = bookChapter;
     currentText = bookSection;
 
-    ui->cbxList->setCurrentIndex(loadId);//Устанавливаем каталог в комбобокс, через индекс
     refreshBooks();
     refreshRecords();
     refreshSub();
+
+    //Определяем порядковый номер книги в массиве, чтобы выставить комбобокс
+    for(int i = 0; i < books.count(); i++){
+        if(books.at(i) == currentBook)
+        ui->cbxBooks->setCurrentIndex(i);//Устанавливаем книгу в комбобокс через индекс
+        qDebug() << books.at(i)->getName() << currentBook->getName() << i;
+    }
 
    ui->edtText->setHtml(bookSection->getData());
 
