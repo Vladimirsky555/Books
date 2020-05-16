@@ -28,18 +28,20 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         bin/images.qrc
 	
 	HEADERS  += src/mainwindow/mainwindow.h \
+        src/application.h \
         src/data/datatypes.h \
         src/diary/iteminfoform.h \        
         src/helpers/qregexphighlighter.h \
         src/search/searchwindow.h \
         src/search/listwidget.h \
         src/search/findchooser.h \
-		src/info/list.h \
+        src/info/list.h \
         src/info/info.h
 
     SOURCES += src/main.cpp\
+       src/application.cpp \
         src/mainwindow/mainwindow.cpp \
-		src/data/bookitem.cpp \
+        src/data/bookitem.cpp \
         src/data/textitem.cpp \
         src/data/listitem.cpp \
         src/data/iteminfo.cpp \
@@ -48,10 +50,8 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         src/search/searchwindow.cpp \
         src/search/listwidget.cpp \
         src/search/findchooser.cpp \
-		src/info/list.cpp \
+        src/info/list.cpp \
         src/info/info.cpp
-
-
 
     FORMS += src/mainwindow/mainwindow.ui \
         src/diary/iteminfoform.ui \        
