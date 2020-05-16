@@ -215,7 +215,7 @@ void MainWindow::on_lstSub_clicked(const QModelIndex &)
     refreshSub();
 
     ui->edtText->setEnabled(true);
-    ui->edtText->append(currentText->getData());
+    ui->edtText->setHtml(currentText->getData());
 }
 
 

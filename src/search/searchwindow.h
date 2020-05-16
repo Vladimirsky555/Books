@@ -13,15 +13,16 @@ namespace Ui {
 class SearchWindow;
 }
 
+//Структура, формирующаяся по результатам поиска в одном цикле
 struct searchItem {
-    QString text1;
-    QString text2;
-    QString text3;
-    QString text4;
-    QString text5;
-    QString text6;
-    int num;
-    int n;
+    QString booksCategory; //Категория
+    QString bookName;       //Название книги
+    QString bookChapter;   //Глава книги
+    QString bookSection;   //Раздел в главе книги
+    QString searchPhrase;   //Искомая фраза или слово
+    QString booksPath;      //Путь к каталогу (категории) книг
+    int num;                       //Сколько раз фраза встретилась в конкретном тексте
+    int n;                           //Количество текстов, в которых встретилась фраза
 };
 
 //Структура, описывающая номер строки, в которой найдено искомое слово
@@ -33,10 +34,10 @@ class SearchWindow : public QWidget
 {
     Q_OBJECT
 
-    QList<loadItem> LoadItems;
-    QList<BookItem*> books;
+    QList<loadItem> LoadItems;//Массив каталогов книг
+    QList<BookItem*> books; //Массив книг в выбранном каталоге
     QList<QString> list;
-    QList<searchItem> searchItems;
+    QList<searchItem> searchItems; //Массив структур, формирующийся по результатам поиска
     QList<textItem> textItems;
 
     BookItem* currentBook;
@@ -47,11 +48,16 @@ class SearchWindow : public QWidget
     QString currentTitle;
     QString currentTxt;
 
-
+    //Переменные для подсветки
     QRegexpHighlighter *highlighter1;
     QRegexpHighlighter *highlighter2;
 
     FindChooser *widget_findchooser;
+
+    Ui::SearchWindow *ui;
+
+private:
+    bool checkRegExp(QRegExp rx);
 
 public:
     explicit SearchWindow(QList<QString> list, QList<loadItem> LoadItems, QWidget *parent = 0);
@@ -75,19 +81,11 @@ private slots:
     void changeList(QList<QString>);
     void on_btnChoose_clicked();
     void on_lstText_clicked(const QModelIndex &index);
-
-
     void on_btnFont_clicked();
-
-
 
 signals:
     void sendPattern(QString value);
-    void sendAll(BookItem*,ListItem*,TextItem*,QString);
-
-private:
-    Ui::SearchWindow *ui;
-    bool checkRegExp(QRegExp rx);
+    void sendAll(BookItem*,ListItem*,TextItem*,QString);   
 };
 
 #endif // SEARCHWINDOW_H

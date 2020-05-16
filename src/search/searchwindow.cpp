@@ -164,17 +164,15 @@ void SearchWindow::textFind()
 
                     if(cnt != 0){
                         searchItem s;
-                        s.text1 = listItem;
-                        s.text2 = currentBook->getName();
-                        s.text3 = currentList->getName();
-                        s.text4 = currentText->getName();
-                        s.text5 = ui->edtSearch->text();
-                        s.text6 = list[k];
+                        s.booksCategory = listItem;
+                        s.bookName = currentBook->getName();
+                        s.bookChapter = currentList->getName();
+                        s.bookSection = currentText->getName();
+                        s.searchPhrase = ui->edtSearch->text();
+                        s.booksPath = list[k];
                         s.num = cnt;
                         searchItems.append(s);
-
                     }
-
                     cnt = 0;
                 }
             }
@@ -200,9 +198,8 @@ void SearchWindow::textFind()
         searchItems[i].n = n;
         ui->lstResults->addItem(QString::number(n) + ": " +
                                 "[" + QString::number(searchItems[i].num) + "] " +
-                                searchItems[i].text1 + ", " +
-                                searchItems[i].text2 + ", " + searchItems[i].text3
-                                + ", " + searchItems[i].text4);
+                                searchItems[i].booksCategory + ", " + searchItems[i].bookName + ", " +
+                                searchItems[i].bookChapter + ", " + searchItems[i].bookSection);
         ui->lstResults->item(i)->setIcon(QIcon(":/images/search_.png"));
     }
 
@@ -279,12 +276,12 @@ void SearchWindow::on_btnFindZagolovki_clicked()
 
             if(cnt != 0){
                 searchItem s;
-                s.text1 = listItem;
-                s.text2 = currentBook->getName();
-                s.text3 = "";
-                s.text4 = "";
-                s.text5 = ui->edtSearch->text();
-                s.text6 = list[k];
+                s.booksCategory = listItem;
+                s.bookName = currentBook->getName();
+                s.bookChapter = "";
+                s.bookSection = "";
+                s.searchPhrase = ui->edtSearch->text();
+                s.booksPath = list[k];
                 s.num = cnt;
                 searchItems.append(s);
             }
@@ -305,12 +302,12 @@ void SearchWindow::on_btnFindZagolovki_clicked()
 
                 if(cnt != 0){
                     searchItem s;
-                    s.text1 = listItem;
-                    s.text2 = currentBook->getName();
-                    s.text3 = currentList->getName();;
-                    s.text4 = "";
-                    s.text5 = ui->edtSearch->text();
-                    s.text6 = list[k];
+                    s.booksCategory = listItem;
+                    s.bookName = currentBook->getName();
+                    s.bookChapter = currentList->getName();;
+                    s.bookSection = "";
+                    s.searchPhrase = ui->edtSearch->text();
+                    s.booksPath = list[k];
                     s.num = cnt;
                     searchItems.append(s);
                 }
@@ -331,12 +328,12 @@ void SearchWindow::on_btnFindZagolovki_clicked()
 
                     if(cnt != 0){
                         searchItem s;
-                        s.text1 = listItem;
-                        s.text2 = currentBook->getName();
-                        s.text3 = currentList->getName();
-                        s.text4 = currentText->getName();
-                        s.text5 = ui->edtSearch->text();
-                        s.text6 = list[k];
+                        s.booksCategory = listItem;
+                        s.bookName = currentBook->getName();
+                        s.bookChapter = currentList->getName();
+                        s.bookSection = currentText->getName();
+                        s.searchPhrase = ui->edtSearch->text();
+                        s.booksPath = list[k];
                         s.num = cnt;
                         searchItems.append(s);
                     }
@@ -352,9 +349,9 @@ void SearchWindow::on_btnFindZagolovki_clicked()
         n++;
         searchItems[i].n = n;
         ui->edtText->append(QString::number(n) + ": " +
-                            searchItems[i].text1 + ", " +
-                            searchItems[i].text2 + ", " + searchItems[i].text3
-                            + ", " + searchItems[i].text4);
+                            searchItems[i].booksCategory + ", " +
+                            searchItems[i].bookName + ", " + searchItems[i].bookChapter
+                            + ", " + searchItems[i].bookSection);
 
     }
 
@@ -388,15 +385,15 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &)
 
         for(int i = 0; i < LoadItems.size(); i++)
         {
-            if(LoadItems[i].name == searchItems[index].text6)
+            if(LoadItems[i].name == searchItems[index].booksPath)
             {
                 books = LoadItems[i].books;
             }
         }
 
-        currentBook = getItemByName(searchItems[index].text2);
-        currentList = currentBook->getItemByName(searchItems[index].text3);
-        currentText = currentList->getItemByName(searchItems[index].text4);
+        currentBook = getItemByName(searchItems[index].bookName);
+        currentList = currentBook->getItemByName(searchItems[index].bookChapter);
+        currentText = currentList->getItemByName(searchItems[index].bookSection);
 
         currentTxt = currentText->getData();
         ui->edtText->setHtml(currentTxt);
@@ -419,14 +416,14 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &)
 
         }
 
-    emit sendAll(currentBook,currentList,currentText,searchItems[index].text6);
+    emit sendAll(currentBook,currentList,currentText,searchItems[index].booksPath);
 
-    ui->edtSource->setText(searchItems[index].text1 + ", " +
-                           searchItems[index].text2 + ", " +
-                           searchItems[index].text3 + ", " +
-                           searchItems[index].text4);
+    ui->edtSource->setText(searchItems[index].booksCategory + ", " +
+                           searchItems[index].bookName + ", " +
+                           searchItems[index].bookChapter + ", " +
+                           searchItems[index].bookSection);
 
-    currentTitle = searchItems[index].text3;
+    currentTitle = searchItems[index].bookChapter;
 }
 
 //Реализация выбора для поисковика
