@@ -16,5 +16,6 @@
         <file>images/labels.png</file>
         <file>images/search2.png</file>
         <file>images/export.png</file>
+        <file>images/arrows.png</file>
     </qresource>
 </RCC>

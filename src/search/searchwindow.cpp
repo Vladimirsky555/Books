@@ -27,6 +27,18 @@ SearchWindow::SearchWindow(QStringList pathList, QList<loadItem> LoadItems, QWid
     ui->lstResults->setEnabled(false);
     ui->lstText->setEnabled(false);
 
+    //Подключим ко всем toolButton экшены
+    ui->btnFind->setDefaultAction(ui->actionFind);
+    connect(ui->actionFind, SIGNAL(triggered()), this, SLOT(FindTexts()));
+
+    ui->btnFindChapters->setDefaultAction(ui->actionFindChapters);
+    connect(ui->actionFindChapters, SIGNAL(triggered()), this, SLOT(FindChapters()));
+
+    ui->btnChoose->setDefaultAction(ui->actionChoose);
+    connect(ui->actionChoose, SIGNAL(triggered()), this, SLOT(chooseResource()));
+
+    ui->btnFont->setDefaultAction(ui->actionFont);
+    connect(ui->actionFont, SIGNAL(triggered()), this, SLOT(chooseFont()));
 }
 
 SearchWindow::~SearchWindow()
@@ -152,15 +164,18 @@ void SearchWindow::shutdown()
 }
 
 //Реализация поиска
-void SearchWindow::on_btnFind_clicked()
+void SearchWindow::FindTexts()
 {
-   ui->lstText->clear();
-   textFind();
+    ui->lstText->clear();
+    ui->btnFont->setEnabled(true);
+    textFind();
 }
 
-void SearchWindow::on_btnFindZagolovki_clicked()
+void SearchWindow::FindChapters()
 {
     emit sendPattern(ui->edtSearch->text());
+
+    ui->btnFont->setEnabled(false);
     ui->edtText->setEnabled(true);
     ui->edtSource->setEnabled(true);
     ui->edtSource->setEnabled(false);
@@ -291,7 +306,7 @@ void SearchWindow::on_btnFindZagolovki_clicked()
     ui->edtText->append("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
                                         ui->edtSearch->text() + "\" в " +  "заголовках всех текстов!");
      ui->edtText->append(" ");
-    ui->edtText->append("Поиск завершен!");
+     ui->edtText->append("Поиск завершен!");
 }
 
 void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
@@ -352,8 +367,8 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
     currentTitle = searchItems[id].bookChapter;
 }
 
-//Реализация выбора для поисковика
-void SearchWindow::on_btnChoose_clicked()
+//Реализация выбора ресурса для поиска
+void SearchWindow::chooseResource()
 {
     pathList.clear();
     fillList();
@@ -384,11 +399,12 @@ void SearchWindow::on_lstText_clicked(const QModelIndex &index)
     ui->edtText->clear();
     //Помещаю текст в окно, ведь по нему придётся искать
     ui->edtText->setHtml(currentTxt);
+    int id = index.row();
 
     //Найденные строки помещаю в QStringlist p
     //По другому реализовать пробелы между строками не получилось
     QStringList p;
-    for(int i = textItems[index.row()].id - 1; i < ui->edtText->document()->blockCount(); i++){
+    for(int i = textItems[id].id - 1; i < ui->edtText->document()->blockCount(); i++){
         p.append(ui->edtText->document()->findBlockByLineNumber(i).text());
     }
 
@@ -398,11 +414,11 @@ void SearchWindow::on_lstText_clicked(const QModelIndex &index)
     QString tmp;
     ui->edtText->clear();
     for(int i = 0; i < p.count(); i++){
-        if(p.at(i) != ""){
-            tmp += "<span style='color:#B22222'>" +
-                    QString::number(textItems[index.row()].id + i) + ". "  +
-                    "</span>" + p[i];
-        }
+
+        tmp += "<span style='color:#B22222'>" +
+                QString::number(textItems[id].id + i) + ". "  +
+                "</span>" + p[i];
+
         tmp += "<br>";
         tmp += "<br>";
     }
@@ -411,7 +427,8 @@ void SearchWindow::on_lstText_clicked(const QModelIndex &index)
     p.clear();
 }
 
-void SearchWindow::on_btnFont_clicked()
+
+void SearchWindow::chooseFont()
 {
     bool ok;
     QFont font = QFontDialog::getFont(
