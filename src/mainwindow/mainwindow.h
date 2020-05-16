@@ -23,7 +23,7 @@ class MainWindow : public QMainWindow
 
     QList<loadItem> LoadItems;//Массив каталогов, которые состоят из книг (загружается при запуске программы в цикле)
     QList<BookItem*> books;//Массив книг каталога
-    QList<QString> list;
+    QStringList pathList;//Массив путей к каталогам
 
     BookItem* currentBook;
     BookItem* tmp;
@@ -55,7 +55,7 @@ private slots:
     void setAll(BookItem*bookName, ListItem*bookChapter, TextItem*bookSection, QString booksPath);
     void on_cbxList_currentIndexChanged(int index);
     void on_btnR_clicked();
-    void on_lstRecords_clicked();
+    void on_lstRecords_clicked(const QModelIndex &index);
     void on_lstSub_clicked(const QModelIndex &);
 
     void on_actionNotes_triggered();
@@ -67,11 +67,8 @@ private slots:
     void on_edtPattern_textChanged(const QString &arg1);
     void on_btnFont_clicked();   
 
-
-
 signals:
     void shutdown();
-
 
 private:
     Ui::MainWindow *ui;

@@ -19,7 +19,7 @@
    <string>Form</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="bin/images.qrc">
+   <iconset resource="../../bin/images.qrc">
     <normaloff>:/images/search.png</normaloff>:/images/search.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -39,14 +39,9 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnFind">
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
+       <widget class="QToolButton" name="btnFind">
         <property name="text">
-         <string comment="Поиск" extracomment="Поиск по текстам"/>
+         <string>...</string>
         </property>
         <property name="icon">
          <iconset>
@@ -55,14 +50,17 @@
         </property>
         <property name="iconSize">
          <size>
-          <width>23</width>
-          <height>23</height>
+          <width>25</width>
+          <height>25</height>
          </size>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnFindZagolovki">
+        <property name="statusTip">
+         <string extracomment="Поиск по заголовкам"/>
+        </property>
         <property name="text">
          <string comment="поиск" extracomment="поиск по заголовкам"/>
         </property>
@@ -136,7 +134,7 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset resource="bin/images.qrc">
+        <iconset resource="../../bin/images.qrc">
          <normaloff>:/images/font.png</normaloff>:/images/font.png</iconset>
        </property>
        <property name="iconSize">
@@ -191,9 +189,21 @@
     </layout>
    </item>
   </layout>
+  <action name="actionFind">
+   <property name="icon">
+    <iconset resource="../../bin/images.qrc">
+     <normaloff>:/images/search2.png</normaloff>:/images/search2.png</iconset>
+   </property>
+   <property name="text">
+    <string>Поиск по текстам</string>
+   </property>
+   <property name="toolTip">
+    <string>Поиск по текстам</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="bin/images.qrc"/>
+  <include location="../../bin/images.qrc"/>
  </resources>
  <connections/>
 </ui>
