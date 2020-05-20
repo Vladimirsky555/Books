@@ -21,14 +21,12 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    QList<loadItem> LoadItems;//Массив каталогов, которые состоят из книг (загружается при запуске программы в цикле)
+    QList<Catalog> catalogs;//Массив каталогов, которые состоят из книг (загружается при запуске программы в цикле)
     QList<BookItem*> books;//Массив книг каталога
     QStringList pathList;//Массив путей к каталогам
 
     BookItem* currentBook;
-    BookItem* tmp;
     ListItem* currentList;
-    ListItem* tmpList;
     TextItem* currentText;
 
     ItemInfoForm *widget_o;
@@ -42,12 +40,18 @@ public:
     virtual ~MainWindow();
 
     void refreshBooks();
-    void refreshRecords();
-    void refreshSub();
-    void loadFromFile(QString);
+    void refreshChapters();
+    void refreshSections();
+
     void setEnabledAll();
     ListItem* getItemByName(QString);
 
+    void loadFromFile(QString);
+
+    //Админ
+    void saveToFile();
+    void up(int id);
+    void down(int id);
 
 private slots:    
     void setPattern(QString);
@@ -55,8 +59,8 @@ private slots:
     void setAll(BookItem*bookName, ListItem*bookChapter, TextItem*bookSection, QString booksPath);
     void on_cbxList_currentIndexChanged(int index);
     void on_btnR_clicked();
-    void on_lstRecords_clicked(const QModelIndex &index);
-    void on_lstSub_clicked(const QModelIndex &);
+    void on_lstChapters_clicked(const QModelIndex &index);
+    void on_lstSections_clicked(const QModelIndex &index);
 
     void on_actionNotes_triggered();
     void on_actionContent_triggered();

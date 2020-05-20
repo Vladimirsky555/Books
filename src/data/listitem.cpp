@@ -45,6 +45,36 @@ void ListItem::delItemById(int id){
     data.removeAt(id);
 }
 
+void ListItem::up(TextItem *item)
+{
+    for(int i = 0; i < data.count(); i++)
+        {
+            if(item == data[i] && i > 0)
+            {
+                data[i] = data[i - 1];
+                data[i - 1] = item;
+                return;
+            }
+        }
+
+        return;
+}
+
+void ListItem::down(TextItem *item)
+{
+    for(int i = 0; i < data.count(); i++)
+    {
+        if(item == data[i] && i < data.count() - 1)
+        {
+            data[i] = data[i + 1];
+            data[i + 1] = item;
+            return;
+        }
+    }
+
+    return;
+}
+
 int ListItem::getItemsCount(){
     return data.size();
 }

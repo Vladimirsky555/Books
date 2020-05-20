@@ -46,18 +46,17 @@ MainWindow::MainWindow(QWidget *parent) :
     pathList.append(":/doc/bible.book");
 
 
-
     //Загружаем все файлы, только один раз
     for(int i = 0; i < pathList.size(); i++)
     {
-        loadItem catalog;
+        Catalog catalog;
         catalog.path = pathList[i];
         loadFromFile(pathList[i]);
         catalog.books = books;
-        LoadItems.append(catalog);
+        catalogs.append(catalog);
     }
 
-    books = LoadItems[0].books;
+    books = catalogs[0].books;
     refreshBooks();
 
     highlighter = new QRegexpHighlighter(this);
@@ -111,9 +110,9 @@ void MainWindow::sendPattern(QString value)
 
 void MainWindow::setAll(BookItem* book, ListItem* bookChapter, TextItem* bookSection, QString booksPath)
 {
-    for(int i = 0; i < LoadItems.size(); i++){
-        if(booksPath == LoadItems[i].path){
-            books = LoadItems[i].books;
+    for(int i = 0; i < catalogs.size(); i++){
+        if(booksPath == catalogs[i].path){
+            books = catalogs[i].books;
             ui->cbxList->setCurrentIndex(i);//Устанавливаем каталог в комбобокс, через индекс
         }
     }
@@ -123,8 +122,8 @@ void MainWindow::setAll(BookItem* book, ListItem* bookChapter, TextItem* bookSec
     currentText = bookSection;
 
     refreshBooks();
-    refreshRecords();
-    refreshSub();
+    refreshChapters();
+    refreshSections();
 
     //Определяем порядковый номер книги в массиве, чтобы выставить комбобокс
     for(int i = 0; i < books.count(); i++){
@@ -134,8 +133,8 @@ void MainWindow::setAll(BookItem* book, ListItem* bookChapter, TextItem* bookSec
 
    ui->edtText->setHtml(currentText->getData());
 
-   ui->lstRecords->setEnabled(true);
-   ui->lstSub->setEnabled(true);
+   ui->lstChapters->setEnabled(true);
+   ui->lstSections->setEnabled(true);
    ui->edtText->setEnabled(true);
 }
 
@@ -154,27 +153,27 @@ void MainWindow::refreshBooks()
         ui->cbxBooks->addItem(books[i]->getName());
     }
 
-    ui->lstSub->clear();
+    ui->lstSections->clear();
     ui->edtText->clear();
 }
 
-void MainWindow::refreshRecords(){
-    ui->lstRecords->clear();
+void MainWindow::refreshChapters(){
+    ui->lstChapters->clear();
 
         for(int i = 0; i < currentBook->getItemsCount(); i++){
-            ui->lstRecords->addItem(currentBook->getItemById(i)->getName());
+            ui->lstChapters->addItem(currentBook->getItemById(i)->getName());
         }
 
-    ui->lstSub->clear();
+    ui->lstSections->clear();
     ui->edtText->clear();
-    ui->lstSub->setEnabled(false);
+    ui->lstSections->setEnabled(false);
     ui->edtText->setEnabled(false);
 }
 
-void MainWindow::refreshSub(){
-    ui->lstSub->clear();
+void MainWindow::refreshSections(){
+    ui->lstSections->clear();
     for(int i = 0; i < currentList->getItemsCount(); i++){
-        ui->lstSub->addItem(currentList->getItemById(i)->getName());
+        ui->lstSections->addItem(currentList->getItemById(i)->getName());
     }
 
     ui->edtText->clear();
@@ -184,15 +183,16 @@ void MainWindow::refreshSub(){
 //Клики по полю
 void MainWindow::on_btnR_clicked()
 {
-    ui->lstRecords->setEnabled(true);
+    ui->lstChapters->setEnabled(true);
     currentBook = books[ui->cbxBooks->currentIndex()];
     title = currentBook->getName();
     ui->actionContent->setEnabled(true);
-    ui->lstSub->setEnabled(true);
-    refreshRecords();
+    ui->lstSections->setEnabled(true);
+    refreshChapters();
 }
 
-void MainWindow::on_lstRecords_clicked(const QModelIndex &index)
+
+void MainWindow::on_lstChapters_clicked(const QModelIndex &index)
 {
     ui->actionNotes->setEnabled(false);
     ui->btnFont->setEnabled(true);
@@ -200,20 +200,22 @@ void MainWindow::on_lstRecords_clicked(const QModelIndex &index)
 
     if (id == -1) return;
     currentList = currentBook->getItemById(id);
-    ui->lstSub->setEnabled(true);
+    ui->lstSections->setEnabled(true);
     ui->edtText->setEnabled(true);
-    refreshSub();
+    refreshSections();
 }
 
-void MainWindow::on_lstSub_clicked(const QModelIndex &)
+
+
+void MainWindow::on_lstSections_clicked(const QModelIndex &index)
 {
     ui->edtPattern->setEnabled(true);
     ui->actionExport->setEnabled(true);
 
-    if (ui->lstSub->currentRow() == -1) return;
-    currentText = currentList->getItemById(ui->lstSub->currentRow());
+    if (ui->lstSections->currentRow() == -1) return;
+    currentText = currentList->getItemById(index.row());
     ui->actionNotes->setEnabled(true);
-    refreshSub();
+    refreshSections();
 
     ui->edtText->setEnabled(true);
     ui->edtText->setHtml(currentText->getData());
@@ -222,8 +224,8 @@ void MainWindow::on_lstSub_clicked(const QModelIndex &)
 void MainWindow::setEnabledAll()
 {
     ui->edtText->setEnabled(false);
-    ui->lstSub->setEnabled(false);
-    ui->lstRecords->setEnabled(false);
+    ui->lstSections->setEnabled(false);
+    ui->lstChapters->setEnabled(false);
 }
 
 void MainWindow::on_actionNotes_triggered()
@@ -242,67 +244,67 @@ void MainWindow::on_actionContent_triggered()
 
 void MainWindow::on_cbxList_currentIndexChanged(int index)
 {
-    if(LoadItems.count() == 0)return;
+    if(catalogs.count() == 0)return;
 
     ui->btnFont->setEnabled(false);
     ui->edtPattern->setEnabled(false);
 
-    ui->lstRecords->setFont(QFont ("MS Shell Dlg 2", 10));
-    ui->lstSub->setFont(QFont ("MS Shell Dlg 2", 10));
+    ui->lstChapters->setFont(QFont ("MS Shell Dlg 2", 10));
+    ui->lstSections->setFont(QFont ("MS Shell Dlg 2", 10));
 
-    ui->lstRecords->clear();
-    ui->lstSub->clear();
+    ui->lstChapters->clear();
+    ui->lstSections->clear();
 
     setEnabledAll();
 
     switch (index) {
     case 0:
-        books = LoadItems[0].books;
+        books = catalogs[0].books;
         title = "Базовые книги";
         break;
 
     case 1:
-        books = LoadItems[1].books;
+        books = catalogs[1].books;
         title = "Родовое мессианство";
         break;
 
     case 2:
-        books = LoadItems[2].books;
+        books = catalogs[2].books;
         title = "Сборники речей";
         break;
 
     case 3:
-        books = LoadItems[3].books;
+        books = catalogs[3].books;
         title = "Сборники цитат";
         break;
 
     case 4:
-        books = LoadItems[4].books;
+        books = catalogs[4].books;
         title = "О духовном мире";
         break;
 
     case 5:
-        books = LoadItems[5].books;
+        books = catalogs[5].books;
         title = "Прочие...)";
         break;
 
     case 6:
-        books = LoadItems[6].books;
+        books = catalogs[6].books;
         title = "True Father's Speech(1936-1986)";
         break;
 
     case 7:
-        books = LoadItems[7].books;
+        books = catalogs[7].books;
         title = "True Father's Speech(1986-2006)";
         break;
 
     case 8:
-        books = LoadItems[8].books;
+        books = catalogs[8].books;
         title = "Библия";
         break;
 
     default:
-        books = LoadItems[0].books;
+        books = catalogs[0].books;
         title = "Базовые книги";
     }
 
@@ -320,7 +322,7 @@ void MainWindow::on_actionInfoDialog_triggered()
 
 void MainWindow::on_actionSearch_triggered()
 {
-    search_window = new SearchWindow(pathList, LoadItems);
+    search_window = new SearchWindow(pathList, catalogs);
 
     connect(search_window, SIGNAL(sendPattern(QString)),
             this, SLOT(setPattern(QString)));
@@ -368,6 +370,7 @@ void MainWindow::on_actionExport_triggered()
 {
     //Save the file to disk
     QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
+    //QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
     if(filename.isEmpty())return;
 
     QFile file(filename);
@@ -384,5 +387,46 @@ void MainWindow::on_actionExport_triggered()
 
     file.close();
 }
+
+
+
+/**********************************************************************************/
+//АДМИН
+/**********************************************************************************/
+//Запись в файл
+void MainWindow::saveToFile()
+{
+    QFile f("load");
+    f.open(QFile::WriteOnly | QFile::Truncate);
+    QDataStream str(&f);
+
+    for(int i = 0; i < books.size(); i++){
+        str << books[i]->saveIt();
+    }
+
+    f.close();
+}
+
+void MainWindow::up(int id)
+{
+    BookItem *tmp;
+    if(id > 0){
+        tmp = books[id];
+        books[id] = books[id - 1];
+        books[id - 1] = tmp;
+    }
+}
+
+void MainWindow::down(int id)
+{
+    BookItem *tmp;
+    if(id < books.count() - 1){
+        tmp = books[id];
+        books[id] = books[id + 1];
+        books[id + 1] = tmp;
+    }
+}
+
+
 
 

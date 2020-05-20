@@ -4,7 +4,7 @@
 #include <QScrollBar>
 #include <QFontDialog>
 
-SearchWindow::SearchWindow(QStringList pathList, QList<loadItem> LoadItems, QWidget *parent) :
+SearchWindow::SearchWindow(QStringList pathList, QList<Catalog> LoadItems, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SearchWindow)
 {

@@ -34,7 +34,7 @@ class SearchWindow : public QWidget
 {
     Q_OBJECT
 
-    QList<loadItem> LoadItems;//Массив каталогов книг
+    QList<Catalog> LoadItems;//Массив каталогов книг
     QList<BookItem*> books; //Массив книг в выбранном каталоге
     QStringList pathList;//Список путей к каталогам
     QList<searchItem> searchItems; //Массив структур, формирующийся по результатам поиска
@@ -60,7 +60,7 @@ private:
     bool checkRegExp(QRegExp rx);
 
 public:
-    explicit SearchWindow(QStringList pathList, QList<loadItem> LoadItems, QWidget *parent = 0);
+    explicit SearchWindow(QStringList pathList, QList<Catalog> LoadItems, QWidget *parent = 0);
     ~SearchWindow();
 
     void loadFromFile(QString);

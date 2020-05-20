@@ -21,7 +21,8 @@ QString TextItem::getData(){
     return data;
 }
 
-void TextItem::setData(QString data){
+void TextItem::setData(QString data)
+{
     this->data = data;
 }
 

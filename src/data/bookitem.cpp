@@ -4,7 +4,8 @@
 #include <QDataStream>
 
 
-BookItem::BookItem(QString name) : QObject(0){
+BookItem::BookItem(QString name) : QObject(0)
+{
     this->name = name;
 }
 
@@ -48,11 +49,6 @@ void BookItem::insertData(QString source, QString newText){
 
 }
 
-void BookItem::insertDataFirst(QString newText)
-{
-    ListItem *tmp = new ListItem(newText);
-    items.insert(0,tmp);
-}
 
 void BookItem::putData(QString name)
 {
@@ -70,19 +66,31 @@ void BookItem::delItemById(int id)
     items.removeAt(id);
 }
 
-int BookItem::getItemsCount()
+void BookItem::up(int id)
 {
-    return items.size();
+    ListItem *tmp;
+    if(id > 0){
+            tmp = items[id];
+            items[id] = items[id - 1];
+            items[id - 1] = tmp;
+        }
 }
 
-void BookItem::exchange(int id)
+void BookItem::down(int id)
 {
+    ListItem *tmp;
     if(id < items.count() - 1){
         tmp = items[id];
         items[id] = items[id + 1];
         items[id + 1] = tmp;
     }
 }
+
+int BookItem::getItemsCount()
+{
+    return items.size();
+}
+
 
 QList<ListItem*> BookItem::getAllItems()
 {
