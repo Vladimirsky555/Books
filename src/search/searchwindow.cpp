@@ -3,8 +3,9 @@
 
 #include <QScrollBar>
 #include <QFontDialog>
+#include <QDebug>
 
-SearchWindow::SearchWindow(QStringList pathList, QList<Catalog> LoadItems, QWidget *parent) :
+SearchWindow::SearchWindow(QStringList catalogsNamesList, QStringList pathList, QList<Catalog*> catalogs, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SearchWindow)
 {
@@ -14,8 +15,12 @@ SearchWindow::SearchWindow(QStringList pathList, QList<Catalog> LoadItems, QWidg
     this->currentBook = NULL;
     this->currentList = NULL;
     this->currentText = NULL;
+
+    this->catalogs = catalogs;
+    this->catalogsNamesList = catalogsNamesList;
     this->pathList = pathList;
-    this->LoadItems = LoadItems;
+    tmpPathList = pathList;
+
 
     highlighter1 = new QRegexpHighlighter(this);
     highlighter1->setDocument(ui->edtText->document());
@@ -59,7 +64,7 @@ void SearchWindow::textFind()
     ui->edtSource->clear();
     ui->edtText->clear();
 
-    books.clear();
+    currentBooks.clear();
     searchItems.clear();
 
     ui->edtText->append("Режим исследования текстов!");
@@ -72,24 +77,24 @@ void SearchWindow::textFind()
 
     for(int k = 0; k < pathList.count(); k++){
 
-        for(int i = 0; i < LoadItems.size(); i++){
-            if(pathList[k] == LoadItems[i].path){
-                books = LoadItems[i].books;
+        for(int i = 0; i < catalogs.size(); i++){
+            if(pathList[k] == catalogs[i]->getPath()){
+                currentBooks = catalogs[i]->Books();
             }
         }
 
-        QString listItem = defineCurrentList(pathList[k]);
+        QString listItem = catalogsNamesList[k];
 
         int cnt = 0;
 
-        for(int l = 0; l < books.count(); l++){
-            currentBook = books[l];
+        for(int l = 0; l < currentBooks.count(); l++){
+            currentBook = currentBooks[l];
 
-            for(int i = 0; i < currentBook->getItemsCount(); i++){
-                currentList = currentBook->getItemById(i);
+            for(int i = 0; i < currentBook->chaptersCount(); i++){
+                currentList = currentBook->getChapterById(i);
 
                 for(int j = 0; j < currentList->getItemsCount(); j++){
-                    currentText = currentList->getItemById(j);
+                    currentText = currentList->getSectionById(j);
 
                     QRegExp rx(ui->edtSearch->text());
                     if(!checkRegExp(rx))return;
@@ -186,7 +191,7 @@ void SearchWindow::FindChapters()
     ui->lstResults->clear();
     ui->lstText->clear();
     searchItems.clear();
-    books.clear();
+    currentBooks.clear();
     ui->edtText->clear();
 
     ui->edtText->append("Режим исследования заголовков текстов!");
@@ -198,18 +203,19 @@ void SearchWindow::FindChapters()
 
     for(int k = 0; k < pathList.count(); k++){
 
-        for(int i = 0; i < LoadItems.size(); i++){
-            if(pathList[k] == LoadItems[i].path){
-                books = LoadItems[i].books;
+        for(int i = 0; i < catalogs.size(); i++){
+            if(pathList[k] == catalogs[i]->getPath()){
+                currentBooks = catalogs[i]->Books();
             }
         }
 
-        QString listItem = defineCurrentList(pathList[k]);
+        //QString listItem = defineCurrentList(pathList[k]);
+        QString listItem = catalogsNamesList[k];
 
         int cnt = 0;
 
-        for(int l = 0; l < books.count(); l++){
-            currentBook = books[l];
+        for(int l = 0; l < currentBooks.count(); l++){
+            currentBook = currentBooks[l];
 
             QRegExp rx(ui->edtSearch->text());
             if(!checkRegExp(rx))return;
@@ -234,8 +240,8 @@ void SearchWindow::FindChapters()
 
             cnt = 0;
 
-            for(int i = 0; i < currentBook->getItemsCount(); i++){
-                currentList = currentBook->getItemById(i);
+            for(int i = 0; i < currentBook->chaptersCount(); i++){
+                currentList = currentBook->getChapterById(i);
 
                 QRegExp rx(ui->edtSearch->text());
                 if(!checkRegExp(rx))return;
@@ -261,7 +267,7 @@ void SearchWindow::FindChapters()
                 cnt = 0;
 
                 for(int j = 0; j < currentList->getItemsCount(); j++){
-                    currentText = currentList->getItemById(j);
+                    currentText = currentList->getSectionById(j);
 
                     QRegExp rx(ui->edtSearch->text());
                     if(!checkRegExp(rx))return;
@@ -322,15 +328,15 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
         return;
     }
 
-        for(int i = 0; i < LoadItems.size(); i++){
-            if(LoadItems.at(i).path == searchItems.at(id).booksPath){
-                books = LoadItems.at(i).books;
+        for(int i = 0; i < catalogs.size(); i++){
+            if(catalogs[i]->getPath() == searchItems.at(id).booksPath){
+                currentBooks = catalogs[i]->Books();
             }
         }
 
         currentBook = getItemByName(searchItems[id].bookName);
-        currentList = currentBook->getItemByName(searchItems[id].bookChapter);
-        currentText = currentList->getItemByName(searchItems[id].bookSection);
+        currentList = currentBook->getChapterByName(searchItems[id].bookChapter);
+        currentText = currentList->getSectionByName(searchItems[id].bookSection);
 
         currentTxt = currentText->getData();
         ui->edtText->setHtml(currentTxt);
@@ -370,22 +376,21 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
 //Реализация выбора ресурса для поиска
 void SearchWindow::chooseResource()
 {
-    pathList.clear();
-    fillList();
+      pathList = tmpPathList;
 
-    widget_findchooser = new FindChooser(pathList);
+    widget_findchooser = new FindChooser(catalogsNamesList, pathList);
 
-    connect(widget_findchooser, SIGNAL(changeList(QList<QString>)),
-                 this, SLOT(changeList(QList<QString>)));
+    connect(widget_findchooser, SIGNAL(changeList(QList<QString>*)),
+                 this, SLOT(changeList(QList<QString>*)));
 
     widget_findchooser->exec();
 }
 
-void SearchWindow::changeList(QList<QString> list)
+void SearchWindow::changeList(QList<QString> *list)
 {
-    books.clear();
-    this->pathList.clear();
-    this->pathList = list;
+    currentBooks.clear();
+    pathList.clear();
+    pathList = *list;
 }
 
 void SearchWindow::on_edtSearch_returnPressed()
@@ -467,54 +472,16 @@ void SearchWindow::on_edtSearch_textChanged(const QString &arg1)
     highlighter1->rehighlight();
 }
 
-void SearchWindow::fillList()
-{
-    pathList.append(":/doc/basic.book");
-    pathList.append(":/doc/tribal_messianship.book");
-    pathList.append(":/doc/tfs.book");
-    pathList.append(":/doc/tfs_quotes.book");
-    pathList.append(":/doc/sw.book");
-    pathList.append(":/doc/other.book");
-    pathList.append(":/doc/tf_eng1.book");
-    pathList.append(":/doc/tf_eng2.book");
-    pathList.append(":/doc/bible.book");
-}
 
-
-QString SearchWindow::defineCurrentList(QString el)
-{
-    QString listItem;
-
-    if(el == ":/doc/basic.book"){
-        listItem = "Базовые книги";
-    }else if(el == ":/doc/tribal_messianship.book"){
-        listItem = "Родовое мессианство";
-    }else if(el == ":/doc/tfs.book"){
-        listItem = "Сборники речей";
-    }else if(el == ":/doc/tfs_quotes.book"){
-        listItem = "Сборники цитат";
-    }else if(el == ":/doc/sw.book"){
-        listItem = "О духовном мире";
-    }else if(el == ":/doc/other.book"){
-        listItem = "Прочие...";
-    }else if(el == ":/doc/tf_eng1.book"){
-        listItem = "True Father's Speech(1936-1986)";
-    }else if(el == ":/doc/tf_eng2.book"){
-        listItem = "True Father's Speech(1987-2006)";
-    }else if(el == ":/doc/bible.book"){
-        listItem = "Библия";
-    }
-
-    return listItem;
-}
 
 BookItem *SearchWindow::getItemByName(QString value)
 {
-    for(int i = 0; i < books.size(); i++){
-        if(books[i]->getName() == value){
-            return books[i];
+    for(int i = 0; i < currentBooks.size(); i++){
+        if(currentBooks[i]->getName() == value){
+            return currentBooks[i];
         }
     }
 
     return NULL;
 }
+

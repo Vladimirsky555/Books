@@ -7,24 +7,57 @@
 class BookItem;
 class ListItem;
 class TextItem;
+class Catalog;
+
+class Storage : QObject {
+public:
+    QList<Catalog*> catalogs;
+
+public:
+    Storage(){}
+};
 
 //Каталог книг, которому соответствует бинарный файл в ресурсах, поэтому load
 //Загружается при запуске программы
-class Catalog {
-public:
+class Catalog : QObject {
+private:
     QList<BookItem*> books;
+    QString name;
     QString path;
+//    bool newCatalog;
+
 
 public:
-    Catalog(){}
+    Catalog(QString name, QString path);
+
+    //User
+    QList<BookItem *> Books();
+    void setBook(QList<BookItem*> books);
+    BookItem* getBookById(int id);
+    BookItem *getBookByName(QString name);
+    QString getName();
+    void setCatalogName(QString name);
+    int booksCount();
+    QString getPath();
+    void setPath(QString path);
+
+    //Admin
+//    bool isNew();
+//    void setNew(bool flag);
+    void insertDataFirst(QString newText);
+    void insertData(QString source, QString newText);
+    void insertDataAtEnd(QString name);
+    void up(int id);
+    void down(int id);
+    void deleteBook(BookItem* book);
 };
 
 
 //Книга
 class BookItem : QObject{
 private:
-    QString name;
-    QList<ListItem*> items;
+    QString bookName;
+    QList<ListItem*> chapters;
 
 public:
     BookItem(QString);
@@ -32,31 +65,29 @@ public:
 
     //User
     QString getName();
-    ListItem* getItemById(int);
-    ListItem* getItemByName(QString value);
-    void putData(QString);
-    int getItemsCount();
-    QList<ListItem*> getAllItems();
-    void clearItems();
+    ListItem* getChapterById(int);
+    ListItem* getChapterByName(QString value);
+    int chaptersCount();
+   QList<ListItem *> getChapters();//Используется для вывода содержания
     QByteArray saveIt();
 
     //admin
-    void setName(QString);
-    void replaceData(QString,QString);
+    void insertDataFirst(QString newText);
     void insertData(QString,QString);
-    void delItem(ListItem*);
-    void delItemById(int);
+    void insertDataAtEnd(QString);
+    void setName(QString);
     void up(int id);
     void down(int id);
+    void deleteChapter(ListItem*);
+    void deleteChapterById(int);
 };
-
 
 
 //Главы книги
 class ListItem : QObject{
 private:
-    QString name;
-    QList<TextItem*> data;
+    QString chapterName;
+    QList<TextItem*> sections;
 
 public:
     ListItem(QString);
@@ -64,29 +95,28 @@ public:
 
     //user
     QString getName();
-    TextItem* getItemById(int);
-    TextItem* getItemByName(QString value);
-    void putData(QString);
+    TextItem* getSectionById(int);
+    TextItem* getSectionByName(QString value);
     int getItemsCount();
-    void clearData();
     QByteArray saveIt();
 
     //admin
+    void insertDataFirst(QString newText);
+    void insertData(QString source, QString newText);
+    void insertDataAtEnd(QString);
     void setName(QString);
-    void replaceData(QString,QString);
-    void insertData(QString,QString);
-    void delItem(TextItem*);
-    void delItemById(int);
     void up(TextItem*item);
     void down(TextItem*item);
+    void deleteSection(TextItem*item);
+    void deleteSectionById(int id);
 };
 
 
 //Разделы книги и текст
 class TextItem : QObject{
 private:
-    QString name;
-    QString data;
+    QString sectionName;
+    QString text;
 
 public:
     TextItem(QString);
@@ -100,7 +130,6 @@ public:
 
     //admin
     void setData(QString);
-
 };
 
 

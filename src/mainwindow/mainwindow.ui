@@ -44,10 +44,24 @@ p, li { white-space: pre-wrap; }
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QComboBox" name="cbxList"/>
+       <widget class="QComboBox" name="cbxCatalogs">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="cbxBooks"/>
+       <widget class="QComboBox" name="cbxBooks">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnR">
@@ -186,6 +200,7 @@ p, li { white-space: pre-wrap; }
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionCatalogsEditor"/>
    <addaction name="actionNotes"/>
    <addaction name="actionContent"/>
    <addaction name="actionSearch"/>
@@ -244,6 +259,15 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Экспорт</string>
+   </property>
+  </action>
+  <action name="actionCatalogsEditor">
+   <property name="icon">
+    <iconset resource="../../bin/images.qrc">
+     <normaloff>:/images/catalogs-editor.png</normaloff>:/images/catalogs-editor.png</iconset>
+   </property>
+   <property name="text">
+    <string>Редактирование каталогов</string>
    </property>
   </action>
  </widget>

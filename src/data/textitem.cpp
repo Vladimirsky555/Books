@@ -4,33 +4,38 @@
 #include <QDataStream>
 
 TextItem::TextItem(QString name) : QObject(0){
-    this->name = name;
-    this->data = "";
+    this->sectionName = name;
+    this->text = "";
 }
 
 TextItem::TextItem(QByteArray arr, QObject *parent) : QObject(parent){
     QDataStream reader(&arr, QIODevice::ReadOnly);
-    reader >> this->name >> this->data;
+    reader >> this->sectionName >> this->text;
 }
 
 QString TextItem::getName(){
-    return name;
+    return sectionName;
 }
 
 QString TextItem::getData(){
-    return data;
+    return text;
+}
+
+void TextItem::setName(QString name)
+{
+    this->sectionName = name;
 }
 
 void TextItem::setData(QString data)
 {
-    this->data = data;
+    this->text = data;
 }
 
 QByteArray TextItem::saveIt(){
     QByteArray arr;
     QDataStream writer(&arr, QIODevice::WriteOnly);
 
-    writer << this->name << this->data;
+    writer << this->sectionName << this->text;
 
     return arr;
 

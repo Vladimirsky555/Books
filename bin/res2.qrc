@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>doc/tfs.book</file>
-        <file>doc/tfs_quotes.book</file>
-        <file>doc/bible.book</file>
-    </qresource>
-</RCC>

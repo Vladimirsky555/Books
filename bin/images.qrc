@@ -17,5 +17,15 @@
         <file>images/search2.png</file>
         <file>images/export.png</file>
         <file>images/arrows.png</file>
+        <file>images/delete.png</file>
+        <file>images/down.png</file>
+        <file>images/edit-catalog.png</file>
+        <file>images/insert-at-the-end.png</file>
+        <file>images/insert-inside.png</file>
+        <file>images/insert-in-the-front.png</file>
+        <file>images/save-text.png</file>
+        <file>images/up.png</file>
+        <file>images/catalogs-editor.png</file>
+        <file>images/close.png</file>
     </qresource>
 </RCC>

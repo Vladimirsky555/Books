@@ -11,34 +11,42 @@
 #include "helpers/qregexphighlighter.h"
 #include "info/list.h"
 #include "info/info.h"
+#include "catalogEditor/catalogeditor.h"
+#include "catalogEditor/catalogseditor.h"
 
 namespace Ui {
 class MainWindow;
 }
 
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-    QList<Catalog> catalogs;//Массив каталогов, которые состоят из книг (загружается при запуске программы в цикле)
-    QList<BookItem*> books;//Массив книг каталога
+    Storage *s;
+    QList<BookItem*> currentBooks;//Массив книг каталога
     QStringList pathList;//Массив путей к каталогам
+    QStringList catalogNamesList;
 
+    Catalog *currentCatalog;
     BookItem* currentBook;
-    ListItem* currentList;
-    TextItem* currentText;
+    ListItem* currentChapter;
+    TextItem* currentSection;
 
+    //Переменные виджетов
     ItemInfoForm *widget_o;
     SearchWindow *search_window;
     List *widget_list;
+    CatalogsEditor *CatalogsEditor;
+
     QRegexpHighlighter *highlighter;
     QString title;
+
 
 public:
     MainWindow(QWidget *parent = 0);
     virtual ~MainWindow();
 
+    void refreshCatalogs();
     void refreshBooks();
     void refreshChapters();
     void refreshSections();
@@ -46,18 +54,17 @@ public:
     void setEnabledAll();
     ListItem* getItemByName(QString);
 
-    void loadFromFile(QString);
-
-    //Админ
-    void saveToFile();
-    void up(int id);
-    void down(int id);
+    //Чтение-запись в файл
+    void loadCatalogs();
+    void saveCatalogs();
+    void loadData(QString);
+    void saveData();
 
 private slots:    
     void setPattern(QString);
     void sendPattern(QString);
     void setAll(BookItem*bookName, ListItem*bookChapter, TextItem*bookSection, QString booksPath);
-    void on_cbxList_currentIndexChanged(int index);
+    void on_cbxCatalogs_currentIndexChanged(int index);
     void on_btnR_clicked();
     void on_lstChapters_clicked(const QModelIndex &index);
     void on_lstSections_clicked(const QModelIndex &index);
@@ -67,9 +74,10 @@ private slots:
     void on_actionSearch_triggered();
     void on_actionExport_triggered();
     void on_actionInfoDialog_triggered();
+    void on_actionCatalogsEditor_triggered();
 
     void on_edtPattern_textChanged(const QString &arg1);
-    void on_btnFont_clicked();   
+    void on_btnFont_clicked();
 
 signals:
     void shutdown();

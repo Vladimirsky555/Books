@@ -34,16 +34,19 @@ class SearchWindow : public QWidget
 {
     Q_OBJECT
 
-    QList<Catalog> LoadItems;//Массив каталогов книг
-    QList<BookItem*> books; //Массив книг в выбранном каталоге
+    QList<Catalog*> catalogs;//Массив каталогов книг
+    QStringList catalogsNamesList;
     QStringList pathList;//Список путей к каталогам
+    QStringList tmpPathList;
+
     QList<searchItem> searchItems; //Массив структур, формирующийся по результатам поиска
     QList<textItem> textItems;
 
+    QList<BookItem*> currentBooks; //Массив книг в выбранном каталоге
     BookItem* currentBook;
-    BookItem* tmp;
+//    BookItem* tmp;
     ListItem* currentList;
-    ListItem* tmpList;
+//    ListItem* tmpList;
     TextItem* currentText;
     QString currentTitle;
     QString currentTxt;
@@ -60,12 +63,12 @@ private:
     bool checkRegExp(QRegExp rx);
 
 public:
-    explicit SearchWindow(QStringList pathList, QList<Catalog> LoadItems, QWidget *parent = 0);
+    explicit SearchWindow(QStringList catalogsNamesList, QStringList pathList, QList<Catalog*> catalogs, QWidget *parent = 0);
     ~SearchWindow();
 
     void loadFromFile(QString);
-    void fillList();
-    QString defineCurrentList(QString el);
+//    void fillList();
+//    QString defineCurrentList(QString el);
     BookItem* getItemByName(QString);
     void textFind();
 
@@ -78,7 +81,7 @@ private slots:
 
     void on_edtSearch_textChanged(const QString &arg1);
     void on_lstResults_clicked(const QModelIndex &index);
-    void changeList(QList<QString>);
+    void changeList(QList<QString> *list);
     void chooseResource();
     void on_lstText_clicked(const QModelIndex &index);
     void chooseFont();

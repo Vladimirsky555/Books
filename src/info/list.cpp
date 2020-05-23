@@ -27,8 +27,8 @@ List::List(QString title, QList<ListItem*> items, QWidget *parent) :
 
         for(int j = 0; j < current->getItemsCount(); j++)
         {
-            if(current->getItemById(j)->getName() != "Вступление"){
-                ui->lstItems->append(current->getItemById(j)->getName());
+            if(current->getSectionById(j)->getName() != "Вступление"){
+                ui->lstItems->append(current->getSectionById(j)->getName());
             }
         }
     }

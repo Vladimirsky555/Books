@@ -21,25 +21,29 @@ INCLUDEPATH += $${_PRO_FILE_PWD_}/src
 win32: RC_ICONS = $$PWD/bin/images/book.ico
 
     RESOURCES       = \
-        bin/res1.qrc \
-        bin/res2.qrc \
-        bin/res3.qrc \
-        bin/res4.qrc \
         bin/images.qrc
 	
 	HEADERS  += src/mainwindow/mainwindow.h \
         src/application.h \
+        src/catalogEditor/catalogeditor.h \
+    src/catalogEditor/catalogseditor.h \
         src/data/datatypes.h \
+    src/dialog/catalogenter.h \
         src/diary/iteminfoform.h \        
         src/helpers/qregexphighlighter.h \
         src/search/searchwindow.h \
         src/search/listwidget.h \
         src/search/findchooser.h \
         src/info/list.h \
-        src/info/info.h
+        src/info/info.h \
+        src/dialog/nameenter.h
 
     SOURCES += src/main.cpp\
-       src/application.cpp \
+        src/application.cpp \
+        src/catalogEditor/catalogeditor.cpp \
+    src/catalogEditor/catalogseditor.cpp \
+    src/data/catalog.cpp \
+    src/dialog/catalogenter.cpp \
         src/mainwindow/mainwindow.cpp \
         src/data/bookitem.cpp \
         src/data/textitem.cpp \
@@ -51,13 +55,18 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         src/search/listwidget.cpp \
         src/search/findchooser.cpp \
         src/info/list.cpp \
-        src/info/info.cpp
+        src/info/info.cpp \
+        src/dialog/nameenter.cpp
 
     FORMS += src/mainwindow/mainwindow.ui \
+        src/catalogEditor/catalogeditor.ui \
+    src/catalogEditor/catalogseditor.ui \
+    src/dialog/catalogenter.ui \
         src/diary/iteminfoform.ui \        
         src/search/searchwindow.ui \
         src/search/listwidget.ui \
         src/search/findchooser.ui \
         src/info/list.ui \
-        src/info/info.ui
+        src/info/info.ui \
+        src/dialog/nameenter.ui
 
