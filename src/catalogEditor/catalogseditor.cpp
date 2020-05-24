@@ -40,8 +40,10 @@ CatalogsEditor::~CatalogsEditor()
 void CatalogsEditor::refresh()
 {
     ui->lstCatalogs->clear();
-    for(int i = 0; i < s->catalogs.count(); i++){
+    for(int i = 0; i < s->catalogs.count(); i++)
+    {
         ui->lstCatalogs->addItem(s->catalogs[i]->getName());
+         ui->lstCatalogs->item(i)->setIcon(QIcon(":/images/catalog.png"));
     }
 
     //При отсутствии элементов программа не запустится

@@ -362,6 +362,7 @@ void catalogEditor::refreshBooks()
     for(int i = 0; i < catalog->booksCount(); i++)
     {
         ui->lstBooks->addItem(catalog->getBookById(i)->getName());
+        ui->lstBooks->item(i)->setIcon(QIcon(":/images/book.png"));
     }
 
     ui->lstSections->clear();
@@ -374,6 +375,7 @@ void catalogEditor::refreshChapters(){
         for(int i = 0; i < currentBook->chaptersCount(); i++)
         {
             ui->lstChapters->addItem(currentBook->getChapterById(i)->getName());
+             ui->lstChapters->item(i)->setIcon(QIcon(":/images/chapter.png"));
         }
 
     ui->lstSections->clear();
@@ -387,6 +389,7 @@ void catalogEditor::refreshSections(){
     for(int i = 0; i < currentChapter->getItemsCount(); i++)
     {
         ui->lstSections->addItem(currentChapter->getSectionById(i)->getName());
+         ui->lstSections->item(i)->setIcon(QIcon(":/images/section.png"));
     }
 
     ui->edtText->clear();

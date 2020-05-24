@@ -157,8 +157,10 @@ void MainWindow::refreshBooks()
 void MainWindow::refreshChapters(){
     ui->lstChapters->clear();
 
-        for(int i = 0; i < currentBook->chaptersCount(); i++){
+        for(int i = 0; i < currentBook->chaptersCount(); i++)
+        {
             ui->lstChapters->addItem(currentBook->getChapterById(i)->getName());
+            ui->lstChapters->item(i)->setIcon(QIcon(":/images/chapter.png"));
         }
 
     ui->lstSections->clear();
@@ -169,8 +171,10 @@ void MainWindow::refreshChapters(){
 
 void MainWindow::refreshSections(){
     ui->lstSections->clear();
-    for(int i = 0; i < currentChapter->getItemsCount(); i++){
+    for(int i = 0; i < currentChapter->getItemsCount(); i++)
+    {
         ui->lstSections->addItem(currentChapter->getSectionById(i)->getName());
+         ui->lstSections->item(i)->setIcon(QIcon(":/images/section.png"));
     }
 
     ui->edtText->clear();

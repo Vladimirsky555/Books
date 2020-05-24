@@ -28,5 +28,9 @@
         <file>images/catalogs-editor.png</file>
         <file>images/close.png</file>
         <file>images/login-password.png</file>
+        <file>images/bible.png</file>
+        <file>images/catalog.png</file>
+        <file>images/chapter.png</file>
+        <file>images/section.png</file>
     </qresource>
 </RCC>
