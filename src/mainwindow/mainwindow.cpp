@@ -158,7 +158,7 @@ void MainWindow::refreshBooks()
 void MainWindow::refreshChapters(){
     ui->lstChapters->clear();
 
-        for(int i = 0; i < currentBook->chaptersCount(); i++)
+        for(int i = 0; i < currentBook->getCount(); i++)
         {
             ui->lstChapters->addItem(currentBook->getChapterById(i)->getName());
             ui->lstChapters->item(i)->setIcon(QIcon(":/images/chapter.png"));

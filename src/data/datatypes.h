@@ -76,9 +76,8 @@ public:
     QString getName();
     ListItem* getChapterById(int);
     ListItem* getChapterByName(QString value);
-    int chaptersCount();
+    int getCount();
    QList<ListItem *> getChapters();//Используется для вывода содержания
-   int getCount();
     QByteArray saveIt();
 
     //admin

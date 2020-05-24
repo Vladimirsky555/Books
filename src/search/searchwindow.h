@@ -13,6 +13,8 @@ namespace Ui {
 class SearchWindow;
 }
 
+class QAction;
+
 //Структура, формирующаяся по результатам поиска в одном цикле
 struct searchItem {
     QString booksCategory; //Категория
@@ -28,6 +30,7 @@ struct searchItem {
 //Структура, описывающая номер строки, в которой найдено искомое слово
 struct textItem {
     int id;
+    QString line;
 };
 
 class SearchWindow : public QWidget
@@ -50,6 +53,12 @@ class SearchWindow : public QWidget
     QString currentTitle;
     QString currentTxt;
 
+    QList<QAction*> listActions;
+    QAction *exportTextToFile;
+    QAction *exportTextToDisplay;
+//    QAction *exportBookToFile;
+//    QAction *exportBookToDisplay;
+
     //Переменные для подсветки
     QRegexpHighlighter *highlighter1;
     QRegexpHighlighter *highlighter2;
@@ -70,6 +79,7 @@ public:
 
 
 private slots:
+    void contextMenuRequsted(const QPoint &p);
     void shutdown();
 
     void findInCatalogs();//запускает textFindInCatalogs()
@@ -83,6 +93,12 @@ private slots:
     void selectedBooks(QList<BookItem*> selectedBooks);//список книг, результат из chooseFinder
     void on_lstText_clicked(const QModelIndex &index);
     void chooseFont();
+
+    void text_display_Export();
+    void text_file_Export();
+//    void book_display_Export();
+//    void book_file_Export();
+//    void all_Export();
 
 signals:
     void sendPattern(QString value);

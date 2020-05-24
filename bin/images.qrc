@@ -32,5 +32,7 @@
         <file>images/catalog.png</file>
         <file>images/chapter.png</file>
         <file>images/section.png</file>
+        <file>images/export-in-file.png</file>
+        <file>images/export-to-display.png</file>
     </qresource>
 </RCC>
