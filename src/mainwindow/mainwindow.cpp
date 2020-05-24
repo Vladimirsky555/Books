@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Грузим из файла названия каталогов и пути к ним
     loadCatalogs();
+
     ui->cbxCatalogs->addItems(catalogNamesList);
 
     //Загружаем все файлы, только один раз
@@ -78,9 +79,9 @@ void MainWindow::refreshCatalogs()
 
 
 //Чтение из файла
-void MainWindow::loadData(QString file){
+void MainWindow::loadData(QString path){
     currentBooks.clear();
-    QFile f(file);
+    QFile f(path);
     if(!f.exists()) return;
 
     f.open(QFile::ReadOnly);
@@ -276,7 +277,6 @@ void MainWindow::on_actionInfoDialog_triggered()
 
 void MainWindow::on_actionSearch_triggered()
 {
-//    search_window = new SearchWindow(catalogNamesList, pathList, s->catalogs);
     search_window = new SearchWindow(s);
 
     connect(search_window, SIGNAL(sendPattern(QString)),
