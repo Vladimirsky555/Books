@@ -17,7 +17,7 @@ void Catalog::setCatalogName(QString name)
     this->name = name;
 }
 
-int Catalog::booksCount()
+int Catalog::getCount()
 {
     return books.count();
 }

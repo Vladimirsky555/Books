@@ -33,7 +33,6 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         src/diary/iteminfoform.h \        
         src/helpers/qregexphighlighter.h \
         src/search/searchwindow.h \
-        src/search/listwidget.h \
         src/search/findchooser.h \
         src/info/list.h \
         src/info/info.h \
@@ -44,6 +43,7 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         src/catalogEditor/catalogeditor.cpp \
     src/catalogEditor/catalogseditor.cpp \
     src/data/catalog.cpp \
+    src/data/storage.cpp \
     src/dialog/catalogenter.cpp \
     src/dialog/logindialog.cpp \
         src/mainwindow/mainwindow.cpp \
@@ -54,7 +54,6 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         src/diary/iteminfoform.cpp \        
         src/helpers/qregexphighlighter.cpp \        
         src/search/searchwindow.cpp \
-        src/search/listwidget.cpp \
         src/search/findchooser.cpp \
         src/info/list.cpp \
         src/info/info.cpp \
@@ -67,7 +66,6 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
     src/dialog/logindialog.ui \
         src/diary/iteminfoform.ui \        
         src/search/searchwindow.ui \
-        src/search/listwidget.ui \
         src/search/findchooser.ui \
         src/info/list.ui \
         src/info/info.ui \

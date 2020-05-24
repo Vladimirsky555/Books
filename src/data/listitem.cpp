@@ -101,7 +101,7 @@ void ListItem::down(TextItem *item)
     return;
 }
 
-int ListItem::getItemsCount(){
+int ListItem::getCount(){
     return sections.size();
 }
 

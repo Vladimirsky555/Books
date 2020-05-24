@@ -4,7 +4,9 @@
 #include <QDialog>
 #include <QTimer>
 
-#include "search/listwidget.h"
+#include "data/datatypes.h"
+
+class QAction;
 
 namespace Ui {
 class FindChooser;
@@ -14,21 +16,27 @@ class FindChooser : public QDialog
 {
     Q_OBJECT
 
-    QStringList catalogsNamesList;
-    QStringList pathList;
-    QList<ListWidget*> widgets;
+    Storage *s;
+    Catalog *currentCatalog;
+    BookItem *currentBook;
+
+    QList<BookItem*> booksSource;
+    QList<BookItem*> booksDest;//сформированный список для поиска
 
 public:
-    FindChooser(QStringList catalogsNameList, QStringList pathList, QWidget *parent = 0);
+    FindChooser(Storage *s, QWidget *parent = 0);
     virtual ~FindChooser();
 
-    void reorderList();
-
-signals:
-    void changeList(QList<QString>*);
+    void refreshSource();
+    void refreshDest();
 
 private slots:
-    void ChooseList();
+    void on_lstSource_clicked(const QModelIndex &index);
+    void on_lstDest_clicked(const QModelIndex &index);
+    void chooseBooks();
+
+signals:
+    void choose(QList<BookItem*>);
 
 private:
     Ui::FindChooser *ui;

@@ -172,7 +172,7 @@ void MainWindow::refreshChapters(){
 
 void MainWindow::refreshSections(){
     ui->lstSections->clear();
-    for(int i = 0; i < currentChapter->getItemsCount(); i++)
+    for(int i = 0; i < currentChapter->getCount(); i++)
     {
         ui->lstSections->addItem(currentChapter->getSectionById(i)->getName());
          ui->lstSections->item(i)->setIcon(QIcon(":/images/section.png"));
@@ -276,7 +276,8 @@ void MainWindow::on_actionInfoDialog_triggered()
 
 void MainWindow::on_actionSearch_triggered()
 {
-    search_window = new SearchWindow(catalogNamesList, pathList, s->catalogs);
+//    search_window = new SearchWindow(catalogNamesList, pathList, s->catalogs);
+    search_window = new SearchWindow(s);
 
     connect(search_window, SIGNAL(sendPattern(QString)),
             this, SLOT(setPattern(QString)));

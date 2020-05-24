@@ -1,24 +1,40 @@
 #include "findchooser.h"
 #include "ui_findchooser.h"
 
-#include <QPushButton>
 #include <QMessageBox>
+#include <QAction>
 #include <QDebug>
 
-#include "search/listwidget.h"
 
-FindChooser::FindChooser(QStringList catalogsNameList, QStringList pathList, QWidget *parent) :
+FindChooser::FindChooser(Storage *s, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::FindChooser)
 {
     ui->setupUi(this);
 
+    this->s = s;
+
+    ui->btnOk->setEnabled(false);
+
     setWindowTitle("Выбор ресурсов для поиска");
 
-    this->catalogsNamesList = catalogsNameList;
-    this->pathList = pathList;
+        ui->btnOk->setDefaultAction(ui->actionChoose);//привязали к toolbutton
+          connect(ui->actionChoose, SIGNAL(triggered()),
+                      this, SLOT(chooseBooks()));
 
-    reorderList();
+    int count = 0;
+    for( int i = 0; i < s->getCount(); i++){
+
+        currentCatalog = s->catalogs[i];
+        for(int j = 0; j < currentCatalog->getCount(); j++){
+
+            currentBook = currentCatalog->getBookById(j);
+            booksSource.append(currentBook);
+            ui->lstSource->addItem(currentBook->getName());
+            ui->lstSource->item(count)->setIcon(QIcon(":/images/book.png"));
+            count++;
+        }
+    }
 }
 
 FindChooser::~FindChooser()
@@ -26,64 +42,52 @@ FindChooser::~FindChooser()
     delete ui;
 }
 
-void FindChooser::reorderList()
+void FindChooser::refreshSource()
 {
-    int maxY = ui->listWidget->height() + 10;
-    widgets.clear();
-
-    for(int i = 0; i < pathList.size(); i++)
-    {
-        ListWidget *l = new ListWidget(this);
-
-        l->setIsRight(false);
-        l->setText(catalogsNamesList[i]);
-
-        widgets.append(l);
-
-        l->setGeometry(l->x(),maxY,l->width(), l->height());
-        maxY += l->height() - 15;
-        l->show();
+    ui->lstSource->clear();
+    for(int i = 0; i < booksSource.count(); i++){
+        ui->lstSource->addItem(booksSource[i]->getName());
+        ui->lstSource->item(i)->setIcon(QIcon(":/images/book.png"));
     }
-
-
-    QPushButton *b = new QPushButton(this);
-    b->setGeometry(b->x()+8, maxY + 14, b->width(), b->height());
-    b->setText("Выбор");
-    b->setFont(QFont ("MS Shell Dlg 2", 12));
-
-    connect(b, SIGNAL(clicked(bool)),
-            this, SLOT(ChooseList()));
-
-    b->show();
 }
 
-void FindChooser::ChooseList()
+void FindChooser::refreshDest()
 {
-    QList<QString> tmp;
-
-    for(int i = 0; i < widgets.size(); i++){
-        if(widgets[i]->getIsRight()){
-            tmp.append(pathList[i]);
-        }
+    ui->lstDest->clear();
+    for(int i = 0; i < booksDest.count(); i++){
+        ui->lstDest->addItem(booksDest[i]->getName());
+        ui->lstDest->item(i)->setIcon(QIcon(":/images/reading.png"));
     }
-
-     emit changeList(&tmp);
-
-    for(int i = 0; i < tmp.size(); i++)
-    {
-        ui->listWidget->addItem(catalogsNamesList[i]);
-    }
-
-     widgets.clear();
-
-     QMessageBox box;
-     box.setText("Поиск будет осуществляться только в выбранных ресурсах");
-     box.exec();
-
-     close();
 }
 
 
+void FindChooser::chooseBooks()
+{
+    emit choose(booksDest);
+    close();
+}
+
+void FindChooser::on_lstSource_clicked(const QModelIndex &index)
+{
+    ui->btnOk->setEnabled(true);
+
+    QString name = ui->lstSource->item(index.row())->text();
+    currentBook = s->getBookByName(name);
+    booksDest.append(currentBook);
+    booksSource.removeOne(currentBook);
+
+    refreshDest();
+    refreshSource();
+}
 
 
+void FindChooser::on_lstDest_clicked(const QModelIndex &index)
+{
+    QString name = ui->lstDest->item(index.row())->text();
+    currentBook = s->getBookByName(name);
+    booksDest.removeOne(currentBook);
+    booksSource.append(currentBook);
 
+    refreshSource();
+    refreshDest();
+}

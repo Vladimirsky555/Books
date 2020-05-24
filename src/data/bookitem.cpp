@@ -92,6 +92,11 @@ QList<ListItem *> BookItem::getChapters()
     return this->chapters;
 }
 
+int BookItem::getCount()
+{
+    return chapters.count();
+}
+
 
 ListItem *BookItem::getChapterByName(QString value)
 {

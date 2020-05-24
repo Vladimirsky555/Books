@@ -14,7 +14,16 @@ public:
     QList<Catalog*> catalogs;
 
 public:
-    Storage(){}
+    Storage();
+
+    Catalog* getCatalogById(int id);
+    BookItem* getBookByName(QString name);
+//    QString getNameById(int id);
+//    QString getPathById(int id);
+    QList<Catalog*> Catalogs();
+    QStringList getPathList();
+    QStringList getNameList();
+    int getCount();
 };
 
 //Каталог книг, которому соответствует бинарный файл в ресурсах, поэтому load
@@ -37,7 +46,7 @@ public:
     BookItem *getBookByName(QString name);
     QString getName();
     void setCatalogName(QString name);
-    int booksCount();
+    int getCount();
     QString getPath();
     void setPath(QString path);
 
@@ -69,6 +78,7 @@ public:
     ListItem* getChapterByName(QString value);
     int chaptersCount();
    QList<ListItem *> getChapters();//Используется для вывода содержания
+   int getCount();
     QByteArray saveIt();
 
     //admin
@@ -97,7 +107,7 @@ public:
     QString getName();
     TextItem* getSectionById(int);
     TextItem* getSectionByName(QString value);
-    int getItemsCount();
+    int getCount();
     QByteArray saveIt();
 
     //admin

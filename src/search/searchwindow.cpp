@@ -5,7 +5,7 @@
 #include <QFontDialog>
 #include <QDebug>
 
-SearchWindow::SearchWindow(QStringList catalogsNamesList, QStringList pathList, QList<Catalog*> catalogs, QWidget *parent) :
+SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SearchWindow)
 {
@@ -13,14 +13,13 @@ SearchWindow::SearchWindow(QStringList catalogsNamesList, QStringList pathList, 
     setWindowTitle("Поисковик");
 
     this->currentBook = NULL;
-    this->currentList = NULL;
-    this->currentText = NULL;
+    this->currentChapter = NULL;
+    this->currentSection = NULL;
 
-    this->catalogs = catalogs;
-    this->catalogsNamesList = catalogsNamesList;
-    this->pathList = pathList;
-    tmpPathList = pathList;
-
+    this->s = s;
+    isBook = false;
+    this->catalogsNamesList = s->getNameList();
+    this->pathList = s->getPathList();
 
     highlighter1 = new QRegexpHighlighter(this);
     highlighter1->setDocument(ui->edtText->document());
@@ -31,13 +30,17 @@ SearchWindow::SearchWindow(QStringList catalogsNamesList, QStringList pathList, 
     ui->edtSource->setEnabled(false);
     ui->lstResults->setEnabled(false);
     ui->lstText->setEnabled(false);
+    ui->actionFindInSelectedBooks->setEnabled(false);
 
     //Подключим ко всем toolButton экшены
     ui->btnFind->setDefaultAction(ui->actionFind);
-    connect(ui->actionFind, SIGNAL(triggered()), this, SLOT(FindTexts()));
+    connect(ui->actionFind, SIGNAL(triggered()), this, SLOT(findInCatalogs()));
+
+    ui->btnFindInSelectedBooks->setDefaultAction(ui->actionFindInSelectedBooks);
+    connect(ui->actionFindInSelectedBooks, SIGNAL(triggered()), this, SLOT(findInBooks()));
 
     ui->btnFindChapters->setDefaultAction(ui->actionFindChapters);
-    connect(ui->actionFindChapters, SIGNAL(triggered()), this, SLOT(FindChapters()));
+    connect(ui->actionFindChapters, SIGNAL(triggered()), this, SLOT(findInChapters()));
 
     ui->btnChoose->setDefaultAction(ui->actionChoose);
     connect(ui->actionChoose, SIGNAL(triggered()), this, SLOT(chooseResource()));
@@ -52,7 +55,7 @@ SearchWindow::~SearchWindow()
 }
 
 
-void SearchWindow::textFind()
+void SearchWindow::textFindInCatalogs()
 {
     emit sendPattern(ui->edtSearch->text());
 
@@ -75,11 +78,11 @@ void SearchWindow::textFind()
     int c = 0;
     int n = 0;
 
-    for(int k = 0; k < pathList.count(); k++){
+    for(int k = 0; k < s->getCount(); k++){
 
-        for(int i = 0; i < catalogs.size(); i++){
-            if(pathList[k] == catalogs[i]->getPath()){
-                currentBooks = catalogs[i]->Books();
+        for(int i = 0; i < s->catalogs.size(); i++){
+            if(pathList[k] == s->catalogs[i]->getPath()){
+                currentBooks = s->catalogs[i]->Books();
             }
         }
 
@@ -91,15 +94,15 @@ void SearchWindow::textFind()
             currentBook = currentBooks[l];
 
             for(int i = 0; i < currentBook->chaptersCount(); i++){
-                currentList = currentBook->getChapterById(i);
+                currentChapter = currentBook->getChapterById(i);
 
-                for(int j = 0; j < currentList->getItemsCount(); j++){
-                    currentText = currentList->getSectionById(j);
+                for(int j = 0; j < currentChapter->getCount(); j++){
+                    currentSection = currentChapter->getSectionById(j);
 
                     QRegExp rx(ui->edtSearch->text());
                     if(!checkRegExp(rx))return;
                     int pos = 0;
-                    while((pos = rx.indexIn(currentText->getData(), pos)) != -1){
+                    while((pos = rx.indexIn(currentSection->getData(), pos)) != -1){
                         pos += rx.matchedLength();
                         c++;
                         cnt++;
@@ -110,8 +113,8 @@ void SearchWindow::textFind()
                         searchItem s;
                         s.booksCategory = listItem;
                         s.bookName = currentBook->getName();
-                        s.bookChapter = currentList->getName();
-                        s.bookSection = currentText->getName();
+                        s.bookChapter = currentChapter->getName();
+                        s.bookSection = currentSection->getName();
                         s.searchPhrase = ui->edtSearch->text();
                         s.booksPath = pathList[k];
                         s.num = cnt;
@@ -162,6 +165,111 @@ void SearchWindow::textFind()
     ui->edtText->append("Поиск завершен!");
 }
 
+void SearchWindow::findInBooks()
+{
+    emit sendPattern(ui->edtSearch->text());
+
+    ui->edtText->setEnabled(true);
+    ui->edtSource->setEnabled(true);
+    ui->label->setEnabled(true);
+    ui->lstResults->setEnabled(true);
+    ui->lstResults->clear();
+    ui->edtSource->clear();
+    ui->edtText->clear();
+
+    currentBooks.clear();
+    searchItems.clear();
+
+    ui->edtText->append("Режим исследования текстов!");
+    ui->edtText->append("");
+    ui->edtText->append("В квадратных скобках - число, указывающее на то, "
+                        "сколько раз в тексте встретились слово или фраза.");
+
+    int c = 0;
+    int n = 0;
+    int cnt = 0;
+
+    for(int l = 0; l < booksList.count(); l++){
+        currentBook = booksList[l];
+
+        for(int i = 0; i < currentBook->chaptersCount(); i++){
+            currentChapter = currentBook->getChapterById(i);
+
+            for(int j = 0; j < currentChapter->getCount(); j++){
+                currentSection = currentChapter->getSectionById(j);
+
+                QRegExp rx(ui->edtSearch->text());
+                if(!checkRegExp(rx))return;
+                int pos = 0;
+                while((pos = rx.indexIn(currentSection->getData(), pos)) != -1){
+                    pos += rx.matchedLength();
+                    c++;
+                    cnt++;
+                }
+
+
+                    if(cnt != 0){
+                        searchItem s;
+                        s.booksCategory = "";
+                        s.bookName = currentBook->getName();
+                        s.bookChapter = currentChapter->getName();
+                        s.bookSection = currentSection->getName();
+                        s.searchPhrase = ui->edtSearch->text();
+                        s.booksPath = "";
+                        s.num = cnt;
+                        searchItems.append(s);
+                    }
+                    cnt = 0;
+                }
+            }
+        }
+
+    //Cортировка
+    for(int i = 0; i < searchItems.count(); i++)
+    {
+        for(int j = 0; j < searchItems.count() - 1; j++)
+        {
+            if(searchItems[j].num < searchItems[j + 1].num)
+            {
+                searchItem tmp = searchItems[j];
+                searchItems[j] = searchItems[j + 1];
+                searchItems[j + 1] = tmp;
+            }
+        }
+    }
+
+    //Отображение списка результатов в нижнем виджете
+    for(int i = 0; i < searchItems.size(); i++){
+        n++;
+        searchItems[i].n = n;
+        ui->lstResults->addItem(QString::number(n) + ": " + //Порядковый номер
+                                "[" + QString::number(searchItems[i].num) + "] " + //Число совпадений в тексте
+                                searchItems[i].booksCategory + ", " + searchItems[i].bookName + ", " +
+                                searchItems[i].bookChapter + ", " + searchItems[i].bookSection);
+        ui->lstResults->item(i)->setIcon(QIcon(":/images/search_.png"));
+    }
+
+    //Отображение информации о результатах в конце списка нижнего виджета
+    ui->lstResults->addItem(" ");
+    ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
+                            ui->edtSearch->text() + "\"" + " в " + QString::number(n) + " текстах");
+    ui->lstResults->addItem("Поиск завершен!");
+
+    //Отображение информации о результатах в окне поиска
+    ui->edtText->append(" ");
+    ui->edtText->append(" ");
+    ui->edtText->append(QString::number(c) + " повторений фразы (слова) " + "\"" +
+                                        ui->edtSearch->text() + "\" в "  + QString::number(n) + " текстах списка книг:");
+    ui->edtText->append(" ");
+
+    for(int i = 0; i < booksList.count(); i++){
+        ui->edtText->append(QString::number(i+1) + ": " + booksList[i]->getName());
+    }
+
+    ui->edtText->append(" ");
+    ui->edtText->append("Поиск завершен!");
+}
+
 //Функция, закрывающая окно поиска, если закрыть главное окно
 void SearchWindow::shutdown()
 {
@@ -169,14 +277,17 @@ void SearchWindow::shutdown()
 }
 
 //Реализация поиска
-void SearchWindow::FindTexts()
+void SearchWindow::findInCatalogs()
 {
     ui->lstText->clear();
+    isBook = false;
+//    ui->btnFindInSelectedBooks->setEnabled(false);
     ui->btnFont->setEnabled(true);
-    textFind();
+
+    textFindInCatalogs();
 }
 
-void SearchWindow::FindChapters()
+void SearchWindow::findInChapters()
 {
     emit sendPattern(ui->edtSearch->text());
 
@@ -188,6 +299,7 @@ void SearchWindow::FindChapters()
     ui->label->setEnabled(false);
     ui->lstResults->setEnabled(false);
     ui->lstText->setEnabled(false);
+
     ui->lstResults->clear();
     ui->lstText->clear();
     searchItems.clear();
@@ -203,13 +315,12 @@ void SearchWindow::FindChapters()
 
     for(int k = 0; k < pathList.count(); k++){
 
-        for(int i = 0; i < catalogs.size(); i++){
-            if(pathList[k] == catalogs[i]->getPath()){
-                currentBooks = catalogs[i]->Books();
+        for(int i = 0; i < s->catalogs.size(); i++){
+            if(pathList[k] == s->catalogs[i]->getPath()){
+                currentBooks = s->catalogs[i]->Books();
             }
         }
 
-        //QString listItem = defineCurrentList(pathList[k]);
         QString listItem = catalogsNamesList[k];
 
         int cnt = 0;
@@ -241,12 +352,12 @@ void SearchWindow::FindChapters()
             cnt = 0;
 
             for(int i = 0; i < currentBook->chaptersCount(); i++){
-                currentList = currentBook->getChapterById(i);
+                currentChapter = currentBook->getChapterById(i);
 
                 QRegExp rx(ui->edtSearch->text());
                 if(!checkRegExp(rx))return;
                 int pos = 0;
-                while((pos = rx.indexIn(currentList->getName(), pos)) != -1){
+                while((pos = rx.indexIn(currentChapter->getName(), pos)) != -1){
                     pos += rx.matchedLength();
                     c++;
                     cnt++;
@@ -256,7 +367,7 @@ void SearchWindow::FindChapters()
                     searchItem s;
                     s.booksCategory = listItem;
                     s.bookName = currentBook->getName();
-                    s.bookChapter = currentList->getName();;
+                    s.bookChapter = currentChapter->getName();;
                     s.bookSection = "";
                     s.searchPhrase = ui->edtSearch->text();
                     s.booksPath = pathList[k];
@@ -266,13 +377,13 @@ void SearchWindow::FindChapters()
 
                 cnt = 0;
 
-                for(int j = 0; j < currentList->getItemsCount(); j++){
-                    currentText = currentList->getSectionById(j);
+                for(int j = 0; j < currentChapter->getCount(); j++){
+                    currentSection = currentChapter->getSectionById(j);
 
                     QRegExp rx(ui->edtSearch->text());
                     if(!checkRegExp(rx))return;
                     int pos = 0;
-                    while((pos = rx.indexIn(currentText->getName(), pos)) != -1){
+                    while((pos = rx.indexIn(currentSection->getName(), pos)) != -1){
                         pos += rx.matchedLength();
                         c++;
                         cnt++;
@@ -282,8 +393,8 @@ void SearchWindow::FindChapters()
                         searchItem s;
                         s.booksCategory = listItem;
                         s.bookName = currentBook->getName();
-                        s.bookChapter = currentList->getName();
-                        s.bookSection = currentText->getName();
+                        s.bookChapter = currentChapter->getName();
+                        s.bookSection = currentSection->getName();
                         s.searchPhrase = ui->edtSearch->text();
                         s.booksPath = pathList[k];
                         s.num = cnt;
@@ -323,22 +434,24 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
     textItems.clear();
     int id = index.row();
 
-    if(index.row() >= searchItems.size()){
+    if(id >= searchItems.size()){
         QMessageBox::information(this, "Информация!", "Спасибо!");
         return;
     }
 
-        for(int i = 0; i < catalogs.size(); i++){
-            if(catalogs[i]->getPath() == searchItems.at(id).booksPath){
-                currentBooks = catalogs[i]->Books();
+    if(!isBook){
+        for(int i = 0; i < s->catalogs.size(); i++){
+            if(s->catalogs[i]->getPath() == searchItems.at(id).booksPath){
+                currentBooks = s->catalogs[i]->Books();
             }
         }
+    }
 
-        currentBook = getItemByName(searchItems[id].bookName);
-        currentList = currentBook->getChapterByName(searchItems[id].bookChapter);
-        currentText = currentList->getSectionByName(searchItems[id].bookSection);
-
-        currentTxt = currentText->getData();
+//        currentBook = getItemByName(searchItems[id].bookName);
+        currentBook = s->getBookByName(searchItems[id].bookName);
+        currentChapter = currentBook->getChapterByName(searchItems[id].bookChapter);
+        currentSection = currentChapter->getSectionByName(searchItems[id].bookSection);
+        currentTxt = currentSection->getData();
         ui->edtText->setHtml(currentTxt);
 
         //Вводим переменную, считающую сколько раз встречается слово в строке
@@ -362,11 +475,10 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
         }
 
     //Отправляем в главное окно результаты поиска по клику для синхронизации
-    emit sendAll(currentBook,currentList,currentText,searchItems[id].booksPath);
+    emit sendAll(currentBook,currentChapter,currentSection,searchItems[id].booksPath);
 
     //Выводим всю информацию об источнике искомой фразы
-    ui->edtSource->setText(searchItems[id].booksCategory + ", " +
-                                          searchItems[id].bookName + ", " +
+    ui->edtSource->setText(searchItems[id].bookName + ", " +
                                          searchItems[id].bookChapter + ", " +
                                          searchItems[id].bookSection);
 
@@ -376,27 +488,25 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
 //Реализация выбора ресурса для поиска
 void SearchWindow::chooseResource()
 {
-      pathList = tmpPathList;
+    widget_findchooser = new FindChooser(s);
 
-    widget_findchooser = new FindChooser(catalogsNamesList, pathList);
-
-    connect(widget_findchooser, SIGNAL(changeList(QList<QString>*)),
-                 this, SLOT(changeList(QList<QString>*)));
+    connect(widget_findchooser, SIGNAL(choose(QList<BookItem*>)),
+            this, SLOT(selectedBooks(QList<BookItem*>)));
 
     widget_findchooser->exec();
 }
 
-void SearchWindow::changeList(QList<QString> *list)
+void SearchWindow::selectedBooks(QList<BookItem *> selectedBooks)
 {
-    currentBooks.clear();
-    pathList.clear();
-    pathList = *list;
+    ui->actionFindInSelectedBooks->setEnabled(true);
+    isBook = true;//режим поиска книг
+    this->booksList = selectedBooks;
 }
 
 void SearchWindow::on_edtSearch_returnPressed()
 {
     ui->lstText->clear();
-    textFind();
+    textFindInCatalogs();
 }
 
 void SearchWindow::on_lstText_clicked(const QModelIndex &index)
@@ -472,16 +582,4 @@ void SearchWindow::on_edtSearch_textChanged(const QString &arg1)
     highlighter1->rehighlight();
 }
 
-
-
-BookItem *SearchWindow::getItemByName(QString value)
-{
-    for(int i = 0; i < currentBooks.size(); i++){
-        if(currentBooks[i]->getName() == value){
-            return currentBooks[i];
-        }
-    }
-
-    return NULL;
-}
 

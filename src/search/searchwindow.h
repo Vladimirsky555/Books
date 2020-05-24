@@ -34,18 +34,19 @@ class SearchWindow : public QWidget
 {
     Q_OBJECT
 
-    QList<Catalog*> catalogs;//Массив каталогов книг
+    Storage *s;
     QStringList catalogsNamesList;
-    QStringList pathList;//Список путей к каталогам
-    QStringList tmpPathList;
+    QStringList pathList;
+
+    QList<BookItem*> booksList;//для поиска по книгам или в отдельной книге
 
     QList<searchItem> searchItems; //Массив структур, формирующийся по результатам поиска
     QList<textItem> textItems;
 
     QList<BookItem*> currentBooks; //Массив книг в выбранном каталоге
     BookItem* currentBook;
-    ListItem* currentList;
-    TextItem* currentText;
+    ListItem* currentChapter;
+    TextItem* currentSection;
     QString currentTitle;
     QString currentTxt;
 
@@ -54,30 +55,32 @@ class SearchWindow : public QWidget
     QRegexpHighlighter *highlighter2;
 
     FindChooser *widget_findchooser;
+    bool isBook;
     Ui::SearchWindow *ui;
 
 private:
     bool checkRegExp(QRegExp rx);
 
 public:
-    explicit SearchWindow(QStringList catalogsNamesList, QStringList pathList, QList<Catalog*> catalogs, QWidget *parent = 0);
+    explicit SearchWindow(Storage *s, QWidget *parent = 0);
     ~SearchWindow();
 
     void loadFromFile(QString);
-    BookItem* getItemByName(QString);
-    void textFind();
+    void textFindInCatalogs();
+
 
 private slots:
     void shutdown();
 
-    void FindTexts();
+    void findInCatalogs();//запускает textFindInCatalogs()
     void on_edtSearch_returnPressed();
-    void FindChapters();
+    void findInChapters();//экшен, привязанный к toolButton
+    void findInBooks();//Поиск по книгам, полученным из класса FindChooser
 
     void on_edtSearch_textChanged(const QString &arg1);
     void on_lstResults_clicked(const QModelIndex &index);
-    void changeList(QList<QString> *list);
-    void chooseResource();
+    void chooseResource();//вызов chooseFinder
+    void selectedBooks(QList<BookItem*> selectedBooks);//список книг, результат из chooseFinder
     void on_lstText_clicked(const QModelIndex &index);
     void chooseFont();
 
