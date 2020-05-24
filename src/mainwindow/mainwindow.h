@@ -13,6 +13,8 @@
 #include "info/info.h"
 #include "catalogEditor/catalogeditor.h"
 #include "catalogEditor/catalogseditor.h"
+#include "dialog/logindialog.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -37,6 +39,7 @@ class MainWindow : public QMainWindow
     SearchWindow *search_window;
     List *widget_list;
     CatalogsEditor *CatalogsEditor;
+    LoginDialog login;
 
     QRegexpHighlighter *highlighter;
     QString title;
@@ -78,6 +81,8 @@ private slots:
 
     void on_edtPattern_textChanged(const QString &arg1);
     void on_btnFont_clicked();
+
+    void on_actionAuthorization_triggered();
 
 signals:
     void shutdown();

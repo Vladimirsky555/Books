@@ -44,9 +44,7 @@ class SearchWindow : public QWidget
 
     QList<BookItem*> currentBooks; //Массив книг в выбранном каталоге
     BookItem* currentBook;
-//    BookItem* tmp;
     ListItem* currentList;
-//    ListItem* tmpList;
     TextItem* currentText;
     QString currentTitle;
     QString currentTxt;
@@ -56,7 +54,6 @@ class SearchWindow : public QWidget
     QRegexpHighlighter *highlighter2;
 
     FindChooser *widget_findchooser;
-
     Ui::SearchWindow *ui;
 
 private:
@@ -67,8 +64,6 @@ public:
     ~SearchWindow();
 
     void loadFromFile(QString);
-//    void fillList();
-//    QString defineCurrentList(QString el);
     BookItem* getItemByName(QString);
     void textFind();
 

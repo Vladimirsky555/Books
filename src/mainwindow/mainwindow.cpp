@@ -7,7 +7,6 @@
 #include <QFontDialog>
 #include <QFile>
 #include <QRegExp>
-#include <QDebug>
 
 //Конструктор-деструктор
 MainWindow::MainWindow(QWidget *parent) :
@@ -25,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent) :
     title = " ";
 
     setWindowTitle("Книги");
+
+    ui->actionCatalogsEditor->setEnabled(false);
 
     //Грузим из файла названия каталогов и пути к ним
     loadCatalogs();
@@ -58,8 +59,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    saveCatalogs();
-    saveData();
+    if(login.getIsLogined()){
+        saveCatalogs();
+        saveData();
+    }
     delete ui;
 }
 
@@ -200,7 +203,6 @@ void MainWindow::on_lstChapters_clicked(const QModelIndex &index)
 }
 
 
-
 void MainWindow::on_lstSections_clicked(const QModelIndex &index)
 {
     ui->edtPattern->setEnabled(true);
@@ -284,7 +286,6 @@ void MainWindow::on_actionSearch_triggered()
 }
 
 
-
 void MainWindow::on_btnFont_clicked()
 {
     bool ok;
@@ -310,7 +311,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
 }
 
-
 //Экспорт названия книги, заголовка и текста в файл
 void MainWindow::on_actionExport_triggered()
 {
@@ -333,7 +333,6 @@ void MainWindow::on_actionExport_triggered()
 
     file.close();
 }
-
 
 //Запись в файл
 void MainWindow::saveData()
@@ -388,7 +387,6 @@ void MainWindow::saveCatalogs()
     f.close();
 }
 
-
 void MainWindow::on_actionCatalogsEditor_triggered()
 {
     CatalogsEditor = CatalogsEditor::Current(s);
@@ -399,3 +397,12 @@ void MainWindow::on_actionCatalogsEditor_triggered()
     CatalogsEditor->show();
 }
 
+void MainWindow::on_actionAuthorization_triggered()
+{
+    login.exec();
+
+    if(login.getIsLogined())
+    {
+        ui->actionCatalogsEditor->setEnabled(true);
+    }
+}

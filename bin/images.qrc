@@ -27,5 +27,6 @@
         <file>images/up.png</file>
         <file>images/catalogs-editor.png</file>
         <file>images/close.png</file>
+        <file>images/login-password.png</file>
     </qresource>
 </RCC>

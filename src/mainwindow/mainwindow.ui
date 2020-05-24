@@ -200,6 +200,7 @@ p, li { white-space: pre-wrap; }
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="actionAuthorization"/>
    <addaction name="actionCatalogsEditor"/>
    <addaction name="actionNotes"/>
    <addaction name="actionContent"/>
@@ -268,6 +269,21 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Редактирование каталогов</string>
+   </property>
+  </action>
+  <action name="actionAuthorization">
+   <property name="icon">
+    <iconset resource="../../bin/images.qrc">
+     <normaloff>:/images/login-password.png</normaloff>:/images/login-password.png</iconset>
+   </property>
+   <property name="text">
+    <string>Авторизация</string>
+   </property>
+   <property name="toolTip">
+    <string>Авторизация</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>
