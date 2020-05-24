@@ -21,7 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
     currentChapter = NULL;
     currentSection = NULL;
 
-    title = " ";
+    this->title = " ";
+    this->admin = false;
 
     setWindowTitle("Книги");
 
@@ -403,10 +404,23 @@ void MainWindow::on_actionCatalogsEditor_triggered()
 
 void MainWindow::on_actionAuthorization_triggered()
 {
+    if(admin){
+        QMessageBox::information(this, "Сообщение!", "Вы уже авторизированы!");
+        return;
+    }
+
     login.exec();
 
     if(login.getIsLogined())
     {
         ui->actionCatalogsEditor->setEnabled(true);
+        admin = true;
+
+        CatalogsEditor = CatalogsEditor::Current(s);
+
+        connect(this, SIGNAL(shutdown()),
+                CatalogsEditor, SLOT(shutdown()));
+
+        CatalogsEditor->show();
     }
 }

@@ -14,6 +14,8 @@ LoginDialog::LoginDialog(QWidget *parent) :
     this->login = "";
     this->password = "";
     this->isLogined = false;
+
+    ui->edtPassword->setEchoMode(QLineEdit::Password);
 }
 
 LoginDialog::~LoginDialog()

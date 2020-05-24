@@ -44,6 +44,8 @@ class MainWindow : public QMainWindow
     QRegexpHighlighter *highlighter;
     QString title;
 
+    bool admin;
+
 
 public:
     MainWindow(QWidget *parent = 0);
@@ -78,11 +80,10 @@ private slots:
     void on_actionExport_triggered();
     void on_actionInfoDialog_triggered();
     void on_actionCatalogsEditor_triggered();
+    void on_actionAuthorization_triggered();
 
     void on_edtPattern_textChanged(const QString &arg1);
     void on_btnFont_clicked();
-
-    void on_actionAuthorization_triggered();
 
 signals:
     void shutdown();
