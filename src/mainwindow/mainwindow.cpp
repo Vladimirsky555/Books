@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Грузим из файла названия каталогов и пути к ним
     loadCatalogs();
+
     ui->cbxCatalogs->addItems(catalogNamesList);
 
     //Загружаем все файлы, только один раз
@@ -78,9 +79,8 @@ void MainWindow::refreshCatalogs()
 
 
 //Чтение из файла
-void MainWindow::loadData(QString file){
-    currentBooks.clear();
-    QFile f(file);
+void MainWindow::loadData(QString path){   
+    QFile f(path);
     if(!f.exists()) return;
 
     f.open(QFile::ReadOnly);
@@ -158,7 +158,7 @@ void MainWindow::refreshBooks()
 void MainWindow::refreshChapters(){
     ui->lstChapters->clear();
 
-        for(int i = 0; i < currentBook->chaptersCount(); i++)
+        for(int i = 0; i < currentBook->getCount(); i++)
         {
             ui->lstChapters->addItem(currentBook->getChapterById(i)->getName());
             ui->lstChapters->item(i)->setIcon(QIcon(":/images/chapter.png"));
@@ -276,7 +276,6 @@ void MainWindow::on_actionInfoDialog_triggered()
 
 void MainWindow::on_actionSearch_triggered()
 {
-//    search_window = new SearchWindow(catalogNamesList, pathList, s->catalogs);
     search_window = new SearchWindow(s);
 
     connect(search_window, SIGNAL(sendPattern(QString)),
@@ -342,12 +341,14 @@ void MainWindow::on_actionExport_triggered()
 
 //Запись в файл
 void MainWindow::saveData()
-{
+{   
     for(int i = 0; i < s->catalogs.count(); i++){
 
     QFile f(s->catalogs[i]->getPath());
     f.open(QFile::WriteOnly | QFile::Truncate);
     QDataStream str(&f);
+
+     str << s->catalogs[i]->getName() << s->catalogs[i]->getPath();
 
     currentBooks = s->catalogs[i]->Books();
     for(int i = 0; i < currentBooks.size(); i++){

@@ -31,19 +31,21 @@ public:
 private slots:
      void on_btnAdd_clicked();
      void on_btnDel_clicked();
-
      void shutdown();
-
-
      void on_btnCatalog_clicked();
-
      void on_lstCatalogs_clicked(const QModelIndex &index);
+     void on_btnUp_clicked();
+     void on_btnDown_clicked();
+
+signals:
+     void shutdownEditor();
 
 private:
     Ui::CatalogsEditor *ui;
 
-//signals:
-//    void changed();
+    // QWidget interface
+protected:
+    virtual void closeEvent(QCloseEvent *event);
 };
 
 #endif // CATALOGSEDITOR_H

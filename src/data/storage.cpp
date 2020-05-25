@@ -67,6 +67,26 @@ QStringList Storage::getNameList()
     return namesList;
 }
 
+void Storage::up(int id)
+{
+    Catalog *tmp;
+    if(id > 0){
+        tmp = catalogs[id];
+        catalogs[id] = catalogs[id - 1];
+        catalogs[id - 1] = tmp;
+    }
+}
+
+void Storage::down(int id)
+{
+    Catalog *tmp;
+    if(id < catalogs.count() - 1){
+        tmp = catalogs[id];
+        catalogs[id] = catalogs[id + 1];
+        catalogs[id + 1] = tmp;
+    }
+}
+
 int Storage::getCount()
 {
     return catalogs.count();

@@ -26,6 +26,9 @@ CatalogsEditor::CatalogsEditor(Storage *s, QWidget *parent) :
 
     setWindowTitle("Редактор каталогов");
 
+    ui->btnCatalog->setEnabled(false);
+    ui->btnDel->setEnabled(false);
+
     currentCatalog = NULL;
     this->s = s;
 
@@ -48,7 +51,7 @@ void CatalogsEditor::refresh()
 
     //При отсутствии элементов программа не запустится
     if(s->catalogs.count() == 0){
-        addCatalog("Добавьте первый каталог, потом удалите эту строку", "temp.book");
+        addCatalog("Добавьте первый каталог, потом удалите эту строку", "doc/temp.book");
     }
 }
 
@@ -57,7 +60,7 @@ void CatalogsEditor::addCatalog(QString name, QString path)
     Catalog *catalog = new Catalog(name, path);
     s->catalogs.push_back(catalog);
 
-    QFile f("doc/" + path);
+    QFile f(path);
     f.open(QFile::WriteOnly | QFile::Truncate);
     f.close();
 
@@ -71,7 +74,7 @@ void CatalogsEditor::on_btnAdd_clicked()
     ce.exec();
 
     QString name = ce.getName();
-    QString path = ce.getPath();
+    QString path = "doc/" + ce.getPath();
 
     addCatalog(name, path);
 }
@@ -100,6 +103,14 @@ void CatalogsEditor::on_lstCatalogs_clicked(const QModelIndex &index)
 {
     int id = index.row();
     currentCatalog = s->catalogs.at(id);
+    ui->btnCatalog->setEnabled(true);
+    ui->btnDel->setEnabled(true);
+}
+
+void CatalogsEditor::closeEvent(QCloseEvent *event)
+{
+    emit shutdownEditor();
+    QWidget::closeEvent(event);
 }
 
 
@@ -107,9 +118,21 @@ void CatalogsEditor::on_btnCatalog_clicked()
 {
     editor = new catalogEditor(currentCatalog);
 
-    connect(this, SIGNAL(shutdown()),
+    connect(this, SIGNAL(shutdownEditor()),
             editor, SLOT(shutdown()));
 
     editor->show();
 }
 
+
+void CatalogsEditor::on_btnUp_clicked()
+{
+    s->up(ui->lstCatalogs->currentRow());
+    refresh();
+}
+
+void CatalogsEditor::on_btnDown_clicked()
+{
+    s->down(ui->lstCatalogs->currentRow());
+    refresh();
+}

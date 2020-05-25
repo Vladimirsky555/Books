@@ -60,6 +60,40 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btnUp">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Вверх</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normalon>:/images/up.png</normalon>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnDown">
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Вниз</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normalon>:/images/down.png</normalon>
+        </iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>

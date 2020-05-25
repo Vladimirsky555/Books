@@ -3,6 +3,8 @@
 
 #include <QScrollBar>
 #include <QFontDialog>
+#include <QMenu>
+#include <QFileDialog>
 #include <QDebug>
 
 SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
@@ -21,6 +23,7 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
     this->catalogsNamesList = s->getNameList();
     this->pathList = s->getPathList();
 
+    //Подсветка
     highlighter1 = new QRegexpHighlighter(this);
     highlighter1->setDocument(ui->edtText->document());
     highlighter1->setPattern(ui->edtSearch->text());
@@ -47,6 +50,28 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
 
     ui->btnFont->setDefaultAction(ui->actionFont);
     connect(ui->actionFont, SIGNAL(triggered()), this, SLOT(chooseFont()));
+
+    //Для экспорта текстов с помощью событий
+    ui->lstResults->setContextMenuPolicy(Qt::ActionsContextMenu);
+    connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequsted(QPoint)));
+
+    {
+        QAction *A = exportTextToDisplay= new QAction(this);
+        QPixmap p(":/images/export-to-display.png");
+        A->setIcon(QIcon(p));
+        A->setText(tr("Экспорт цитат текста на дисплей"));
+        connect(A, SIGNAL(triggered()),this, SLOT(text_display_Export()));
+        ui->lstResults->addAction(A);
+        listActions << A;
+    }{
+        QAction *A = exportTextToFile = new QAction(this);
+        QPixmap p(":/images/export-in-file.png");
+        A->setIcon(QIcon(p));
+        A->setText(tr("Экспорт цитат текста в файл"));
+        connect(A, SIGNAL(triggered()),this, SLOT(text_file_Export()));
+        ui->lstResults->addAction(A);
+        listActions << A;
+    }
 }
 
 SearchWindow::~SearchWindow()
@@ -93,7 +118,7 @@ void SearchWindow::textFindInCatalogs()
         for(int l = 0; l < currentBooks.count(); l++){
             currentBook = currentBooks[l];
 
-            for(int i = 0; i < currentBook->chaptersCount(); i++){
+            for(int i = 0; i < currentBook->getCount(); i++){
                 currentChapter = currentBook->getChapterById(i);
 
                 for(int j = 0; j < currentChapter->getCount(); j++){
@@ -165,6 +190,13 @@ void SearchWindow::textFindInCatalogs()
     ui->edtText->append("Поиск завершен!");
 }
 
+void SearchWindow::contextMenuRequsted(const QPoint &p)
+{
+    QMenu M(this);
+    M.addActions(listActions);
+    M.exec(mapToGlobal(p));
+}
+
 void SearchWindow::findInBooks()
 {
     emit sendPattern(ui->edtSearch->text());
@@ -192,7 +224,7 @@ void SearchWindow::findInBooks()
     for(int l = 0; l < booksList.count(); l++){
         currentBook = booksList[l];
 
-        for(int i = 0; i < currentBook->chaptersCount(); i++){
+        for(int i = 0; i < currentBook->getCount(); i++){
             currentChapter = currentBook->getChapterById(i);
 
             for(int j = 0; j < currentChapter->getCount(); j++){
@@ -351,7 +383,7 @@ void SearchWindow::findInChapters()
 
             cnt = 0;
 
-            for(int i = 0; i < currentBook->chaptersCount(); i++){
+            for(int i = 0; i < currentBook->getCount(); i++){
                 currentChapter = currentBook->getChapterById(i);
 
                 QRegExp rx(ui->edtSearch->text());
@@ -461,15 +493,18 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
             QRegExp rx(ui->edtSearch->text());
             if(!checkRegExp(rx))return;
             int pos = 0;
-            while((pos = rx.indexIn(ui->edtText->document()->findBlockByLineNumber(i).text(), pos)) != -1){
+            QString str = ui->edtText->document()->findBlockByLineNumber(i).text();
+            while((pos = rx.indexIn(str, pos)) != -1){
                 pos += rx.matchedLength();
                 cnt++;
 
                  //В нижнем правом окошке выдаем информацию в каких строках
                 //и сколько раз встретилось искомое слово
                 ui->lstText->addItem(QString::number(cnt)+ " [" + QString::number(i+1) + " строка" + "] ");
+
                 textItem t;
                 t.id = i+1;
+                t.line = str;
                 textItems.append(t);
                 }
         }
@@ -562,6 +597,48 @@ void SearchWindow::chooseFont()
     }
 }
 
+void SearchWindow::text_display_Export()
+{
+    QString tmp;
+    ui->edtText->clear();
+    for(int i = 0; i < textItems.count(); i++){
+    tmp += "\"" + textItems[i].line + "\"";
+    tmp += "<br>";
+    tmp += "(" + currentBook->getName() + ", " +
+           currentChapter->getName() + ", " +
+           currentSection->getName() + ")";
+    tmp += "<br>";
+    tmp += "<br>";
+    }
+
+    ui->edtText->setHtml(tmp);
+}
+
+void SearchWindow::text_file_Export()
+{
+    //Save the file to disk
+    QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
+    //QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
+    if(filename.isEmpty())return;
+
+    QFile file(filename);
+
+    //Open the file
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
+    return;
+
+    QTextStream out(&file);
+
+    for(int i = 0; i < textItems.count(); i++){
+    out << "\"" + textItems[i].line + "\"" << "\n" <<
+           "(" << currentBook->getName() << ", " <<
+           currentChapter->getName() << ", " <<
+           currentSection->getName() << ")" << "\n\n";
+    }
+
+    file.close();
+}
+
 
 //Вспомогательные функции
 bool SearchWindow::checkRegExp(QRegExp rx)
@@ -581,5 +658,68 @@ void SearchWindow::on_edtSearch_textChanged(const QString &arg1)
     highlighter1->setPattern(arg1);
     highlighter1->rehighlight();
 }
+
+//void SearchWindow::book_display_Export()
+//{
+
+//}
+
+//void SearchWindow::book_file_Export()
+//{
+//    textItems.clear();
+//    QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
+//    if(filename.isEmpty())return;
+
+//    QFile file(filename);
+//    if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
+//        return;
+
+//    QTextStream out(&file);
+
+//    for(int i = 0; i < currentBook->getCount(); i++){
+
+//        currentChapter = currentBook->getChapterById(i);
+//        for(int j = 0; j < currentChapter->getCount(); j++){
+
+//            currentSection = currentChapter->getSectionById(j);
+//            currentTxt = currentSection->getData();
+//            ui->edtText->setHtml(currentTxt);
+
+//            for(int k = 0; k < ui->edtText->document()->blockCount(); k++){
+//            int cnt = 0;
+//            QRegExp rx(ui->edtSearch->text());
+//            if(!checkRegExp(rx))return;
+//            int pos = 0;
+//            QString str = ui->edtText->document()->findBlockByLineNumber(i).text();
+//            while((pos = rx.indexIn(str, pos)) != -1){
+//                pos += rx.matchedLength();
+//                cnt++;
+
+//                textItem t;
+//                t.id = i+1;
+//                t.line = str;
+//                textItems.append(t);
+//            }
+//        }
+//        }
+//    }
+
+//    for(int i = 0; i < textItems.count(); i++){
+//        out << "\"" + textItems[i].line + "\"" << "\n" <<
+//               "(" << currentBook->getName() << ", " <<
+//               currentChapter->getName() << ", " <<
+//               currentSection->getName() << ")" << "\n\n";
+//    }
+
+//    file.close();
+//}
+
+//void SearchWindow::all_Export()
+//{
+
+//}
+
+
+
 
 

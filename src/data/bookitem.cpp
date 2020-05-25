@@ -82,7 +82,7 @@ void BookItem::down(int id)
     }
 }
 
-int BookItem::chaptersCount()
+int BookItem::getCount()
 {
     return chapters.size();
 }
@@ -90,11 +90,6 @@ int BookItem::chaptersCount()
 QList<ListItem *> BookItem::getChapters()
 {
     return this->chapters;
-}
-
-int BookItem::getCount()
-{
-    return chapters.count();
 }
 
 
@@ -120,7 +115,6 @@ BookItem::BookItem(QByteArray arr, QObject *parent) : QObject(parent){
         str >> tmp;
        chapters.append(new ListItem(tmp));
     }
-
 }
 
 QByteArray BookItem::saveIt(){

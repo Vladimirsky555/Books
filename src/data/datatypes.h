@@ -18,11 +18,11 @@ public:
 
     Catalog* getCatalogById(int id);
     BookItem* getBookByName(QString name);
-//    QString getNameById(int id);
-//    QString getPathById(int id);
     QList<Catalog*> Catalogs();
     QStringList getPathList();
     QStringList getNameList();
+    void up(int id);
+    void down(int id);
     int getCount();
 };
 
@@ -33,11 +33,11 @@ private:
     QList<BookItem*> books;
     QString name;
     QString path;
-//    bool newCatalog;
 
 
 public:
     Catalog(QString name, QString path);
+    Catalog(QByteArray arr, QObject *parent = nullptr);
 
     //User
     QList<BookItem *> Books();
@@ -51,14 +51,14 @@ public:
     void setPath(QString path);
 
     //Admin
-//    bool isNew();
-//    void setNew(bool flag);
     void insertDataFirst(QString newText);
     void insertData(QString source, QString newText);
     void insertDataAtEnd(QString name);
     void up(int id);
     void down(int id);
     void deleteBook(BookItem* book);
+
+    QByteArray saveIt();
 };
 
 
@@ -76,9 +76,8 @@ public:
     QString getName();
     ListItem* getChapterById(int);
     ListItem* getChapterByName(QString value);
-    int chaptersCount();
+    int getCount();
    QList<ListItem *> getChapters();//Используется для вывода содержания
-   int getCount();
     QByteArray saveIt();
 
     //admin

@@ -3,7 +3,6 @@
 
 #include <QMessageBox>
 #include <QAction>
-#include <QDebug>
 
 
 FindChooser::FindChooser(Storage *s, QWidget *parent) :
@@ -16,7 +15,7 @@ FindChooser::FindChooser(Storage *s, QWidget *parent) :
 
     ui->btnOk->setEnabled(false);
 
-    setWindowTitle("Выбор ресурсов для поиска");
+    setWindowTitle("Выбор книг (книги) для поиска");
 
         ui->btnOk->setDefaultAction(ui->actionChoose);//привязали к toolbutton
           connect(ui->actionChoose, SIGNAL(triggered()),

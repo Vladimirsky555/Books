@@ -1,9 +1,26 @@
 #include "datatypes.h"
 
+#include <QDataStream>
+#include <QIODevice>
+
 Catalog::Catalog(QString name, QString path) : QObject(NULL)
 {
     this->name = name;
     this->path = path;
+}
+
+Catalog::Catalog(QByteArray arr, QObject *parent) : QObject(parent){
+    {
+        QDataStream str(&arr, QIODevice::ReadOnly);
+
+        str >> this->name >> this->path;
+
+        while(!str.atEnd()){
+            QByteArray tmp;
+            str >> tmp;
+            books.append(new BookItem(tmp));
+        }
+    }
 }
 
 
@@ -31,16 +48,6 @@ void Catalog::setPath(QString path)
 {
     this->path = path;
 }
-
-//bool Catalog::isNew()
-//{
-//    return this->newCatalog;
-//}
-
-//void Catalog::setNew(bool flag)
-//{
-//    this->newCatalog = flag;
-//}
 
 
 QList<BookItem *> Catalog::Books()
@@ -121,4 +128,18 @@ void Catalog::deleteBook(BookItem *book)
     if(book == NULL)return;
     books.removeOne(book);
     delete book;
+}
+
+QByteArray Catalog::saveIt()
+{
+    QByteArray arr;
+    QDataStream str(&arr, QIODevice::WriteOnly);
+
+    str << this->name << path;
+
+    for(int i = 0; i < books.size(); i++){
+        str << this->books[i]->saveIt();
+    }
+
+    return arr;
 }

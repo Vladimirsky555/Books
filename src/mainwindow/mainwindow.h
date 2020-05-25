@@ -25,6 +25,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     Storage *s;
+    QList<Catalog*> Catalogs;
     QList<BookItem*> currentBooks;//Массив книг каталога
     QStringList pathList;//Массив путей к каталогам
     QStringList catalogNamesList;
@@ -46,7 +47,6 @@ class MainWindow : public QMainWindow
 
     bool admin;
 
-
 public:
     MainWindow(QWidget *parent = 0);
     virtual ~MainWindow();
@@ -62,7 +62,7 @@ public:
     //Чтение-запись в файл
     void loadCatalogs();
     void saveCatalogs();
-    void loadData(QString);
+    void loadData(QString path);
     void saveData();
 
 private slots:    
