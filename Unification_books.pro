@@ -42,7 +42,6 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         src/search/findchooser.h \
         src/info/list.h \
         src/info/info.h \
-        src/mainwindow/dataloader.h \
         src/dialog/nameenter.h
 
     SOURCES += src/main.cpp\
@@ -65,7 +64,6 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         src/search/findchooser.cpp \
         src/info/list.cpp \
         src/info/info.cpp \
-        src/mainwindow/dataloader.cpp \
         src/dialog/nameenter.cpp
 
     FORMS += src/mainwindow/mainwindow.ui \

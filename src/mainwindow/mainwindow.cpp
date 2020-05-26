@@ -28,13 +28,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->actionCatalogsEditor->setEnabled(false);
 
-    //Грузим из файла названия каталогов и пути к ним
-    loader = new dataLoader(s);
-    loader->loadNameList();
-    nameList = loader->getNameList();
-    loader->loadData();
-
+    loadNamePathList();
     ui->cbxCatalogs->addItems(nameList);
+
+    //Грузим из файла названия каталогов и пути к ним
+    for(int i = 0; i < pathList.size(); i++)
+    {
+        Catalog *catalog = new Catalog(nameList[i], pathList[i]);
+        loadData(pathList[i]);
+        catalog->setBook(currentBooks);
+        s->addCatalog(catalog);
+    }
 
     currentCatalog = s->getCatalogById(0);
     currentBooks = currentCatalog->Books();
@@ -56,11 +60,83 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     if(login.getIsLogined()){
-        loader->saveCatalogs();
-        loader->saveData();
+        saveNamePathList();
+        saveData();
     }
     delete ui;
 }
+
+void MainWindow::loadData(QString path)
+{
+    currentBooks.clear();
+    QFile f(path);
+    if(!f.exists()) return;
+
+    f.open(QFile::ReadOnly);
+    QDataStream reader(&f);
+
+    while(!reader.atEnd()){
+        QByteArray arr;
+        reader >> arr;
+        currentBooks.append(new BookItem(arr));
+    }
+
+    f.close();
+}
+
+void MainWindow::saveData()
+{
+    for(int i = 0; i < s->getCount(); i++){
+
+    QFile f(s->getCatalogById(i)->getPath());
+    f.open(QFile::WriteOnly | QFile::Truncate);
+    QDataStream str(&f);
+
+    currentBooks = s->getCatalogById(i)->Books();
+    for(int i = 0; i < currentBooks.size(); i++){
+        str << currentBooks[i]->saveIt();
+    }
+
+    f.close();
+    }
+}
+
+void MainWindow::loadNamePathList()
+{
+    QFile f("catalogs");
+    if(!f.exists()) return;
+
+    f.open(QFile::ReadOnly);
+    QDataStream str(&f);
+
+    int i = 0;
+    while(!str.atEnd()){
+        QString tmp;
+        str >> tmp;
+        nameList.append(tmp);
+
+        str >> tmp;
+        pathList.append(tmp);
+        i++;
+    }
+
+    f.close();
+}
+
+void MainWindow::saveNamePathList()
+{
+    QFile f("catalogs");
+    f.open(QFile::WriteOnly | QFile::Truncate);
+    QDataStream str(&f);
+
+    for(int i = 0; i < s->getCount(); i++){
+        str << s->getCatalogById(i)->getName() << s->getCatalogById(i)->getPath();
+    }
+
+    f.close();
+}
+
+
 
 void MainWindow::refreshCatalogs()
 {
@@ -204,6 +280,7 @@ void MainWindow::setEnabledAll()
     ui->lstChapters->setEnabled(false);
 }
 
+
 void MainWindow::on_actionNotes_triggered()
 {
     widget_o = new ItemInfoForm(currentBook->getName(), currentChapter->getName(), currentSection->getName());
@@ -284,6 +361,8 @@ void MainWindow::on_btnFont_clicked()
         QMessageBox::information(this,"Сообщение","Шрифт не выбран!");
     }
 }
+
+
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
