@@ -8,7 +8,7 @@ QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 4.0
+VERSION = 5.0
 QMAKE_TARGET_COMPANY = BearWin
 QMAKE_TARGET_PRODUCT = Unification Books
 QMAKE_TARGET_DESCRIPTION = Unification Books
