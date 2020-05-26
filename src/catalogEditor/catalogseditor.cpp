@@ -28,9 +28,12 @@ CatalogsEditor::CatalogsEditor(Storage *s, QWidget *parent) :
 
     ui->btnCatalog->setEnabled(false);
     ui->btnDel->setEnabled(false);
+<<<<<<< HEAD
     ui->btnUp->setEnabled(false);
     ui->btnDown->setEnabled(false);
     ui->btnRename->setEnabled(false);
+=======
+>>>>>>> refs/remotes/origin/master
 
     currentCatalog = NULL;
     this->s = s;
@@ -57,7 +60,11 @@ void CatalogsEditor::refresh()
 }
 
     //При отсутствии элементов программа не запустится
+<<<<<<< HEAD
     if(s->getCount() == 0){
+=======
+    if(s->catalogs.count() == 0){
+>>>>>>> refs/remotes/origin/master
         addCatalog("Добавьте первый каталог, потом удалите эту строку", "doc/temp.book");
     }
 }
@@ -107,12 +114,19 @@ void CatalogsEditor::shutdown()
 
 void CatalogsEditor::on_lstCatalogs_clicked(const QModelIndex &index)
 {
+<<<<<<< HEAD
     currentCatalog = s->getCatalogById(index.row());
     ui->btnCatalog->setEnabled(true);
     ui->btnDel->setEnabled(true);
     ui->btnUp->setEnabled(true);
     ui->btnDown->setEnabled(true);
     ui->btnRename->setEnabled(true);
+=======
+    int id = index.row();
+    currentCatalog = s->catalogs.at(id);
+    ui->btnCatalog->setEnabled(true);
+    ui->btnDel->setEnabled(true);
+>>>>>>> refs/remotes/origin/master
 }
 
 void CatalogsEditor::closeEvent(QCloseEvent *event)
