@@ -40,18 +40,9 @@ private slots:
 signals:
      void shutdownEditor();
 
-signals:
-     void shutdownEditor();
-
 private:
     Ui::CatalogsEditor *ui;
 
-<<<<<<< HEAD
-=======
-//signals:
-//    void changed();
-
->>>>>>> refs/remotes/origin/master
     // QWidget interface
 protected:
     virtual void closeEvent(QCloseEvent *event);

@@ -4,13 +4,8 @@
 #include <QScrollBar>
 #include <QFontDialog>
 #include <QMenu>
-<<<<<<< HEAD
 #include <QTextStream>
 #include <QFileDialog>
-=======
-#include <QFileDialog>
-#include <QDebug>
->>>>>>> refs/remotes/origin/master
 
 SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
     QWidget(parent),
@@ -623,7 +618,6 @@ void SearchWindow::text_display_Export()
 void SearchWindow::text_file_Export()
 {
     //Save the file to disk
-<<<<<<< HEAD
         QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
         //QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
         if(filename.isEmpty())return;
@@ -644,28 +638,6 @@ void SearchWindow::text_file_Export()
         }
 
         file.close();
-=======
-    QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
-    //QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
-    if(filename.isEmpty())return;
-
-    QFile file(filename);
-
-    //Open the file
-    if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
-    return;
-
-    QTextStream out(&file);
-
-    for(int i = 0; i < textItems.count(); i++){
-    out << "\"" + textItems[i].line + "\"" << "\n" <<
-           "(" << currentBook->getName() << ", " <<
-           currentChapter->getName() << ", " <<
-           currentSection->getName() << ")" << "\n\n";
-    }
-
-    file.close();
->>>>>>> refs/remotes/origin/master
 }
 
 

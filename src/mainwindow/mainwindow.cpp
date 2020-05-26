@@ -31,11 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Грузим из файла названия каталогов и пути к ним
     loadCatalogs();
 
-<<<<<<< HEAD
     ui->cbxCatalogs->addItems(nameList);
-=======
-    ui->cbxCatalogs->addItems(catalogNamesList);
->>>>>>> refs/remotes/origin/master
 
     //Загружаем все файлы, только один раз
     for(int i = 0; i < pathList.size(); i++)
