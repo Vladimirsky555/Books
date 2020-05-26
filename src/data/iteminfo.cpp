@@ -1,10 +1,9 @@
-#include "datatypes.h"
+#include "iteminfo.h"
 
 #include <QIODevice>
 #include <QDataStream>
 
-ItemInfo::ItemInfo(QObject *parent) :
-    QObject(parent)
+ItemInfo::ItemInfo(QObject *parent) : QObject(parent)
 {
     this->book = "";
     this->title = "";
@@ -12,6 +11,7 @@ ItemInfo::ItemInfo(QObject *parent) :
     this->date = QDate::currentDate();
     this->text = "";
 }
+
 
 ItemInfo::ItemInfo(QByteArray data, QObject *parent)  : QObject(parent)
 {

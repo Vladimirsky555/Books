@@ -4,7 +4,9 @@
 #include <QDialog>
 #include <QTimer>
 
-#include "data/datatypes.h"
+#include "data/storage.h"
+#include "data/catalog.h"
+#include "data/bookitem.h"
 
 class QAction;
 

@@ -1,15 +1,17 @@
-#include "datatypes.h"
+#include "catalog.h"
 
 #include <QDataStream>
 #include <QIODevice>
 
-Catalog::Catalog(QString name, QString path) : QObject(NULL)
+
+Catalog::Catalog(QString name, QString path, QObject *parent) : QObject(parent)
 {
     this->name = name;
     this->path = path;
 }
 
-Catalog::Catalog(QByteArray arr, QObject *parent) : QObject(parent){
+Catalog::Catalog(QByteArray arr, QObject *parent) :
+    QObject(parent){
     {
         QDataStream str(&arr, QIODevice::ReadOnly);
 
@@ -27,6 +29,11 @@ Catalog::Catalog(QByteArray arr, QObject *parent) : QObject(parent){
 QString Catalog::getName()
 {
     return this->name;
+}
+
+void Catalog::setName(QString name)
+{
+    this->name = name;
 }
 
 void Catalog::setCatalogName(QString name)
@@ -47,6 +54,12 @@ QString Catalog::getPath()
 void Catalog::setPath(QString path)
 {
     this->path = path;
+}
+
+void Catalog::addBook(BookItem *book)
+{
+    if(book != NULL)
+    books.push_back(book);
 }
 
 
@@ -128,6 +141,12 @@ void Catalog::deleteBook(BookItem *book)
     if(book == NULL)return;
     books.removeOne(book);
     delete book;
+}
+
+void Catalog::removeBook(BookItem *book)
+{
+    if(book == NULL)return;
+    books.removeOne(book);
 }
 
 QByteArray Catalog::saveIt()

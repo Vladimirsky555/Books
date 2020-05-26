@@ -1,17 +1,19 @@
-#include "datatypes.h"
+#include "textitem.h"
 
-#include <QIODevice>
 #include <QDataStream>
+#include <QIODevice>
 
-TextItem::TextItem(QString name) : QObject(0){
-    this->sectionName = name;
-    this->text = "";
+TextItem::TextItem(QString text, QObject *parent) : QObject(parent)
+{
+   this->text = text;
 }
 
 TextItem::TextItem(QByteArray arr, QObject *parent) : QObject(parent){
     QDataStream reader(&arr, QIODevice::ReadOnly);
     reader >> this->sectionName >> this->text;
 }
+
+
 
 QString TextItem::getName(){
     return sectionName;
@@ -40,3 +42,4 @@ QByteArray TextItem::saveIt(){
     return arr;
 
 }
+

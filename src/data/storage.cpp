@@ -1,7 +1,6 @@
-#include "datatypes.h"
+#include "storage.h"
 
-
-Storage::Storage() : QObject(0)
+Storage::Storage(QObject *parent) : QObject(parent)
 {
 
 }
@@ -45,6 +44,21 @@ QList<Catalog *> Storage::Catalogs()
     return this->catalogs;
 }
 
+void Storage::addCatalog(Catalog* catalog)
+{
+    catalogs.append(catalog);
+}
+
+void Storage::addAtTheEndOfCatalog(Catalog *catalog)
+{
+    catalogs.push_back(catalog);
+}
+
+void Storage::renameCatalog(Catalog *catalog, QString name)
+{
+    catalog->setName(name);
+}
+
 QStringList Storage::getPathList()
 {
     QStringList pathList;
@@ -65,6 +79,13 @@ QStringList Storage::getNameList()
     }
 
     return namesList;
+}
+
+void Storage::deleteCatalog(Catalog *catalog)
+{
+    if(catalog != NULL)
+    catalogs.removeOne(catalog);
+    delete catalog;
 }
 
 void Storage::up(int id)
@@ -91,4 +112,5 @@ int Storage::getCount()
 {
     return catalogs.count();
 }
+
 

@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "data/datatypes.h"
+#include "data/listitem.h"
 #include "helpers/qregexphighlighter.h"
 
 namespace Ui {

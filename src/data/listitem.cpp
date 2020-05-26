@@ -1,12 +1,13 @@
-#include "datatypes.h"
+#include "listitem.h"
 
 #include <QIODevice>
 #include <QDataStream>
 
-
-ListItem::ListItem(QString name) : QObject(0){
-    this->chapterName = name;
+ListItem::ListItem(QString name, QObject *parent) : QObject(parent)
+{
+this->chapterName = name;
 }
+
 
 QString ListItem::getName(){
     return this->chapterName;

@@ -2,7 +2,8 @@
 #define ITEMINFOFORM_H
 
 #include <QWidget>
-#include "data/datatypes.h"
+
+#include "data/iteminfo.h"
 
 namespace Ui {
 class ItemInfoForm;

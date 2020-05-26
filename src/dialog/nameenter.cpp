@@ -8,7 +8,7 @@ NameEnter::NameEnter(QWidget *parent) :
     ui(new Ui::NameEnter)
 {
     ui->setupUi(this);
-    setWindowTitle("Добавление/Вставка");
+    setWindowTitle("Добавление/Вставка/Переименование");
 
     setWindowFlags(Qt::Window
          | Qt::WindowMinimizeButtonHint

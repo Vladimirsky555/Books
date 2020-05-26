@@ -3,7 +3,6 @@
 
 #include <QWidget>
 
-#include "data/datatypes.h"
 #include "catalogeditor.h"
 
 namespace Ui {
@@ -36,6 +35,7 @@ private slots:
      void on_lstCatalogs_clicked(const QModelIndex &index);
      void on_btnUp_clicked();
      void on_btnDown_clicked();
+     void on_btnRename_clicked();
 
 signals:
      void shutdownEditor();

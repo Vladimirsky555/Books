@@ -7,14 +7,15 @@
 #include <QMenu>
 #include <QModelIndex>
 
-catalogEditor::catalogEditor(Catalog *catalog, QWidget *parent) :
+catalogEditor::catalogEditor(Storage *s, Catalog *catalog, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::catalogEditor)
 {
     ui->setupUi(this);
 
-    setWindowTitle("Создание файла базы данных");
+    setWindowTitle(catalog->getName());
 
+    this->s = s; //передать для виджета экпорта книг в другие каталоги
     this->catalog = catalog;
 
     currentBook = NULL;
@@ -186,6 +187,17 @@ void catalogEditor::book_Delete()
     } else {
         return;
     }
+}
+
+void catalogEditor::book_Export()
+{
+    ExportDialog ed(s, catalog, currentBook);
+
+    ed.exec();
+
+    refreshBooks();
+    ui->lstChapters->clear();
+    ui->lstChapters->setEnabled(false);
 }
 
 void catalogEditor::chapter_Up()
@@ -402,6 +414,11 @@ void catalogEditor::shutdown()
     close();
 }
 
+//void catalogEditor::refreshChanged()
+//{
+//    refreshBooks();
+//}
+
 
 //Сохранение текста
 void catalogEditor::on_btnSaveText_clicked()
@@ -480,6 +497,15 @@ void catalogEditor::addActions()
         A->setText(tr("Удалить"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Delete()));
+        ui->lstBooks->addAction(A);
+        bookActions << A;
+    }{
+        QAction *A = bookExport = new QAction(this);
+        QPixmap p(":/images/export-to-display.png");
+        A->setIcon(QIcon(p));
+        A->setShortcut(tr("Ctrl+L"));
+        A->setText(tr("Экспорт в другой каталог"));
+        connect(A, SIGNAL(triggered()),this, SLOT(book_Export()));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }

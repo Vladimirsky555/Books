@@ -3,9 +3,13 @@
 
 #include <QMainWindow>
 #include <QList>
-#include <QListWidgetItem>
 
-#include "data/datatypes.h"
+#include "data/iteminfo.h"
+#include "data/storage.h"
+#include "data/catalog.h"
+#include "data/bookitem.h"
+#include "data/listitem.h"
+#include "data/textitem.h"
 #include "diary/iteminfoform.h"
 #include "search/searchwindow.h"
 #include "helpers/qregexphighlighter.h"
@@ -14,7 +18,6 @@
 #include "catalogEditor/catalogeditor.h"
 #include "catalogEditor/catalogseditor.h"
 #include "dialog/logindialog.h"
-
 
 namespace Ui {
 class MainWindow;
@@ -25,10 +28,9 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     Storage *s;
-    QList<Catalog*> Catalogs;
     QList<BookItem*> currentBooks;//Массив книг каталога
     QStringList pathList;//Массив путей к каталогам
-    QStringList catalogNamesList;
+    QStringList nameList;
 
     Catalog *currentCatalog;
     BookItem* currentBook;

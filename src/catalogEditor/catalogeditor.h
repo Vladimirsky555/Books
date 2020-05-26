@@ -3,8 +3,8 @@
 
 #include <QWidget>
 
-#include "data/datatypes.h"
 #include "dialog/nameenter.h"
+#include "dialog/exportdialog.h"
 
 class ListItem;
 
@@ -17,6 +17,7 @@ class catalogEditor : public QWidget
     Q_OBJECT
 
 private:
+    Storage *s;
     Catalog *catalog;
     BookItem* currentBook;
     ListItem* currentChapter;
@@ -30,6 +31,7 @@ private:
     QAction *bookInsertEnd;
     QAction *bookEdit;
     QAction *bookDelete;
+    QAction *bookExport;
 
     QList<QAction*> chapterActions;
     QAction *chapterUp;
@@ -50,7 +52,7 @@ private:
     QAction *sectionDelete;
 
 public:
-    catalogEditor(Catalog *catalog, QWidget *parent = nullptr);
+    catalogEditor(Storage *s, Catalog *catalog, QWidget *parent = nullptr);
     ~catalogEditor();
 
     static catalogEditor *Current(Catalog *catalog);
@@ -70,6 +72,7 @@ private slots:
     void book_Insert_End();
     void book_Edit();
     void book_Delete();
+    void book_Export();
 
     void chapter_Up();
     void chapter_Down();

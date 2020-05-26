@@ -1,13 +1,13 @@
-#include "datatypes.h"
+#include "bookitem.h"
 
 #include <QIODevice>
 #include <QDataStream>
 
-
-BookItem::BookItem(QString name) : QObject(0)
+BookItem::BookItem(QString name, QObject *parent) : QObject(parent)
 {
-    this->bookName = name;
+     this->bookName = name;
 }
+
 
 QString BookItem::getName()
 {
@@ -103,6 +103,8 @@ ListItem *BookItem::getChapterByName(QString value)
 
     return NULL;
 }
+
+
 
 
 BookItem::BookItem(QByteArray arr, QObject *parent) : QObject(parent){

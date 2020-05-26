@@ -34,5 +34,6 @@
         <file>images/section.png</file>
         <file>images/export-in-file.png</file>
         <file>images/export-to-display.png</file>
+        <file>images/rename.png</file>
     </qresource>
 </RCC>

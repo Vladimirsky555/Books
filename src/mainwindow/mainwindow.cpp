@@ -31,19 +31,19 @@ MainWindow::MainWindow(QWidget *parent) :
     //Грузим из файла названия каталогов и пути к ним
     loadCatalogs();
 
-    ui->cbxCatalogs->addItems(catalogNamesList);
+    ui->cbxCatalogs->addItems(nameList);
 
     //Загружаем все файлы, только один раз
     for(int i = 0; i < pathList.size(); i++)
     {
-        Catalog *catalog = new Catalog(catalogNamesList[i], pathList[i]);
+        Catalog *catalog = new Catalog(nameList[i], pathList[i]);
         loadData(pathList[i]);
         catalog->setBook(currentBooks);
-        s->catalogs.append(catalog);
+        s->addCatalog(catalog);
     }
 
-    currentCatalog = s->catalogs[0];
-    currentBooks = s->catalogs[0]->Books();
+    currentCatalog = s->getCatalogById(0);
+    currentBooks = currentCatalog->Books();
     refreshBooks();
 
     highlighter = new QRegexpHighlighter(this);
@@ -72,14 +72,15 @@ void MainWindow::refreshCatalogs()
 {
     ui->cbxCatalogs->clear();
 
-    for(int i = 0; i < s->catalogs.count(); i++){
-        ui->cbxCatalogs->addItem(s->catalogs[i]->getName());
+    for(int i = 0; i < s->getCount(); i++){
+        ui->cbxCatalogs->addItem(s->getCatalogById(i)->getName());
     }
 }
 
 
 //Чтение из файла
-void MainWindow::loadData(QString path){   
+void MainWindow::loadData(QString path){
+    currentBooks.clear();
     QFile f(path);
     if(!f.exists()) return;
 
@@ -108,9 +109,9 @@ void MainWindow::sendPattern(QString value)
 
 void MainWindow::setAll(BookItem* book, ListItem* bookChapter, TextItem* bookSection, QString booksPath)
 {
-    for(int i = 0; i < s->catalogs.size(); i++){
-        if(booksPath == s->catalogs[i]->getPath()){
-            currentBooks = s->catalogs[i]->Books();
+    for(int i = 0; i < s->getCount(); i++){
+        if(booksPath == s->getCatalogById(i)->getPath()){
+            currentBooks = s->getCatalogById(i)->Books();
             ui->cbxCatalogs->setCurrentIndex(i);//Устанавливаем каталог в комбобокс, через индекс
         }
     }
@@ -245,7 +246,7 @@ void MainWindow::on_actionContent_triggered()
 
 void MainWindow::on_cbxCatalogs_currentIndexChanged(int index)
 {
-    if(s->catalogs.count() == 0)return;
+    if(s->getCount() == 0)return;
 
     ui->btnFont->setEnabled(false);
     ui->edtPattern->setEnabled(false);
@@ -258,9 +259,9 @@ void MainWindow::on_cbxCatalogs_currentIndexChanged(int index)
 
     setEnabledAll();
 
-    currentCatalog = s->catalogs[index];
-    currentBooks = s->catalogs[index]->Books();
-    title = s->catalogs[index]->getName();
+    currentCatalog = s->getCatalogById(index);
+    currentBooks = currentCatalog->Books();
+    title = currentCatalog->getName();
 
     setWindowTitle(title);
     refreshBooks();
@@ -342,15 +343,14 @@ void MainWindow::on_actionExport_triggered()
 //Запись в файл
 void MainWindow::saveData()
 {   
-    for(int i = 0; i < s->catalogs.count(); i++){
 
-    QFile f(s->catalogs[i]->getPath());
+    for(int i = 0; i < s->getCount(); i++){
+
+    QFile f(s->getCatalogById(i)->getPath());
     f.open(QFile::WriteOnly | QFile::Truncate);
     QDataStream str(&f);
 
-     str << s->catalogs[i]->getName() << s->catalogs[i]->getPath();
-
-    currentBooks = s->catalogs[i]->Books();
+    currentBooks = s->getCatalogById(i)->Books();
     for(int i = 0; i < currentBooks.size(); i++){
         str << currentBooks[i]->saveIt();
     }
@@ -371,7 +371,7 @@ void MainWindow::loadCatalogs()
     while(!str.atEnd()){
         QString tmp;
         str >> tmp;
-        catalogNamesList.append(tmp);
+        nameList.append(tmp);
 
         str >> tmp;
         pathList.append(tmp);
@@ -387,8 +387,8 @@ void MainWindow::saveCatalogs()
     f.open(QFile::WriteOnly | QFile::Truncate);
     QDataStream str(&f);
 
-    for(int i = 0; i < s->catalogs.size(); i++){
-        str << s->catalogs[i]->getName() << s->catalogs[i]->getPath();
+    for(int i = 0; i < s->getCount(); i++){
+        str << s->getCatalogById(i)->getName() << s->getCatalogById(i)->getPath();
     }
 
     f.close();

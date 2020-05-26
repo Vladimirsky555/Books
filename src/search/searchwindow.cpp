@@ -4,8 +4,8 @@
 #include <QScrollBar>
 #include <QFontDialog>
 #include <QMenu>
+#include <QTextStream>
 #include <QFileDialog>
-#include <QDebug>
 
 SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
     QWidget(parent),
@@ -105,9 +105,9 @@ void SearchWindow::textFindInCatalogs()
 
     for(int k = 0; k < s->getCount(); k++){
 
-        for(int i = 0; i < s->catalogs.size(); i++){
-            if(pathList[k] == s->catalogs[i]->getPath()){
-                currentBooks = s->catalogs[i]->Books();
+        for(int i = 0; i < s->getCount(); i++){
+            if(pathList[k] == s->getCatalogById(i)->getPath()){
+                currentBooks = s->getCatalogById(i)->Books();
             }
         }
 
@@ -200,6 +200,7 @@ void SearchWindow::contextMenuRequsted(const QPoint &p)
 void SearchWindow::findInBooks()
 {
     emit sendPattern(ui->edtSearch->text());
+    ui->edtText->clear();
 
     ui->edtText->setEnabled(true);
     ui->edtSource->setEnabled(true);
@@ -347,9 +348,9 @@ void SearchWindow::findInChapters()
 
     for(int k = 0; k < pathList.count(); k++){
 
-        for(int i = 0; i < s->catalogs.size(); i++){
-            if(pathList[k] == s->catalogs[i]->getPath()){
-                currentBooks = s->catalogs[i]->Books();
+        for(int i = 0; i < s->getCount(); i++){
+            if(pathList[k] == s->getCatalogById(i)->getPath()){
+                currentBooks = s->getCatalogById(i)->Books();
             }
         }
 
@@ -472,9 +473,9 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
     }
 
     if(!isBook){
-        for(int i = 0; i < s->catalogs.size(); i++){
-            if(s->catalogs[i]->getPath() == searchItems.at(id).booksPath){
-                currentBooks = s->catalogs[i]->Books();
+        for(int i = 0; i < s->getCount(); i++){
+            if(s->getCatalogById(i)->getPath() == searchItems.at(id).booksPath){
+                currentBooks = s->getCatalogById(i)->Books();
             }
         }
     }
@@ -617,26 +618,26 @@ void SearchWindow::text_display_Export()
 void SearchWindow::text_file_Export()
 {
     //Save the file to disk
-    QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
-    //QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
-    if(filename.isEmpty())return;
+        QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
+        //QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
+        if(filename.isEmpty())return;
 
-    QFile file(filename);
+        QFile file(filename);
 
-    //Open the file
-    if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
-    return;
+        //Open the file
+        if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
+        return;
 
-    QTextStream out(&file);
+        QTextStream out(&file);
 
-    for(int i = 0; i < textItems.count(); i++){
-    out << "\"" + textItems[i].line + "\"" << "\n" <<
-           "(" << currentBook->getName() << ", " <<
-           currentChapter->getName() << ", " <<
-           currentSection->getName() << ")" << "\n\n";
-    }
+        for(int i = 0; i < textItems.count(); i++){
+        out << "\"" + textItems[i].line + "\"" << "\n" <<
+               "(" << currentBook->getName() << ", " <<
+               currentChapter->getName() << ", " <<
+               currentSection->getName() << ")" << "\n\n";
+        }
 
-    file.close();
+        file.close();
 }
 
 

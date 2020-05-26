@@ -24,16 +24,16 @@ FindChooser::FindChooser(Storage *s, QWidget *parent) :
     int count = 0;
     for( int i = 0; i < s->getCount(); i++){
 
-        currentCatalog = s->catalogs[i];
+        currentCatalog = s->getCatalogById(i);
         for(int j = 0; j < currentCatalog->getCount(); j++){
 
             currentBook = currentCatalog->getBookById(j);
             booksSource.append(currentBook);
-            ui->lstSource->addItem(currentBook->getName());
-            ui->lstSource->item(count)->setIcon(QIcon(":/images/book.png"));
             count++;
         }
     }
+
+    refreshSource();
 }
 
 FindChooser::~FindChooser()
