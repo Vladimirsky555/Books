@@ -14,7 +14,7 @@ QMAKE_TARGET_PRODUCT = Unification Books
 QMAKE_TARGET_DESCRIPTION = Unification Books
 QMAKE_TARGET_COPYRIGHT = BearWin
 
-TARGET = Unification_books
+TARGET = Books
 TEMPLATE = app
 
 INCLUDEPATH += $${_PRO_FILE_PWD_}/src
