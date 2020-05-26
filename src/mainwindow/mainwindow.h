@@ -18,6 +18,7 @@
 #include "catalogEditor/catalogeditor.h"
 #include "catalogEditor/catalogseditor.h"
 #include "dialog/logindialog.h"
+#include "dataloader.h"
 
 namespace Ui {
 class MainWindow;

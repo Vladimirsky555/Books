@@ -33,14 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->cbxCatalogs->addItems(nameList);
 
-    //Загружаем все файлы, только один раз
-    for(int i = 0; i < pathList.size(); i++)
-    {
-        Catalog *catalog = new Catalog(nameList[i], pathList[i]);
-        loadData(pathList[i]);
-        catalog->setBook(currentBooks);
-        s->addCatalog(catalog);
-    }
+   dataLoader *loader = new dataLoader(s, nameList, pathList);
+   loader->loadData();
 
     currentCatalog = s->getCatalogById(0);
     currentBooks = currentCatalog->Books();
@@ -76,26 +70,6 @@ void MainWindow::refreshCatalogs()
         ui->cbxCatalogs->addItem(s->getCatalogById(i)->getName());
     }
 }
-
-
-//Чтение из файла
-void MainWindow::loadData(QString path){
-    currentBooks.clear();
-    QFile f(path);
-    if(!f.exists()) return;
-
-    f.open(QFile::ReadOnly);
-    QDataStream reader(&f);
-
-    while(!reader.atEnd()){
-        QByteArray arr;
-        reader >> arr;
-        currentBooks.append(new BookItem(arr));
-    }
-
-    f.close();
-}
-
 
 void MainWindow::setPattern(QString text)
 {
