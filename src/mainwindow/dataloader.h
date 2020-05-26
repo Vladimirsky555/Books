@@ -6,26 +6,26 @@
 #include "data/storage.h"
 #include "data/bookitem.h"
 
-
 class dataLoader : public QObject
 {
     Q_OBJECT
 
     Storage *s;
-    QList<BookItem*> currentBooks;
+    QList<BookItem*> books;
     QStringList nameList;
     QStringList pathList;
 
-
 public:
-    dataLoader(Storage *s, QStringList nameList, QStringList pathList, QObject *parent = nullptr);
+    dataLoader(Storage *s, QObject *parent = nullptr);
     virtual ~dataLoader(){}
 
+    void loadNameList();
+    QStringList getNameList();
     void loadCatalog(QString path);
     void loadData();
 
-signals:
-
+    void saveCatalogs();
+    void saveData();
 };
 
 #endif // DATALOADER_H

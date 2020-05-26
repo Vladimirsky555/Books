@@ -29,12 +29,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionCatalogsEditor->setEnabled(false);
 
     //Грузим из файла названия каталогов и пути к ним
-    loadCatalogs();
+    loader = new dataLoader(s);
+    loader->loadNameList();
+    nameList = loader->getNameList();
+    loader->loadData();
 
     ui->cbxCatalogs->addItems(nameList);
-
-   dataLoader *loader = new dataLoader(s, nameList, pathList);
-   loader->loadData();
 
     currentCatalog = s->getCatalogById(0);
     currentBooks = currentCatalog->Books();
@@ -56,8 +56,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     if(login.getIsLogined()){
-        saveCatalogs();
-        saveData();
+        loader->saveCatalogs();
+        loader->saveData();
     }
     delete ui;
 }
@@ -312,60 +312,6 @@ void MainWindow::on_actionExport_triggered()
            ui->edtText->toPlainText() << "\n";
 
     file.close();
-}
-
-//Запись в файл
-void MainWindow::saveData()
-{   
-
-    for(int i = 0; i < s->getCount(); i++){
-
-    QFile f(s->getCatalogById(i)->getPath());
-    f.open(QFile::WriteOnly | QFile::Truncate);
-    QDataStream str(&f);
-
-    currentBooks = s->getCatalogById(i)->Books();
-    for(int i = 0; i < currentBooks.size(); i++){
-        str << currentBooks[i]->saveIt();
-    }
-
-    f.close();
-    }
-}
-
-void MainWindow::loadCatalogs()
-{
-    QFile f("catalogs");
-    if(!f.exists()) return;
-
-    f.open(QFile::ReadOnly);
-    QDataStream str(&f);
-
-    int i = 0;
-    while(!str.atEnd()){
-        QString tmp;
-        str >> tmp;
-        nameList.append(tmp);
-
-        str >> tmp;
-        pathList.append(tmp);
-        i++;
-    }
-
-    f.close();
-}
-
-void MainWindow::saveCatalogs()
-{
-    QFile f("catalogs");
-    f.open(QFile::WriteOnly | QFile::Truncate);
-    QDataStream str(&f);
-
-    for(int i = 0; i < s->getCount(); i++){
-        str << s->getCatalogById(i)->getName() << s->getCatalogById(i)->getPath();
-    }
-
-    f.close();
 }
 
 void MainWindow::on_actionCatalogsEditor_triggered()

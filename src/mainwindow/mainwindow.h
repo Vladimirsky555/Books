@@ -45,6 +45,8 @@ class MainWindow : public QMainWindow
     CatalogsEditor *CatalogsEditor;
     LoginDialog login;
 
+    dataLoader *loader;
+
     QRegexpHighlighter *highlighter;
     QString title;
 
@@ -61,12 +63,6 @@ public:
 
     void setEnabledAll();
     ListItem* getItemByName(QString);
-
-    //Чтение-запись в файл
-    void loadCatalogs();
-    void saveCatalogs();
-    void loadData(QString path);
-    void saveData();
 
 private slots:    
     void setPattern(QString);
@@ -87,6 +83,8 @@ private slots:
 
     void on_edtPattern_textChanged(const QString &arg1);
     void on_btnFont_clicked();
+
+    //void acceptNameList(QStringList list);//названия каталогов из dataLoader
 
 signals:
     void shutdown();
