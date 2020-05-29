@@ -99,7 +99,7 @@ void catalogEditor::book_Edit()
 {
     NameEnter ne;
     if(currentBook != NULL){
-    ne.setName(currentBook->getName());
+        ne.setName(currentBook->getName());
     } else {
         QMessageBox::information(this, "Предупреждение!", "Вы не выбрали ни одной книги!");
         return;
@@ -138,6 +138,8 @@ void catalogEditor::book_Insert_First()
 
 void catalogEditor::book_Insert()
 {
+    if(currentBook == NULL) return;
+
     NameEnter ne;
     ne.exec();
 
@@ -167,12 +169,14 @@ void catalogEditor::book_Insert_End()
 
 void catalogEditor::book_Delete()
 {
+    if(currentBook == NULL) return;
+
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "Вопрос!", "Вы действительно хотите удалить книгу?",
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         //Удаляем указатель массива books
-        if(currentBook == NULL) return;
+
         catalog->deleteBook(currentBook);
         refreshBooks();
 
@@ -191,6 +195,7 @@ void catalogEditor::book_Delete()
 
 void catalogEditor::book_Export()
 {
+    if(currentBook == NULL) return;
     ExportDialog ed(s, catalog, currentBook);
 
     ed.exec();
@@ -228,6 +233,8 @@ void catalogEditor::chapter_Insert_First()
 
 void catalogEditor::chapter_Insert()
 {
+    if(currentChapter == NULL) return;
+
     NameEnter ne;
     ne.exec();
 
@@ -272,12 +279,14 @@ void catalogEditor::chapter_Edit()
 
 void catalogEditor::chapter_Delete()
 {
+    if(currentChapter == NULL) return;
+
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "Вопрос!", "Удаляем главу?",
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         //Удаляем указатель массива items
-        if(currentChapter == NULL) return;
+
         currentBook->deleteChapter(currentChapter);
 
         refreshChapters();
@@ -317,6 +326,8 @@ void catalogEditor::section_Insert_First()
 
 void catalogEditor::section_Insert()
 {
+    if(currentSection == NULL) return;
+
     NameEnter ne;
     ne.exec();
 
@@ -355,8 +366,8 @@ void catalogEditor::section_Edit()
 
 void catalogEditor::section_Delete()
 {
-    //Удаляем указатель массива data
     if(currentSection == NULL) return;
+    //Удаляем указатель массива data
     currentChapter->deleteSection(currentSection);
 
     refreshSections();

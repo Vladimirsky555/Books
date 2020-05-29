@@ -3,20 +3,21 @@
 #include <QDataStream>
 #include <QIODevice>
 
-TextItem::TextItem(QString text, QObject *parent) : QObject(parent)
+TextItem::TextItem(QString name, QObject *parent) : QObject(parent)
 {
-   this->text = text;
+   this->name = name;
+   this->text = "";
 }
 
 TextItem::TextItem(QByteArray arr, QObject *parent) : QObject(parent){
     QDataStream reader(&arr, QIODevice::ReadOnly);
-    reader >> this->sectionName >> this->text;
+    reader >> this->name >> this->text;
 }
 
 
 
 QString TextItem::getName(){
-    return sectionName;
+    return name;
 }
 
 QString TextItem::getData(){
@@ -25,7 +26,7 @@ QString TextItem::getData(){
 
 void TextItem::setName(QString name)
 {
-    this->sectionName = name;
+    this->name = name;
 }
 
 void TextItem::setData(QString data)
@@ -37,7 +38,7 @@ QByteArray TextItem::saveIt(){
     QByteArray arr;
     QDataStream writer(&arr, QIODevice::WriteOnly);
 
-    writer << this->sectionName << this->text;
+    writer << this->name << this->text;
 
     return arr;
 

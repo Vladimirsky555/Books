@@ -29,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionCatalogsEditor->setEnabled(false);
 
     loadNamePathList();
+
     ui->cbxCatalogs->addItems(nameList);
 
     //Грузим из файла названия каталогов и пути к ним
@@ -89,6 +90,9 @@ void MainWindow::saveData()
     for(int i = 0; i < s->getCount(); i++){
 
     QFile f(s->getCatalogById(i)->getPath());
+    //Повреждённые файлы не сохраняем
+    if(s->getCatalogById(i)->getPath() == "data/doc/tfs_eng_1") continue;
+    if(s->getCatalogById(i)->getPath() == "data/doc/tfs_eng_2") continue;
     f.open(QFile::WriteOnly | QFile::Truncate);
     QDataStream str(&f);
 
@@ -103,7 +107,7 @@ void MainWindow::saveData()
 
 void MainWindow::loadNamePathList()
 {
-    QFile f("catalogs");
+    QFile f("data/catalogs");
     if(!f.exists()) return;
 
     f.open(QFile::ReadOnly);
@@ -125,7 +129,7 @@ void MainWindow::loadNamePathList()
 
 void MainWindow::saveNamePathList()
 {
-    QFile f("catalogs");
+    QFile f("data/catalogs");
     f.open(QFile::WriteOnly | QFile::Truncate);
     QDataStream str(&f);
 

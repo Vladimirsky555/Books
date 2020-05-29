@@ -7,11 +7,11 @@ class TextItem : public QObject
 {
     Q_OBJECT
 
-    QString sectionName;
+    QString name;
     QString text;
 
 public:
-    explicit TextItem(QString text, QObject *parent = nullptr);
+    explicit TextItem(QString name, QObject *parent = nullptr);
     TextItem(QByteArray arr, QObject *parent = nullptr);
 
     //user

@@ -49,16 +49,29 @@ void CatalogsEditor::refresh()
     for(int i = 0; i < s->getCount(); i++)
     {
         ui->lstCatalogs->addItem(s->getCatalogById(i)->getName());
-
-//        if(s->getCatalogById(i)->getPath() == "doc/bible.book")
-//            ui->lstCatalogs->item(i)->setIcon(QIcon(":/images/bible.png"));
-
-            ui->lstCatalogs->item(i)->setIcon(QIcon(":/images/catalog.png"));
-}
+        if(ui->lstCatalogs->item(i)->text() == "Речи Отца на английском (1936-1986)"){
+            ui->lstCatalogs->item(i)->setHidden(true);
+        }
+        if(ui->lstCatalogs->item(i)->text() == "Речи Отца на английском (1987-2006)"){
+             ui->lstCatalogs->item(i)->setHidden(true);
+        }
+        ui->lstCatalogs->item(i)->setIcon(QIcon(":/images/catalog.png"));
+    }
 
     //При отсутствии элементов программа не запустится
-    if(s->getCount() == 0){
-        addCatalog("Добавьте первый каталог, потом удалите эту строку", "doc/temp.book");
+    //Два каталога повреждённые. Поэтому при удалении всех элементов, эти два каталога
+    //будут уничтожаться программно
+    if(s->getCount() == 2 && s->getCatalogById(0)->getPath() == "data/doc/tfs_eng_1"){
+
+        Catalog *eng1 = s->getCatalogByPath("data/doc/tfs_eng_1");//поврежденные каталоги удаляем
+        QFile("data/doc/tfs_eng_1").remove();
+        s->deleteCatalog(eng1);
+
+        Catalog *eng2 = s->getCatalogByPath("data/doc/tfs_eng_2");
+        QFile("data/doc/tfs_eng_2").remove();
+        s->deleteCatalog(eng2);
+
+        addCatalog("Добавьте первый каталог, потом удалите эту строку", "data/doc/temp.book");
     }
 }
 
@@ -80,8 +93,13 @@ void CatalogsEditor::on_btnAdd_clicked()
     CatalogEnter ce;
     ce.exec();
 
+    if (ce.getName() == "") {
+        QMessageBox::information(this, "Информация", "Файл не может быть пустым!");
+        return;
+    }
+
     QString name = ce.getName();
-    QString path = "doc/" + ce.getPath();
+    QString path = "data/doc/" + ce.getPath();
 
     addCatalog(name, path);
 }
@@ -146,8 +164,14 @@ void CatalogsEditor::on_btnDown_clicked()
 }
 
 void CatalogsEditor::on_btnRename_clicked()
-{
+{  
     NameEnter ne;
+    if(currentCatalog != NULL){
+    ne.setName(currentCatalog->getName());
+    } else {
+        QMessageBox::information(this, "Предупреждение!", "Вы не выбрали ни одного каталога!");
+        return;
+    }
     ne.exec();
 
     currentCatalog->setName(ne.getName());

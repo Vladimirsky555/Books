@@ -42,7 +42,8 @@ QString NameEnter::getName(){
     return name;
 }
 
-void NameEnter::setName(QString name){
+void NameEnter::setName(QString name)
+{
     ui->edtName->setText(name);
 }
 

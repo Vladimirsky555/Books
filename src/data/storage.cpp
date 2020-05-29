@@ -13,6 +13,18 @@ Catalog* Storage::getCatalogById(int id)
     return NULL;
 }
 
+Catalog *Storage::getCatalogByPath(QString path)
+{
+    for(int i = 0; i < catalogs.size(); i++){
+        if(catalogs[i]->getPath() == path){
+            return catalogs[i];
+        }
+    }
+
+    return NULL;
+}
+
+
 BookItem *Storage::getBookByName(QString name)
 {
     BookItem *currentBook = NULL;

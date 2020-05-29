@@ -15,6 +15,7 @@ public:
     explicit Storage(QObject *parent = nullptr);
 
     Catalog* getCatalogById(int id);
+    Catalog* getCatalogByPath(QString path);
     BookItem* getBookByName(QString name);
     QList<Catalog*> Catalogs();
     void addCatalog(Catalog *catalog);
