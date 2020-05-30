@@ -16,12 +16,20 @@ class ExportDialog : public QDialog
     Q_OBJECT
 
     Storage *s;
+
     Catalog *catalogTo;
     Catalog *catalogFrom;
     BookItem *book;//книга для экспорта
 
+    Catalog *catalog;
+    BookItem *bookTo;
+    BookItem *bookFrom;
+    ListItem *chapter;//раздел для экспорта
+
+
 public:
       ExportDialog(Storage *s, Catalog *catalog, BookItem* book, QWidget *parent = nullptr);
+      ExportDialog(Catalog *catalog, BookItem* book, ListItem* chapter, QWidget *parent = nullptr);
     ~ExportDialog();
 
 private slots:

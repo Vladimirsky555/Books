@@ -25,12 +25,15 @@ public:
     QByteArray saveIt();
 
     //admin
+    void addChapter(ListItem* chapter);
     void insertDataFirst(QString newText);
     void insertData(QString,QString);
     void insertDataAtEnd(QString);
+    ListItem* insert_Duplicate(QString name);
     void setName(QString);
     void up(int id);
     void down(int id);
+    void removeChater(ListItem* chapter);//Удаление только из списка
     void deleteChapter(ListItem*);
     void deleteChapterById(int);
 

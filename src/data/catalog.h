@@ -13,7 +13,7 @@ class Catalog : public QObject
     QString path;
 
 public:
-    explicit Catalog(QString, QString, QObject *parent = nullptr);
+    Catalog(QString, QString, QObject *parent = nullptr);
     Catalog(QByteArray arr, QObject *parent = nullptr);
 
     //User
@@ -33,6 +33,8 @@ public:
     void insertDataFirst(QString newText);
     void insertData(QString source, QString newText);
     void insertDataAtEnd(QString name);
+    BookItem* insert_Duplicate(QString name);
+    QStringList getNameList();
     void up(int id);
     void down(int id);
     void deleteBook(BookItem* book);

@@ -26,6 +26,7 @@ public:
     void insertDataFirst(QString newText);
     void insertData(QString source, QString newText);
     void insertDataAtEnd(QString);
+    TextItem* insert_Duplicate(QString name);
     void setName(QString);
     void up(TextItem*item);
     void down(TextItem*item);

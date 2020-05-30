@@ -67,6 +67,13 @@ void ListItem::insertDataAtEnd(QString name)
     sections.push_back(ti);
 }
 
+TextItem *ListItem::insert_Duplicate(QString name)
+{
+    TextItem* section = new TextItem(name);
+    sections.push_back(section);
+    return section;
+}
+
 void ListItem::deleteSectionById(int id)
 {
     sections.removeAt(id);

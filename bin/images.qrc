@@ -35,5 +35,7 @@
         <file>images/export-in-file.png</file>
         <file>images/export-to-display.png</file>
         <file>images/rename.png</file>
+        <file>images/duplicate.png</file>
+        <file>images/numbers.png</file>
     </qresource>
 </RCC>

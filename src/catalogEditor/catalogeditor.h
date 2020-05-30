@@ -30,8 +30,10 @@ private:
     QAction *bookInsert;
     QAction *bookInsertEnd;
     QAction *bookEdit;
-    QAction *bookDelete;
     QAction *bookExport;
+    QAction *bookAddNumber;
+    QAction *bookDuplicate;
+    QAction *bookDelete;
 
     QList<QAction*> chapterActions;
     QAction *chapterUp;
@@ -39,7 +41,10 @@ private:
     QAction *chapterInsertFirst;
     QAction *chapterInsert;
     QAction *chapterInsertEnd;
-    QAction *chapterEdit;
+    QAction *chapterEdit;    
+    QAction *chapterExport;
+    QAction *chapterAddNumber;
+    QAction *chapterDuplicate;
     QAction *chapterDelete;
 
     QList<QAction*> sectionActions;
@@ -49,6 +54,7 @@ private:
     QAction *sectionInsert;
     QAction *sectionInsertEnd;
     QAction *sectionEdit;
+    QAction *sectionExport;
     QAction *sectionDelete;
 
 public:
@@ -70,16 +76,21 @@ private slots:
     void book_Insert_First();
     void book_Insert();
     void book_Insert_End();
-    void book_Edit();
-    void book_Delete();
+    void book_Edit();    
     void book_Export();
+    void book_add_Number();
+    void book_Duplicate();
+    void book_Delete();
 
     void chapter_Up();
     void chapter_Down();
     void chapter_Insert_First();
     void chapter_Insert();
     void chapter_Insert_End();
-    void chapter_Edit();
+    void chapter_Edit();    
+    void chapter_Export();
+    void chapter_add_Number();
+    void chapter_Duplicate();
     void chapter_Delete();
 
     void section_Up();
@@ -88,6 +99,7 @@ private slots:
     void section_Insert();
     void section_Insert_End();
     void section_Edit();
+    void section_Export();
     void section_Delete();
 
     void on_btnSaveText_clicked();//сохранение текста

@@ -6,6 +6,7 @@
 #include <QAction>
 #include <QMenu>
 #include <QModelIndex>
+#include <QIntValidator>
 
 catalogEditor::catalogEditor(Storage *s, Catalog *catalog, QWidget *parent) :
     QWidget(parent),
@@ -26,6 +27,7 @@ catalogEditor::catalogEditor(Storage *s, Catalog *catalog, QWidget *parent) :
     ui->lstSections->setEnabled(false);
     ui->edtText->setEnabled(false);
 
+
     refreshBooks();
     addActions();
 
@@ -43,12 +45,15 @@ catalogEditor::~catalogEditor()
 
 //Одиночные клики по полю
 void catalogEditor::on_lstBooks_clicked(const QModelIndex &index)
-{
+{    
     int id = index.row();
     ui->lstChapters->setEnabled(true);
 
     if (id == -1) return;
     currentBook = catalog->getBookById(id);
+    ui->edtFirstSection->setValidator(new QIntValidator(1, currentBook->getCount()));
+    ui->edtLastSection->setValidator(new QIntValidator(1, currentBook->getCount()));
+
     ui->lstChapters->setEnabled(true);
     ui->lstSections->setEnabled(true);
     ui->edtText->setEnabled(true);
@@ -62,6 +67,8 @@ void catalogEditor::on_lstChapters_clicked(const QModelIndex &index)
     int id = index.row();
     if (id == -1) return;
     currentChapter = currentBook->getChapterById(id);
+    ui->edtFirstSection->setValidator(new QIntValidator(1, currentChapter->getCount()));
+    ui->edtLastSection->setValidator(new QIntValidator(1, currentChapter->getCount()));
     ui->lstSections->setEnabled(true);
     ui->edtText->setEnabled(true);
     refreshSections();
@@ -205,6 +212,51 @@ void catalogEditor::book_Export()
     ui->lstChapters->setEnabled(false);
 }
 
+void catalogEditor::book_add_Number()
+{
+    ui->lstChapters->clear();
+        for(int i = 0; i < currentBook->getCount(); i++)
+        {
+            ui->lstChapters->addItem("[" + QString::number(i + 1) + "] " +
+                                     currentBook->getChapterById(i)->getName());
+             ui->lstChapters->item(i)->setIcon(QIcon(":/images/chapter.png"));
+        }
+}
+
+void catalogEditor::book_Duplicate()
+{
+    BookItem* newBook = catalog->insert_Duplicate(currentBook->getName() + "_копия");
+    int first = ui->edtFirstSection->text().toInt();
+    int end = ui->edtLastSection->text().toInt();
+
+    //Проверки
+    if(first <= 0) {
+        QMessageBox::warning(this, "Предупреждение!", "Мы используем натуральные числа!");
+        return;
+    }
+    if(end > currentBook->getCount()) {
+        QMessageBox::warning(this, "Предупреждение!", "Разделов меньше, чем вы указали!");
+        return;
+    }
+
+
+//    for(int i = 0; i < currentBook->getCount(); i++){
+     for(int i = first; i <= end; i++){
+
+        currentChapter = currentBook->getChapterById(i - 1);
+        ListItem* newChapter = newBook->insert_Duplicate(currentChapter->getName());
+
+       for(int j = 0; j < currentChapter->getCount(); j++){
+
+            currentSection = currentChapter->getSectionById(j);
+            TextItem* newSection = newChapter->insert_Duplicate(currentSection->getName());
+            newSection->setData(currentSection->getData());
+        }
+    }
+
+    refreshBooks();
+}
+
 void catalogEditor::chapter_Up()
 {
     currentBook->up(ui->lstChapters->currentRow());
@@ -276,6 +328,18 @@ void catalogEditor::chapter_Edit()
     refreshChapters();
 }
 
+void catalogEditor::chapter_Export()
+{
+    if(currentChapter == NULL) return;
+    ExportDialog ed(catalog, currentBook, currentChapter);
+    ed.exec();
+
+    refreshBooks();
+    ui->lstChapters->clear();
+    ui->lstChapters->setEnabled(false);
+    ui->lstSections->setEnabled(false);
+}
+
 
 void catalogEditor::chapter_Delete()
 {
@@ -285,7 +349,7 @@ void catalogEditor::chapter_Delete()
     reply = QMessageBox::question(this, "Вопрос!", "Удаляем главу?",
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
-        //Удаляем указатель массива items
+       // Удаляем указатель массива items
 
         currentBook->deleteChapter(currentChapter);
 
@@ -296,6 +360,44 @@ void catalogEditor::chapter_Delete()
     } else {
         return;
     }
+}
+
+void catalogEditor::chapter_add_Number()
+{
+    ui->lstSections->clear();
+    for(int i = 0; i < currentChapter->getCount(); i++)
+    {
+        ui->lstSections->addItem("[" + QString::number(i + 1) + "] " +
+                                 currentChapter->getSectionById(i)->getName());
+         ui->lstSections->item(i)->setIcon(QIcon(":/images/section.png"));
+    }
+}
+
+void catalogEditor::chapter_Duplicate()
+{
+    int first = ui->edtFirstSection->text().toInt();
+    int end = ui->edtLastSection->text().toInt();
+
+    //Проверки
+    if(first <= 0 || end - first < 0) {
+        QMessageBox::warning(this, "Предупреждение!", "Мы используем натуральные числа!");
+        return;
+    }
+    if(end > currentChapter->getCount()) {
+        QMessageBox::warning(this, "Предупреждение!", "Разделов меньше, чем вы указали!");
+        return;
+    }
+
+    ListItem* newChapter = currentBook->insert_Duplicate(currentChapter->getName()  + "_копия");
+
+    for(int i = first; i <= end; i++)
+    {
+        currentSection = currentChapter->getSectionById(i - 1);
+        TextItem* newSection = newChapter->insert_Duplicate(currentSection->getName());
+        newSection->setData(currentSection->getData());
+    }
+
+    refreshChapters();
 }
 
 void catalogEditor::section_Up()
@@ -362,6 +464,11 @@ void catalogEditor::section_Edit()
 
     currentSection->setName(ne.getName());
     refreshSections();
+}
+
+void catalogEditor::section_Export()
+{
+
 }
 
 void catalogEditor::section_Delete()
@@ -495,9 +602,36 @@ void catalogEditor::addActions()
         QPixmap p(":/images/edit.png");
         A->setIcon(QIcon(p));
         A->setShortcut(tr("Ctrl+Y"));
-        A->setText(tr("Редактировать"));
+        A->setText(tr("Переименовать"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Edit()));
+        ui->lstBooks->addAction(A);
+        bookActions << A;
+    }{
+        QAction *A = bookExport = new QAction(this);
+        QPixmap p(":/images/export-to-display.png");
+        A->setIcon(QIcon(p));
+        A->setShortcut(tr("Ctrl+L"));
+        A->setText(tr("Экспорт в другой каталог"));
+        connect(A, SIGNAL(triggered()),this, SLOT(book_Export()));
+        ui->lstBooks->addAction(A);
+        bookActions << A;
+    }{
+        QAction *A = bookAddNumber = new QAction(this);
+        QPixmap p(":/images/numbers.png");
+        A->setIcon(QIcon(p));
+        A->setShortcut(tr("Ctrl+N"));
+        A->setText(tr("Пронумеровать главы"));
+        connect(A, SIGNAL(triggered()),this, SLOT(book_add_Number()));
+        ui->lstBooks->addAction(A);
+        bookActions << A;
+    }{
+        QAction *A = bookDuplicate = new QAction(this);
+        QPixmap p(":/images/duplicate.png");
+        A->setIcon(QIcon(p));
+        A->setShortcut(tr("Ctrl+P"));
+        A->setText(tr("Дублировать"));
+        connect(A, SIGNAL(triggered()),this, SLOT(book_Duplicate()));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }{
@@ -508,15 +642,6 @@ void catalogEditor::addActions()
         A->setText(tr("Удалить"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Delete()));
-        ui->lstBooks->addAction(A);
-        bookActions << A;
-    }{
-        QAction *A = bookExport = new QAction(this);
-        QPixmap p(":/images/export-to-display.png");
-        A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+L"));
-        A->setText(tr("Экспорт в другой каталог"));
-        connect(A, SIGNAL(triggered()),this, SLOT(book_Export()));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }
@@ -572,8 +697,35 @@ void catalogEditor::addActions()
         QPixmap p(":/images/edit.png");
         A->setIcon(QIcon(p));
         A->setShortcut(tr("Ctrl+H"));
-        A->setText(tr("Редактировать"));
+        A->setText(tr("Переименовать"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Edit()));
+        ui->lstChapters->addAction(A);
+        chapterActions << A;
+    }{
+        QAction *A = chapterEdit = new QAction(this);
+        QPixmap p(":/images/export-to-display.png");
+        A->setIcon(QIcon(p));
+        A->setShortcut(tr("Ctrl+H"));
+        A->setText(tr("Экспорт в другую книгу"));
+        connect(A, SIGNAL(triggered()),this, SLOT(chapter_Export()));
+        ui->lstChapters->addAction(A);
+        chapterActions << A;
+    }{
+        QAction *A = chapterAddNumber = new QAction(this);
+        QPixmap p(":/images/numbers.png");
+        A->setIcon(QIcon(p));
+        A->setShortcut(tr("Ctrl+N"));
+        A->setText(tr("Пронумеровать разделы"));
+        connect(A, SIGNAL(triggered()),this, SLOT(chapter_add_Number()));
+        ui->lstChapters->addAction(A);
+        chapterActions << A;
+    }{
+        QAction *A = chapterDuplicate = new QAction(this);
+        QPixmap p(":/images/duplicate.png");
+        A->setIcon(QIcon(p));
+        A->setShortcut(tr("Ctrl+P"));
+        A->setText(tr("Дублировать"));
+        connect(A, SIGNAL(triggered()),this, SLOT(chapter_Duplicate()));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }{
@@ -640,8 +792,17 @@ void catalogEditor::addActions()
         QPixmap p(":/images/edit.png");
         A->setIcon(QIcon(p));
         A->setShortcut(tr("Ctrl+N"));
-        A->setText(tr("Редактировать"));
+        A->setText(tr("Переименовать"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Edit()));
+        ui->lstSections->addAction(A);
+        sectionActions << A;
+    }{
+        QAction *A = sectionExport = new QAction(this);
+        QPixmap p(":/images/export-to-display.png");
+        A->setIcon(QIcon(p));
+        A->setShortcut(tr("Ctrl+E"));
+        A->setText(tr("Экспорт в другую главу"));
+        connect(A, SIGNAL(triggered()),this, SLOT(section_Export()));
         ui->lstSections->addAction(A);
         sectionActions << A;
     }{

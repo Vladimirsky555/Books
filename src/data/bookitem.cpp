@@ -51,6 +51,13 @@ void BookItem::insertDataAtEnd(QString name)
     chapters.push_back(li);
 }
 
+ListItem *BookItem::insert_Duplicate(QString name)
+{
+    ListItem* chapter = new ListItem(name);
+    chapters.push_back(chapter);
+    return chapter;
+}
+
 void BookItem::deleteChapter(ListItem *item)
 {
     chapters.removeOne(item);
@@ -80,6 +87,12 @@ void BookItem::down(int id)
         chapters[id] = chapters[id + 1];
         chapters[id + 1] = tmp;
     }
+}
+
+void BookItem::removeChater(ListItem *chapter)
+{
+    if(chapter== NULL) return;
+    chapters.removeOne(chapter);
 }
 
 int BookItem::getCount()
@@ -130,4 +143,10 @@ QByteArray BookItem::saveIt(){
     }
 
     return arr;
+}
+
+void BookItem::addChapter(ListItem *chapter)
+{
+    if(chapter != NULL)
+    chapters.push_back(chapter);
 }

@@ -49,12 +49,12 @@ void CatalogsEditor::refresh()
     for(int i = 0; i < s->getCount(); i++)
     {
         ui->lstCatalogs->addItem(s->getCatalogById(i)->getName());
-        if(ui->lstCatalogs->item(i)->text() == "Речи Отца на английском (1936-1986)"){
-            ui->lstCatalogs->item(i)->setHidden(true);
-        }
-        if(ui->lstCatalogs->item(i)->text() == "Речи Отца на английском (1987-2006)"){
-             ui->lstCatalogs->item(i)->setHidden(true);
-        }
+//        if(ui->lstCatalogs->item(i)->text() == "Речи Отца на английском (1936-1986)"){
+//            ui->lstCatalogs->item(i)->setHidden(true);
+//        }
+//        if(ui->lstCatalogs->item(i)->text() == "Речи Отца на английском (1987-2006)"){
+//             ui->lstCatalogs->item(i)->setHidden(true);
+//        }
         ui->lstCatalogs->item(i)->setIcon(QIcon(":/images/catalog.png"));
     }
 
@@ -176,4 +176,14 @@ void CatalogsEditor::on_btnRename_clicked()
 
     currentCatalog->setName(ne.getName());
     refresh();
+}
+
+void CatalogsEditor::on_lstCatalogs_doubleClicked(const QModelIndex &)
+{
+    editor = new catalogEditor(s, currentCatalog);
+
+    connect(this, SIGNAL(shutdownEditor()),
+            editor, SLOT(shutdown()));
+
+    editor->show();
 }

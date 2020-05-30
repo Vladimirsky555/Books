@@ -116,6 +116,24 @@ void Catalog::insertDataAtEnd(QString name)
     books.push_back(bi);
 }
 
+BookItem *Catalog::insert_Duplicate(QString name)
+{
+    BookItem* book = new BookItem(name);
+    books.push_back(book);
+    return book;
+}
+
+QStringList Catalog::getNameList()
+{
+    QStringList namesList;
+    for(int i = 0; i < books.count(); i++)
+    {
+        namesList.append(books.at(i)->getName());
+    }
+
+    return namesList;
+}
+
 void Catalog::up(int id)
 {
     BookItem *tmp;
