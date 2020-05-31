@@ -5,6 +5,7 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include <QFontDialog>
+#include <QDir>
 #include <QFile>
 #include <QRegExp>
 
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     s = new Storage();
+
     currentCatalog = NULL;
     currentBook = NULL;
     currentChapter = NULL;
@@ -90,9 +92,6 @@ void MainWindow::saveData()
     for(int i = 0; i < s->getCount(); i++){
 
     QFile f(s->getCatalogById(i)->getPath());
-    //Повреждённые файлы не сохраняем
-//    if(s->getCatalogById(i)->getPath() == "data/doc/tfs_eng_1") continue;
-//    if(s->getCatalogById(i)->getPath() == "data/doc/tfs_eng_2") continue;
     f.open(QFile::WriteOnly | QFile::Truncate);
     QDataStream str(&f);
 
@@ -108,7 +107,13 @@ void MainWindow::saveData()
 void MainWindow::loadNamePathList()
 {
     QFile f("data/catalogs");
-    if(!f.exists()) return;
+    if(!f.exists()) {
+        QDir dir;
+        dir.mkpath("data");
+        dir.mkpath("data/doc");
+        nameList.append("Первый каталог");
+        pathList.append("data/doc/first_catalog");//Чтобы программа не вылетала временный каталог
+    }
 
     f.open(QFile::ReadOnly);
     QDataStream str(&f);

@@ -36,7 +36,6 @@ private slots:
      void on_btnUp_clicked();
      void on_btnDown_clicked();
      void on_btnRename_clicked();
-
      void on_lstCatalogs_doubleClicked(const QModelIndex &index);
 
 signals:

@@ -62,8 +62,6 @@ public:
     void setEnabledAll();
     ListItem* getItemByName(QString);
 
-    void loadCatalog(QString path);
-
 private slots:    
     void setPattern(QString);
     void sendPattern(QString);
