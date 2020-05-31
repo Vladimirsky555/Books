@@ -24,8 +24,10 @@ public:
    QList<ListItem *> getChapters();//Используется для вывода содержания
     QByteArray saveIt();
 
-    //admin
-    void addChapter(ListItem* chapter);
+    //admin     
+    void addChapter(ListItem* chapter);//Добавление в список
+    void removeChater(ListItem* chapter);//Удаление только из списка
+    QStringList getNameList();
     void insertDataFirst(QString newText);
     void insertData(QString,QString);
     void insertDataAtEnd(QString);
@@ -33,12 +35,8 @@ public:
     void setName(QString);
     void up(int id);
     void down(int id);
-    void removeChater(ListItem* chapter);//Удаление только из списка
     void deleteChapter(ListItem*);
     void deleteChapterById(int);
-
-signals:
-
 };
 
 #endif // BOOKITEM_H

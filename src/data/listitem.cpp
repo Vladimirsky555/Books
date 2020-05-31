@@ -8,6 +8,18 @@ ListItem::ListItem(QString name, QObject *parent) : QObject(parent)
 this->chapterName = name;
 }
 
+ListItem::ListItem(QByteArray arr, QObject *parent) : QObject(parent){
+    QDataStream str(&arr, QIODevice::ReadOnly);
+
+    str >> this->chapterName;
+
+    while(!str.atEnd()){
+        QByteArray tmp;
+        str >> tmp;
+       sections.append(new TextItem(tmp));
+    }
+}
+
 
 QString ListItem::getName(){
     return this->chapterName;
@@ -113,22 +125,18 @@ int ListItem::getCount(){
     return sections.size();
 }
 
-//void ListItem::clearData(){
-//    sections.clear();
-//}
-
-ListItem::ListItem(QByteArray arr, QObject *parent) : QObject(parent){
-    QDataStream reader(&arr, QIODevice::ReadOnly);
-
-    reader >> this->chapterName;
-
-    while(!reader.atEnd()){
-        QByteArray tmp;
-        reader >> tmp;
-       sections.append(new TextItem(tmp));
-    }
-
+void ListItem::addSection(TextItem *section)
+{
+    if(section != NULL)
+    sections.push_back(section);
 }
+
+void ListItem::removeSection(TextItem *section)
+{
+    if(section == NULL) return;
+    sections.removeOne(section);
+}
+
 
 QByteArray ListItem::saveIt(){
     QByteArray arr;
@@ -142,3 +150,5 @@ QByteArray ListItem::saveIt(){
 
     return arr;
 }
+
+

@@ -193,15 +193,9 @@
      </item>
      <item>
       <widget class="QLineEdit" name="edtFirstSection">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
+         <width>35</width>
          <height>16777215</height>
         </size>
        </property>
@@ -209,6 +203,9 @@
         <font>
          <pointsize>10</pointsize>
         </font>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>
@@ -226,15 +223,9 @@
      </item>
      <item>
       <widget class="QLineEdit" name="edtLastSection">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
        <property name="maximumSize">
         <size>
-         <width>50</width>
+         <width>35</width>
          <height>16777215</height>
         </size>
        </property>
@@ -242,6 +233,9 @@
         <font>
          <pointsize>10</pointsize>
         </font>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
      </item>

@@ -221,24 +221,31 @@ void catalogEditor::book_add_Number()
                                      currentBook->getChapterById(i)->getName());
              ui->lstChapters->item(i)->setIcon(QIcon(":/images/chapter.png"));
         }
+
+        ui->edtFirstSection->setText(QString::number(1));
+        ui->edtLastSection->setText(QString::number(currentBook->getCount()));
 }
 
 void catalogEditor::book_Duplicate()
 {
-    BookItem* newBook = catalog->insert_Duplicate(currentBook->getName() + "_копия");
     int first = ui->edtFirstSection->text().toInt();
     int end = ui->edtLastSection->text().toInt();
 
     //Проверки
     if(first <= 0) {
-        QMessageBox::warning(this, "Предупреждение!", "Мы используем натуральные числа!");
+        QMessageBox::warning(this, "Предупреждение!", "Перед копированием пронумеруйте главы, выбрав"
+                                                      "необходимые для создания новой книги. По умолчанию будет скопирована"
+                                                      "вся книга!");
         return;
     }
     if(end > currentBook->getCount()) {
-        QMessageBox::warning(this, "Предупреждение!", "Разделов меньше, чем вы указали!");
+        QMessageBox::warning(this, "Предупреждение!", "Количество глав не совпадает с реальным. "
+                                                      "Пронумеруйте главы, выбрав необходимые для создания новой книги. "
+                                                      "По умолчанию будет скопирована вся книга!");
         return;
     }
 
+    BookItem* newBook = catalog->insert_Duplicate(currentBook->getName() + "_копия");
 
 //    for(int i = 0; i < currentBook->getCount(); i++){
      for(int i = first; i <= end; i++){
@@ -334,10 +341,8 @@ void catalogEditor::chapter_Export()
     ExportDialog ed(catalog, currentBook, currentChapter);
     ed.exec();
 
-    refreshBooks();
     ui->lstChapters->clear();
-    ui->lstChapters->setEnabled(false);
-    ui->lstSections->setEnabled(false);
+    refreshChapters();
 }
 
 
@@ -371,6 +376,9 @@ void catalogEditor::chapter_add_Number()
                                  currentChapter->getSectionById(i)->getName());
          ui->lstSections->item(i)->setIcon(QIcon(":/images/section.png"));
     }
+
+    ui->edtFirstSection->setText(QString::number(1));
+    ui->edtLastSection->setText(QString::number(currentChapter->getCount()));
 }
 
 void catalogEditor::chapter_Duplicate()
@@ -380,11 +388,15 @@ void catalogEditor::chapter_Duplicate()
 
     //Проверки
     if(first <= 0 || end - first < 0) {
-        QMessageBox::warning(this, "Предупреждение!", "Мы используем натуральные числа!");
+        QMessageBox::warning(this, "Предупреждение!", "Перед копированием пронумеруйте разделы, выбрав"
+                                                      "необходимые для создания новой главы."
+                                                      "По умолчанию будет скопирована вся глава!");
         return;
     }
     if(end > currentChapter->getCount()) {
-        QMessageBox::warning(this, "Предупреждение!", "Разделов меньше, чем вы указали!");
+        QMessageBox::warning(this, "Предупреждение!", "Количество разделов не совпадает с реальным. "
+                                                      "Пронумеруйте главы, выбрав необходимые для создания новой главы. "
+                                                      "По умолчанию будет скопирована вся глава!");
         return;
     }
 
@@ -468,7 +480,12 @@ void catalogEditor::section_Edit()
 
 void catalogEditor::section_Export()
 {
+    if(currentSection == NULL) return;
+    ExportDialog ed(currentBook, currentChapter, currentSection);
+    ed.exec();
 
+    ui->lstSections->clear();
+    refreshSections();
 }
 
 void catalogEditor::section_Delete()

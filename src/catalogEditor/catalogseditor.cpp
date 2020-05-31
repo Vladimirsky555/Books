@@ -61,16 +61,20 @@ void CatalogsEditor::refresh()
     //При отсутствии элементов программа не запустится
     //Два каталога повреждённые. Поэтому при удалении всех элементов, эти два каталога
     //будут уничтожаться программно
-    if(s->getCount() == 2 && s->getCatalogById(0)->getPath() == "data/doc/tfs_eng_1"){
+//    if(s->getCount() == 2 && s->getCatalogById(0)->getPath() == "data/doc/tfs_eng_1"){
 
-        Catalog *eng1 = s->getCatalogByPath("data/doc/tfs_eng_1");//поврежденные каталоги удаляем
-        QFile("data/doc/tfs_eng_1").remove();
-        s->deleteCatalog(eng1);
+//        Catalog *eng1 = s->getCatalogByPath("data/doc/tfs_eng_1");//поврежденные каталоги удаляем
+//        QFile("data/doc/tfs_eng_1").remove();
+//        s->deleteCatalog(eng1);
 
-        Catalog *eng2 = s->getCatalogByPath("data/doc/tfs_eng_2");
-        QFile("data/doc/tfs_eng_2").remove();
-        s->deleteCatalog(eng2);
+//        Catalog *eng2 = s->getCatalogByPath("data/doc/tfs_eng_2");
+//        QFile("data/doc/tfs_eng_2").remove();
+//        s->deleteCatalog(eng2);
 
+//        addCatalog("Добавьте первый каталог, потом удалите эту строку", "data/doc/temp.book");
+//    }
+
+    if(s->getCount() == 2){
         addCatalog("Добавьте первый каталог, потом удалите эту строку", "data/doc/temp.book");
     }
 }

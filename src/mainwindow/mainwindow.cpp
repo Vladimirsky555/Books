@@ -91,8 +91,8 @@ void MainWindow::saveData()
 
     QFile f(s->getCatalogById(i)->getPath());
     //Повреждённые файлы не сохраняем
-    if(s->getCatalogById(i)->getPath() == "data/doc/tfs_eng_1") continue;
-    if(s->getCatalogById(i)->getPath() == "data/doc/tfs_eng_2") continue;
+//    if(s->getCatalogById(i)->getPath() == "data/doc/tfs_eng_1") continue;
+//    if(s->getCatalogById(i)->getPath() == "data/doc/tfs_eng_2") continue;
     f.open(QFile::WriteOnly | QFile::Truncate);
     QDataStream str(&f);
 

@@ -95,6 +95,17 @@ void BookItem::removeChater(ListItem *chapter)
     chapters.removeOne(chapter);
 }
 
+QStringList BookItem::getNameList()
+{
+    QStringList namesList;
+    for(int i = 0; i < chapters.count(); i++)
+    {
+        namesList.append(chapters.at(i)->getName());
+    }
+
+    return namesList;
+}
+
 int BookItem::getCount()
 {
     return chapters.size();

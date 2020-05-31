@@ -15,28 +15,28 @@ class ExportDialog : public QDialog
 {
     Q_OBJECT
 
-    Storage *s;
-
+    Storage *s;//список каталогов, в котором приосходят миграции
     Catalog *catalogTo;
     Catalog *catalogFrom;
-    BookItem *book;//книга для экспорта
+    BookItem *book;//книга для экспорта в другой каталог, и книга для миграций разделов
 
-    Catalog *catalog;
+    Catalog *catalog;//каталог, в котором происходят миграции
     BookItem *bookTo;
     BookItem *bookFrom;
-    ListItem *chapter;//раздел для экспорта
+    ListItem *chapter;//глава для экспорта
 
+    ListItem *chapterTo;
+    ListItem *chapterFrom;
+    TextItem *section;//раздел для экспорта
 
 public:
-      ExportDialog(Storage *s, Catalog *catalog, BookItem* book, QWidget *parent = nullptr);
-      ExportDialog(Catalog *catalog, BookItem* book, ListItem* chapter, QWidget *parent = nullptr);
+    ExportDialog(Storage *s, Catalog *catalogFrom, BookItem* book, QWidget *parent = nullptr);
+    ExportDialog(Catalog *catalog, BookItem* bookFrom, ListItem* chapter, QWidget *parent = nullptr);
+    ExportDialog(BookItem* book, ListItem* chapterFrom, TextItem *section, QWidget *parent = nullptr);
     ~ExportDialog();
 
 private slots:
     void on_lstExport_clicked(const QModelIndex &index);
-
-//signals:
-//    void changed();
 
 private:
     Ui::ExportDialog *ui;

@@ -23,6 +23,8 @@ public:
     QByteArray saveIt();
 
     //admin
+    void addSection(TextItem* section);//Добавление в список
+    void removeSection(TextItem* section);//Удаление только из списка
     void insertDataFirst(QString newText);
     void insertData(QString source, QString newText);
     void insertDataAtEnd(QString);
