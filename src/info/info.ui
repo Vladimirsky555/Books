@@ -40,44 +40,49 @@
      <height>71</height>
     </size>
    </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="title">
     <string>Страницы в сети</string>
    </property>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>20</y>
-      <width>230</width>
-      <height>51</height>
+      <x>21</x>
+      <y>21</y>
+      <width>228</width>
+      <height>16</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>http://hoondok.ru/soft/unification-books</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_3">
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>http://hoondok.ru/books/soft</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>http://hoondok.ru/soft/unification-books</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>21</x>
+      <y>49</y>
+      <width>191</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>http://hoondok.ru/books/soft</string>
+    </property>
    </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_2">
@@ -94,6 +99,11 @@
      <width>16777215</width>
      <height>41</height>
     </size>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
    </property>
    <property name="title">
     <string>Отзывы, предложения</string>
@@ -113,7 +123,7 @@
      </font>
     </property>
     <property name="text">
-     <string>unification-soft@hoondok.ru</string>
+     <string>books@hoondok.ru</string>
     </property>
    </widget>
   </widget>
