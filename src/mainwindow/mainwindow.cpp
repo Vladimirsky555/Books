@@ -64,7 +64,7 @@ MainWindow::~MainWindow()
 {
     if(login.getIsLogined()){
         saveNamePathList();
-        saveData();
+//        saveData();
     }
     delete ui;
 }

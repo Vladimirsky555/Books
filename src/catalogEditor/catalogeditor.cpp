@@ -27,7 +27,6 @@ catalogEditor::catalogEditor(Storage *s, Catalog *catalog, QWidget *parent) :
     ui->lstSections->setEnabled(false);
     ui->edtText->setEnabled(false);
 
-
     refreshBooks();
     addActions();
 
@@ -228,6 +227,8 @@ void catalogEditor::book_add_Number()
 
 void catalogEditor::book_Duplicate()
 {
+    if(currentBook == NULL) return;
+
     int first = ui->edtFirstSection->text().toInt();
     int end = ui->edtLastSection->text().toInt();
 
@@ -383,6 +384,8 @@ void catalogEditor::chapter_add_Number()
 
 void catalogEditor::chapter_Duplicate()
 {
+    if(currentChapter == NULL) return;
+
     int first = ui->edtFirstSection->text().toInt();
     int end = ui->edtLastSection->text().toInt();
 
@@ -562,6 +565,20 @@ void catalogEditor::on_btnSaveText_clicked()
     currentSection->setData(q);
     refreshSections();
 }
+
+void catalogEditor::on_btnSaveCatalog_clicked()
+{
+    QFile f(catalog->getPath());
+    f.open(QFile::WriteOnly | QFile::Truncate);
+    QDataStream str(&f);
+
+    for(int i = 0; i < catalog->Books().count(); i++){
+        str << catalog->Books().at(i)->saveIt();
+    }
+
+    f.close();
+}
+
 
 void catalogEditor::addActions()
 {
@@ -833,3 +850,4 @@ void catalogEditor::addActions()
         sectionActions << A;
     }
 }
+

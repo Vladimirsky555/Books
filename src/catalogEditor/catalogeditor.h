@@ -111,6 +111,8 @@ private slots:
 
     void shutdown();
 
+    void on_btnSaveCatalog_clicked();
+
 private:
     Ui::catalogEditor *ui;
 };
