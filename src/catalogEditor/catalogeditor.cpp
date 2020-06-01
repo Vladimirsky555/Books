@@ -577,6 +577,8 @@ void catalogEditor::on_btnSaveCatalog_clicked()
     }
 
     f.close();
+
+    QMessageBox::information(this, "Сообщение!", "Каталог сохранён!");
 }
 
 

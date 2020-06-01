@@ -67,7 +67,7 @@ private slots:
     void sendPattern(QString);
     void setAll(BookItem*bookName, ListItem*bookChapter, TextItem*bookSection, QString booksPath);
     void on_cbxCatalogs_currentIndexChanged(int index);
-    void on_btnR_clicked();
+    void read_selected_book();
     void on_lstChapters_clicked(const QModelIndex &index);
     void on_lstSections_clicked(const QModelIndex &index);
 

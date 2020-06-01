@@ -175,7 +175,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Сохранить каталог</string>
+        <string>Сохранить изменения</string>
        </property>
        <property name="icon">
         <iconset>

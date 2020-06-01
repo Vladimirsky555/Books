@@ -64,25 +64,28 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="btnR">
+       <widget class="QToolButton" name="btnRead">
         <property name="text">
-         <string/>
+         <string>...</string>
         </property>
         <property name="icon">
          <iconset>
-          <normalon>:/images/study.png</normalon>
+          <normalon>:/images/read.png</normalon>
          </iconset>
         </property>
         <property name="iconSize">
          <size>
-          <width>23</width>
-          <height>23</height>
+          <width>25</width>
+          <height>25</height>
          </size>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QPushButton" name="btnFont">
+        <property name="toolTip">
+         <string extracomment="Шрифт"/>
+        </property>
         <property name="text">
          <string/>
         </property>
@@ -284,6 +287,15 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionRead">
+   <property name="icon">
+    <iconset resource="../../bin/images.qrc">
+     <normaloff>:/images/read.png</normaloff>:/images/read.png</iconset>
+   </property>
+   <property name="text">
+    <string>Читать</string>
    </property>
   </action>
  </widget>

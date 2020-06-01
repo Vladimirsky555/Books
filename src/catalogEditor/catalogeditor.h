@@ -61,7 +61,6 @@ public:
     catalogEditor(Storage *s, Catalog *catalog, QWidget *parent = nullptr);
     ~catalogEditor();
 
-    static catalogEditor *Current(Catalog *catalog);
     void addActions();
     void refreshBooks();
     void refreshChapters();

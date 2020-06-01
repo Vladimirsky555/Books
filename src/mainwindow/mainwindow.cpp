@@ -58,6 +58,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->actionContent->setEnabled(false);
     ui->btnFont->setEnabled(false);
     ui->edtPattern->setEnabled(false);
+
+    ui->btnRead->setDefaultAction(ui->actionRead);
+    connect(ui->actionRead, SIGNAL(triggered()), this, SLOT(read_selected_book()));
 }
 
 MainWindow::~MainWindow()
@@ -242,8 +245,7 @@ void MainWindow::refreshSections(){
     ui->edtText->setEnabled(false);
 }
 
-//Клики по полю
-void MainWindow::on_btnR_clicked()
+void MainWindow::read_selected_book()
 {
     ui->lstChapters->setEnabled(true);
     currentBook = currentBooks[ui->cbxBooks->currentIndex()];
@@ -253,7 +255,7 @@ void MainWindow::on_btnR_clicked()
     refreshChapters();
 }
 
-
+//Клики по полю
 void MainWindow::on_lstChapters_clicked(const QModelIndex &index)
 {
     ui->actionNotes->setEnabled(false);

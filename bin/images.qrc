@@ -37,5 +37,6 @@
         <file>images/rename.png</file>
         <file>images/duplicate.png</file>
         <file>images/numbers.png</file>
+        <file>images/read.png</file>
     </qresource>
 </RCC>
