@@ -138,7 +138,6 @@ void SearchWindow::textFindInCatalogs()
                         cnt++;
                     }
 
-
                     if(cnt != 0){
                         searchItem s;
                         s._catalog = currentCatalog;
@@ -243,7 +242,6 @@ void SearchWindow::findInBooks()
                     c++;
                     cnt++;
                 }
-
 
                     if(cnt != 0){
                         searchItem s;
@@ -627,13 +625,85 @@ void SearchWindow::text_file_Export()
 }
 
 void SearchWindow::result_display_Export()
-{
+{    
+    ui->edtText->clear();
+    QString result;
+    QStringList strList;
 
+    int cnt = 0;
+    for(int i = 0; i < searchItems.count(); i++){
+
+        currentText = searchItems[i]._section->getData();
+        QRegExp rx_("</p>");
+        strList = currentText.split(rx_);
+
+        for(int j = 0; j < strList.count(); j++){
+            QRegExp rx(ui->edtSearch->text());
+            if(!checkRegExp(rx))return;
+            int pos = 0;
+            QString str = strList[j];
+            while((pos = rx.indexIn(str, pos)) != -1){
+                pos += rx.matchedLength();
+                cnt++;
+
+                result += QString::number(cnt) + ": " + "\"" + str + "\"";
+                result += "<br>";
+                result += "(" + searchItems[i]._book->getName() + ", " +
+                                      searchItems[i]._chapter->getName() + ", " +
+                                      searchItems[i]._section->getName() + ")";
+                result += "<br>";
+                result += "<br>";
+            }
+        }
+
+        strList.clear();
+    }
+
+    ui->edtText->setHtml(result);
 }
+
 
 void SearchWindow::result_file_Export()
 {
- 
+    QStringList strList;
+
+//    QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
+    QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
+    if(filename.isEmpty())return;
+
+    QFile file(filename);
+    if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append)) return;
+    QTextStream out(&file);
+
+    int cnt = 0;
+    for(int i = 0; i < searchItems.count(); i++){
+
+        currentText = searchItems[i]._section->getData();
+        QRegExp rx_("</p>");
+        strList = currentText.split(rx_);
+
+        for(int j = 0; j < strList.count(); j++){
+            QRegExp rx(ui->edtSearch->text());
+            if(!checkRegExp(rx))return;
+            int pos = 0;
+
+            QRegExp e("\<(/?[^>]+)>");
+            QString str = strList[j].replace(e," ");
+
+            while((pos = rx.indexIn(str, pos)) != -1){
+                pos += rx.matchedLength();
+                cnt++;
+
+                out << QString::number(cnt) << ": " << "\"" << str<< "\"" << "\n" <<
+                "(" << currentBook->getName() << ", " <<
+                           currentChapter->getName() << ", " <<
+                           currentSection->getName() << ")" << "\n\n";
+            }
+        }
+
+        strList.clear();
+    }
+    file.close();
 }
 
 
