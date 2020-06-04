@@ -72,7 +72,7 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
         QAction *A = exportResultToDisplay= new QAction(this);
         QPixmap p(":/images/export-to-display.png");
         A->setIcon(QIcon(p));
-        A->setText(tr("Экспорт цитат текстов на дисплей"));
+        A->setText(tr("Экспорт всех цитат на дисплей"));
         connect(A, SIGNAL(triggered()),this, SLOT(result_display_Export()));
         ui->lstResults->addAction(A);
         listActions << A;
@@ -80,7 +80,7 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
         QAction *A = exportResultToFile = new QAction(this);
         QPixmap p(":/images/export-in-file.png");
         A->setIcon(QIcon(p));
-        A->setText(tr("Экспорт цитат текстов в файл"));
+        A->setText(tr("Экспорт всех цитат в файл"));
         connect(A, SIGNAL(triggered()),this, SLOT(result_file_Export()));
         ui->lstResults->addAction(A);
         listActions << A;
@@ -144,7 +144,6 @@ void SearchWindow::textFindInCatalogs()
                         s._book = currentBook;
                         s._chapter = currentChapter;
                         s._section = currentSection;
-                        s.searchPhrase = ui->edtSearch->text();
                         s.num = cnt;
                         searchItems.append(s);
                     }
@@ -249,7 +248,6 @@ void SearchWindow::findInBooks()
                         s._book = currentBook;
                         s._chapter = currentChapter;
                         s._section = currentSection;
-                        s.searchPhrase = ui->edtSearch->text();
                         s.num = cnt;
                         searchItems.append(s);
                     }
@@ -348,12 +346,11 @@ void SearchWindow::findInChapters()
     for(int k = 0; k < s->getCount(); k++){
 
         currentCatalog = s->getCatalogById(k);
-//        currentBooks = s->getCatalogById(k)->Books();
-//        QString listItem = catalogsNamesList[k];
+
         int cnt = 0;
 
         for(int l = 0; l < currentCatalog->getCount(); l++){
-//            currentBook = currentBooks[l];
+
             currentBook = currentCatalog->getBookById(l);
 
             QRegExp rx(ui->edtSearch->text());
@@ -369,9 +366,6 @@ void SearchWindow::findInChapters()
                 searchItem s;
                 s._catalog = currentCatalog;
                 s._book = currentBook;
-//                s.booksCatalog = listItem;
-                s.searchPhrase = ui->edtSearch->text();
-//                s.booksPath = pathList[k];
                 s.num = cnt;
                 searchItems.append(s);
             }
@@ -395,9 +389,6 @@ void SearchWindow::findInChapters()
                     s._catalog = currentCatalog;
                     s._book = currentBook;
                     s._chapter = currentChapter;
-//                    s.booksCatalog = listItem;
-                    s.searchPhrase = ui->edtSearch->text();
-//                    s.booksPath = pathList[k];
                     s.num = cnt;
                     searchItems.append(s);
                 }
@@ -422,9 +413,6 @@ void SearchWindow::findInChapters()
                         s._book = currentBook;
                         s._chapter = currentChapter;
                         s._section = currentSection;
-//                        s.booksCatalog = listItem;
-                        s.searchPhrase = ui->edtSearch->text();
-//                        s.booksPath = pathList[k];
                         s.num = cnt;
                         searchItems.append(s);
                     }
@@ -457,7 +445,7 @@ void SearchWindow::findInChapters()
 }
 
 void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
-{
+{            
     ui->lstText->setEnabled(true);
     ui->lstText->clear();
 
@@ -587,7 +575,8 @@ void SearchWindow::text_display_Export()
     QString tmp;
     ui->edtText->clear();
     for(int i = 0; i < textItems.count(); i++){
-    tmp += "\"" + textItems[i].line + "\"";
+
+    tmp += QString::number(i+1) + ": ""\"" + textItems[i].line + "\"";
     tmp += "<br>";
     tmp += "(" + currentBook->getName() + ", " +
            currentChapter->getName() + ", " +
@@ -601,9 +590,8 @@ void SearchWindow::text_display_Export()
 
 void SearchWindow::text_file_Export()
 {
-    //Save the file to disk
-        QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
-        //QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
+//        QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
+        QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
         if(filename.isEmpty())return;
 
         QFile file(filename);

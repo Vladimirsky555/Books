@@ -21,8 +21,6 @@ struct searchItem {
     BookItem *_book;
     ListItem *_chapter;
     TextItem *_section;
-    QString searchPhrase;   //Искомая фраза или слово
-    QString booksPath;      //Путь к каталогу (категории) книг
     int num;                       //Сколько раз фраза встретилась в конкретном тексте
     int n;                           //Количество текстов, в которых встретилась фраза
 };
