@@ -17,10 +17,10 @@ class QAction;
 
 //Структура, формирующаяся по результатам поиска в одном цикле
 struct searchItem {
-    QString booksCategory; //Категория
-    QString bookName;       //Название книги
-    QString bookChapter;   //Глава книги
-    QString bookSection;   //Раздел в главе книги
+    Catalog *_catalog;
+    BookItem *_book;
+    ListItem *_chapter;
+    TextItem *_section;
     QString searchPhrase;   //Искомая фраза или слово
     QString booksPath;      //Путь к каталогу (категории) книг
     int num;                       //Сколько раз фраза встретилась в конкретном тексте
@@ -38,33 +38,28 @@ class SearchWindow : public QWidget
     Q_OBJECT
 
     Storage *s;
-    QStringList catalogsNamesList;
-    QStringList pathList;
-
-    QList<BookItem*> booksList;//для поиска по книгам или в отдельной книге
-
-    QList<searchItem> searchItems; //Массив структур, формирующийся по результатам поиска
-    QList<textItem> textItems;
-
-    QList<BookItem*> currentBooks; //Массив книг в выбранном каталоге
+    Catalog *currentCatalog;
     BookItem* currentBook;
     ListItem* currentChapter;
     TextItem* currentSection;
     QString currentTitle;
-    QString currentTxt;
+    QString currentText;
+
+    QList<BookItem*> booksList;//для поиска по книгам или в отдельной книге
+    QList<searchItem> searchItems; //Массив структур, формирующийся по результатам поиска
+    QList<textItem> textItems;
 
     QList<QAction*> listActions;
     QAction *exportTextToFile;
     QAction *exportTextToDisplay;
-//    QAction *exportBookToFile;
-//    QAction *exportBookToDisplay;
+    QAction *exportResultToFile;
+    QAction *exportResultToDisplay;
 
     //Переменные для подсветки
     QRegexpHighlighter *highlighter1;
     QRegexpHighlighter *highlighter2;
 
     FindChooser *widget_findchooser;
-    bool isBook;
     Ui::SearchWindow *ui;
 
 private:
@@ -77,15 +72,13 @@ public:
     void loadFromFile(QString);
     void textFindInCatalogs();
 
-
 private slots:
     void contextMenuRequsted(const QPoint &p);
     void shutdown();
 
     void findInCatalogs();//запускает textFindInCatalogs()
-    void on_edtSearch_returnPressed();
-    void findInChapters();//экшен, привязанный к toolButton
     void findInBooks();//Поиск по книгам, полученным из класса FindChooser
+    void findInChapters();//экшен, привязанный к toolButton
 
     void on_edtSearch_textChanged(const QString &arg1);
     void on_lstResults_clicked(const QModelIndex &index);
@@ -94,11 +87,12 @@ private slots:
     void on_lstText_clicked(const QModelIndex &index);
     void chooseFont();
 
-    void text_display_Export();
+    void text_display_Export();//экспорт цитат только из текста, по которому кликнули мышкой
     void text_file_Export();
-//    void book_display_Export();
-//    void book_file_Export();
-//    void all_Export();
+    void result_display_Export();//экспорт цитат из всего списка, где она встречается
+    void result_file_Export();
+
+    void on_edtSearch_returnPressed();
 
 signals:
     void sendPattern(QString value);
