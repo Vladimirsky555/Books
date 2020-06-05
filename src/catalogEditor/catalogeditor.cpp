@@ -76,6 +76,7 @@ void catalogEditor::on_lstChapters_clicked(const QModelIndex &index)
 
 void catalogEditor::on_lstSections_clicked(const QModelIndex &index)
 {
+    ui->btnSaveText->setEnabled(true);
     int id = index.row();
     if (id == -1) return;
     currentSection = currentChapter->getSectionById(id);
@@ -564,6 +565,7 @@ void catalogEditor::on_btnSaveText_clicked()
     QString q = ui->edtText->toHtml();
     currentSection->setData(q);
     refreshSections();
+    ui->btnSaveText->setEnabled(false);
 }
 
 void catalogEditor::on_btnSaveCatalog_clicked()

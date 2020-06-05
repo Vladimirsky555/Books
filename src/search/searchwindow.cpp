@@ -457,8 +457,11 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
         return;
     }
 
-        currentText = searchItems[id]._section->getData();
-        ui->edtText->setHtml(currentText);
+    currentBook = s->getBookByName(searchItems[id]._book->getName());
+    currentChapter = currentBook->getChapterByName(searchItems[id]._chapter->getName());
+    currentSection = currentChapter->getSectionByName(searchItems[id]._section->getName());
+    currentText = searchItems[id]._section->getData();
+    ui->edtText->setHtml(currentText);
 
         //Вводим переменную, считающую сколько раз встречается слово в строке
         //Анализируем текст по клику на предмет наличия искомой фразы или слова
