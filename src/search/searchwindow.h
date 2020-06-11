@@ -103,8 +103,8 @@ private slots:
     void result_display_Export();//экспорт цитат из всего списка, где она встречается
     void result_file_Export();
 
-
-     void on_edtSearch_textChanged(const QString &arg1);//подсветка
+    //подсветка
+    void on_edtSearch_textChanged(const QString &arg1);
 
 signals:
     void sendPattern(QString value);

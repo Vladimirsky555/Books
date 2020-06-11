@@ -614,6 +614,7 @@ void SearchWindow::chooseFont()
 void SearchWindow::text_display_Export()
 {
     QString tmp;
+    ui->lstText->clear();
     ui->edtText->clear();
     for(int i = 0; i < textItems.count(); i++){
 
@@ -656,6 +657,7 @@ void SearchWindow::text_file_Export()
 void SearchWindow::result_display_Export()
 {    
     ui->edtText->clear();
+    ui->lstText->clear();
     QString result;
     QStringList strList;
 
