@@ -553,11 +553,6 @@ void catalogEditor::shutdown()
     close();
 }
 
-//void catalogEditor::refreshChanged()
-//{
-//    refreshBooks();
-//}
-
 
 //Сохранение текста
 void catalogEditor::on_btnSaveText_clicked()

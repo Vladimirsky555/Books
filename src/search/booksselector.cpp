@@ -1,13 +1,12 @@
-#include "findchooser.h"
-#include "ui_findchooser.h"
+#include "booksselector.h"
+#include "ui_booksselector.h"
 
 #include <QMessageBox>
 #include <QAction>
 
-
-FindChooser::FindChooser(Storage *s, QWidget *parent) :
+BooksSelector::BooksSelector(Storage *s, QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::FindChooser)
+    ui(new Ui::BooksSelector)
 {
     ui->setupUi(this);
 
@@ -15,11 +14,11 @@ FindChooser::FindChooser(Storage *s, QWidget *parent) :
 
     ui->btnOk->setEnabled(false);
 
-    setWindowTitle("Выбор книг (книги) для поиска");
+    setWindowTitle("Выбор книг для поиска");
 
-        ui->btnOk->setDefaultAction(ui->actionChoose);//привязали к toolbutton
-          connect(ui->actionChoose, SIGNAL(triggered()),
-                      this, SLOT(chooseBooks()));
+        ui->btnOk->setDefaultAction(ui->actionBookSelect);//привязали к toolbutton
+          connect(ui->actionBookSelect, SIGNAL(triggered()),
+                      this, SLOT(selectBooks()));
 
     int count = 0;
     for( int i = 0; i < s->getCount(); i++){
@@ -36,12 +35,12 @@ FindChooser::FindChooser(Storage *s, QWidget *parent) :
     refreshSource();
 }
 
-FindChooser::~FindChooser()
+BooksSelector::~BooksSelector()
 {
     delete ui;
 }
 
-void FindChooser::refreshSource()
+void BooksSelector::refreshSource()
 {
     ui->lstSource->clear();
     for(int i = 0; i < booksSource.count(); i++){
@@ -50,7 +49,7 @@ void FindChooser::refreshSource()
     }
 }
 
-void FindChooser::refreshDest()
+void BooksSelector::refreshDest()
 {
     ui->lstDest->clear();
     for(int i = 0; i < booksDest.count(); i++){
@@ -59,14 +58,7 @@ void FindChooser::refreshDest()
     }
 }
 
-
-void FindChooser::chooseBooks()
-{
-    emit choose(booksDest);
-    close();
-}
-
-void FindChooser::on_lstSource_clicked(const QModelIndex &index)
+void BooksSelector::on_lstSource_clicked(const QModelIndex &index)
 {
     ui->btnOk->setEnabled(true);
 
@@ -79,8 +71,7 @@ void FindChooser::on_lstSource_clicked(const QModelIndex &index)
     refreshSource();
 }
 
-
-void FindChooser::on_lstDest_clicked(const QModelIndex &index)
+void BooksSelector::on_lstDest_clicked(const QModelIndex &index)
 {
     QString name = ui->lstDest->item(index.row())->text();
     currentBook = s->getBookByName(name);
@@ -89,4 +80,10 @@ void FindChooser::on_lstDest_clicked(const QModelIndex &index)
 
     refreshSource();
     refreshDest();
+}
+
+void BooksSelector::selectBooks()
+{
+    emit select(booksDest);
+    close();
 }

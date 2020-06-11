@@ -7,6 +7,8 @@
 #include <QTextStream>
 #include <QFileDialog>
 
+#include <QDebug>
+
 SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SearchWindow)
@@ -19,6 +21,8 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
     this->currentSection = NULL;
 
     this->s = s;
+    this->resource = true;
+    this->catalogsList = s->Catalogs();//по умолчанию ищем по всем каталогам
 
     //Подсветка
     highlighter1 = new QRegexpHighlighter(this);
@@ -30,20 +34,19 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
     ui->edtSource->setEnabled(false);
     ui->lstResults->setEnabled(false);
     ui->lstText->setEnabled(false);
-    ui->actionFindInSelectedBooks->setEnabled(false);
 
     //Подключим ко всем toolButton экшены
     ui->btnFind->setDefaultAction(ui->actionFind);
-    connect(ui->actionFind, SIGNAL(triggered()), this, SLOT(findInCatalogs()));
-
-    ui->btnFindInSelectedBooks->setDefaultAction(ui->actionFindInSelectedBooks);
-    connect(ui->actionFindInSelectedBooks, SIGNAL(triggered()), this, SLOT(findInBooks()));
+    connect(ui->actionFind, SIGNAL(triggered()), this, SLOT(find()));
 
     ui->btnFindChapters->setDefaultAction(ui->actionFindChapters);
     connect(ui->actionFindChapters, SIGNAL(triggered()), this, SLOT(findInChapters()));
 
-    ui->btnChoose->setDefaultAction(ui->actionChoose);
-    connect(ui->actionChoose, SIGNAL(triggered()), this, SLOT(chooseResource()));
+    ui->btnBooksSelect->setDefaultAction(ui->action_books_select);
+    connect(ui->action_books_select, SIGNAL(triggered()), this, SLOT(selectBooks()));
+
+    ui->btnCatalogsSelect->setDefaultAction(ui->action_catalogs_select);
+    connect(ui->action_catalogs_select, SIGNAL(triggered()), this, SLOT(selectCatalogs()));
 
     ui->btnFont->setDefaultAction(ui->actionFont);
     connect(ui->actionFont, SIGNAL(triggered()), this, SLOT(chooseFont()));
@@ -93,7 +96,7 @@ SearchWindow::~SearchWindow()
 }
 
 
-void SearchWindow::textFindInCatalogs()
+void SearchWindow::findInCatalogs()
 {
     emit sendPattern(ui->edtSearch->text());
 
@@ -115,9 +118,9 @@ void SearchWindow::textFindInCatalogs()
     int c = 0;
     int n = 0;
 
-    for(int k = 0; k < s->getCount(); k++){
+     for(int k = 0; k < catalogsList.count(); k++){
 
-        currentCatalog = s->getCatalogById(k);
+          currentCatalog = catalogsList[k];
         int cnt = 0;
 
         for(int l = 0; l < currentCatalog->getCount(); l++){
@@ -189,14 +192,13 @@ void SearchWindow::textFindInCatalogs()
     ui->edtText->append(" ");
     ui->edtText->append(QString::number(c) + " повторений фразы (слова) " + "\"" +
                                         ui->edtSearch->text() + "\" в "  + QString::number(n) + " текстах");
-    ui->edtText->append("Поиск завершен!");
-}
 
-void SearchWindow::contextMenuRequsted(const QPoint &p)
-{
-    QMenu M(this);
-    M.addActions(listActions);
-    M.exec(mapToGlobal(p));
+    for(int i = 0; i < catalogsList.count(); i++){
+        ui->edtText->append(QString::number(i+1) + ": " + catalogsList[i]->getName());
+    }
+
+    ui->edtText->append(" ");
+    ui->edtText->append("Поиск завершен!");
 }
 
 void SearchWindow::findInBooks()
@@ -303,6 +305,14 @@ void SearchWindow::findInBooks()
     ui->edtText->append("Поиск завершен!");
 }
 
+void SearchWindow::contextMenuRequsted(const QPoint &p)
+{
+    QMenu M(this);
+    M.addActions(listActions);
+    M.exec(mapToGlobal(p));
+}
+
+
 //Функция, закрывающая окно поиска, если закрыть главное окно
 void SearchWindow::shutdown()
 {
@@ -310,11 +320,16 @@ void SearchWindow::shutdown()
 }
 
 //Реализация поиска
-void SearchWindow::findInCatalogs()
+void SearchWindow::find()
 {
     ui->lstText->clear();
     ui->btnFont->setEnabled(true);
-    textFindInCatalogs();
+
+    if(resource){
+        findInCatalogs();
+    } else {
+        findInBooks();
+    }
 }
 
 void SearchWindow::findInChapters()
@@ -498,26 +513,49 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
 }
 
 //Реализация выбора ресурса для поиска
-void SearchWindow::chooseResource()
+void SearchWindow::selectBooks()
 {
-    widget_findchooser = new FindChooser(s);
+    books_selector = new BooksSelector(s);
 
-    connect(widget_findchooser, SIGNAL(choose(QList<BookItem*>)),
+    connect(books_selector, SIGNAL(select(QList<BookItem*>)),
             this, SLOT(selectedBooks(QList<BookItem*>)));
 
-    widget_findchooser->exec();
+    books_selector->exec();
 }
 
 void SearchWindow::selectedBooks(QList<BookItem *> selectedBooks)
 {
-    ui->actionFindInSelectedBooks->setEnabled(true);
+    resource = false;//ищем по книгам
     this->booksList = selectedBooks;
 }
 
-void SearchWindow::on_edtSearch_returnPressed()
+void SearchWindow::selectCatalogs()
 {
+    catalogs_selector = new CatalogsSelector(s);
+
+    connect(catalogs_selector, SIGNAL(select(QList<Catalog*>)),
+            this, SLOT(selectedCatalogs(QList<Catalog*>)));
+
+    catalogs_selector->exec();
+}
+
+void SearchWindow::selectedCatalogs(QList<Catalog *> catalogs)
+{
+    resource = true;//ищем по каталогам
+    this->catalogsList = catalogs;
+}
+
+
+void SearchWindow::on_edtSearch_returnPressed()
+{   
     ui->lstText->clear();
-    textFindInCatalogs();
+    ui->btnFont->setEnabled(true);
+
+    if(resource){
+        findInCatalogs();
+    } else {
+        findInBooks();
+    }
 }
 
 void SearchWindow::on_lstText_clicked(const QModelIndex &index)

@@ -1,5 +1,5 @@
-#ifndef FINDCHOOSER_H
-#define FINDCHOOSER_H
+#ifndef BOOKSSELECTOR_H
+#define BOOKSSELECTOR_H
 
 #include <QDialog>
 #include <QTimer>
@@ -8,13 +8,11 @@
 #include "data/catalog.h"
 #include "data/bookitem.h"
 
-class QAction;
-
 namespace Ui {
-class FindChooser;
+class BooksSelector;
 }
 
-class FindChooser : public QDialog
+class BooksSelector : public QDialog
 {
     Q_OBJECT
 
@@ -26,8 +24,8 @@ class FindChooser : public QDialog
     QList<BookItem*> booksDest;//сформированный список для поиска
 
 public:
-    FindChooser(Storage *s, QWidget *parent = 0);
-    virtual ~FindChooser();
+    explicit BooksSelector(Storage *s, QWidget *parent = 0);
+    ~BooksSelector();
 
     void refreshSource();
     void refreshDest();
@@ -35,13 +33,13 @@ public:
 private slots:
     void on_lstSource_clicked(const QModelIndex &index);
     void on_lstDest_clicked(const QModelIndex &index);
-    void chooseBooks();
+    void selectBooks();
 
 signals:
-    void choose(QList<BookItem*>);
+    void select(QList<BookItem*>);
 
 private:
-    Ui::FindChooser *ui;
+    Ui::BooksSelector *ui;
 };
 
-#endif // FINDCHOOSER_H
+#endif // BOOKSSELECTOR_H

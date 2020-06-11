@@ -21,7 +21,7 @@ public:
     ListItem* getChapterById(int);
     ListItem* getChapterByName(QString value);
     int getCount();
-   QList<ListItem *> getChapters();//Используется для вывода содержания
+    QList<ListItem *> getChapters();//Используется для вывода содержания
     QByteArray saveIt();
 
     //admin     

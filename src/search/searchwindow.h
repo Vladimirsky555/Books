@@ -7,7 +7,8 @@
 
 #include "data/iteminfo.h"
 #include "helpers/qregexphighlighter.h"
-#include "search/findchooser.h"
+#include "search/booksselector.h"
+#include "search/catalogsselector.h"
 
 namespace Ui {
 class SearchWindow;
@@ -43,6 +44,9 @@ class SearchWindow : public QWidget
     QString currentTitle;
     QString currentText;
 
+    bool resource;
+
+    QList<Catalog*> catalogsList;//для поиска по каталогам или одному каталогу
     QList<BookItem*> booksList;//для поиска по книгам или в отдельной книге
     QList<searchItem> searchItems; //Массив структур, формирующийся по результатам поиска
     QList<textItem> textItems;
@@ -57,7 +61,9 @@ class SearchWindow : public QWidget
     QRegexpHighlighter *highlighter1;
     QRegexpHighlighter *highlighter2;
 
-    FindChooser *widget_findchooser;
+    CatalogsSelector *catalogs_selector;
+    BooksSelector *books_selector;
+
     Ui::SearchWindow *ui;
 
 private:
@@ -68,29 +74,37 @@ public:
     ~SearchWindow();
 
     void loadFromFile(QString);
-    void textFindInCatalogs();
+
+    void findInCatalogs();//поиск по всем каталогам
+    void findInBooks();
 
 private slots:
     void contextMenuRequsted(const QPoint &p);
     void shutdown();
 
-    void findInCatalogs();//запускает textFindInCatalogs()
-    void findInBooks();//Поиск по книгам, полученным из класса FindChooser
+    //Поиск
+    void find();
     void findInChapters();//экшен, привязанный к toolButton
+    void on_edtSearch_returnPressed();//поиск по всем каталогам
 
-    void on_edtSearch_textChanged(const QString &arg1);
-    void on_lstResults_clicked(const QModelIndex &index);
-    void chooseResource();//вызов chooseFinder
+    //Выбор каталогов, книг для поиска
+    void selectBooks();//вызов BooksSelector
     void selectedBooks(QList<BookItem*> selectedBooks);//список книг, результат из chooseFinder
-    void on_lstText_clicked(const QModelIndex &index);
+    void selectCatalogs();//вызов CatalogSelector
+    void selectedCatalogs(QList<Catalog*> catalogs);
     void chooseFont();
+
+    //Клики по спискам
+    void on_lstResults_clicked(const QModelIndex &index);
+    void on_lstText_clicked(const QModelIndex &index);
 
     void text_display_Export();//экспорт цитат только из текста, по которому кликнули мышкой
     void text_file_Export();
     void result_display_Export();//экспорт цитат из всего списка, где она встречается
     void result_file_Export();
 
-    void on_edtSearch_returnPressed();
+
+     void on_edtSearch_textChanged(const QString &arg1);//подсветка
 
 signals:
     void sendPattern(QString value);

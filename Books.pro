@@ -39,10 +39,11 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         src/diary/iteminfoform.h \        
         src/helpers/qregexphighlighter.h \
         src/search/searchwindow.h \
-        src/search/findchooser.h \
         src/info/list.h \
         src/info/info.h \
-        src/dialog/nameenter.h
+        src/dialog/nameenter.h \
+    src/search/booksselector.h \
+    src/search/catalogsselector.h
 
     SOURCES += src/main.cpp\
         src/application.cpp \
@@ -61,10 +62,11 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         src/diary/iteminfoform.cpp \        
         src/helpers/qregexphighlighter.cpp \
         src/search/searchwindow.cpp \
-        src/search/findchooser.cpp \
         src/info/list.cpp \
         src/info/info.cpp \
-        src/dialog/nameenter.cpp
+        src/dialog/nameenter.cpp \
+    src/search/booksselector.cpp \
+    src/search/catalogsselector.cpp
 
     FORMS += src/mainwindow/mainwindow.ui \
         src/catalogEditor/catalogeditor.ui \
@@ -74,8 +76,9 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
     src/dialog/logindialog.ui \
         src/diary/iteminfoform.ui \        
         src/search/searchwindow.ui \
-        src/search/findchooser.ui \
         src/info/list.ui \
         src/info/info.ui \
-        src/dialog/nameenter.ui
+        src/dialog/nameenter.ui \
+       src/search/booksselector.ui \
+       src/search/catalogsselector.ui
 

@@ -30,6 +30,42 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
+       <widget class="QToolButton" name="btnCatalogsSelect">
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/images/catalog.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="btnBooksSelect">
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normalon>:/images/book.png</normalon>
+         </iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>25</width>
+          <height>25</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLineEdit" name="edtSearch">
         <property name="font">
          <font>
@@ -71,45 +107,6 @@
           <width>25</width>
           <height>25</height>
          </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btnChoose">
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/arrows.png</normalon>
-         </iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>25</width>
-          <height>25</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btnFindInSelectedBooks">
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normalon>:/images/book.png</normalon>
-         </iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>25</width>
-          <height>25</height>
-         </size>
-        </property>
-        <property name="shortcut">
-         <string/>
         </property>
        </widget>
       </item>
@@ -236,10 +233,10 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionChoose">
+  <action name="action_books_select">
    <property name="icon">
     <iconset resource="../../bin/images.qrc">
-     <normaloff>:/images/arrows.png</normaloff>:/images/arrows.png</iconset>
+     <normaloff>:/images/book.png</normaloff>:/images/book.png</iconset>
    </property>
    <property name="text">
     <string>...</string>
@@ -263,13 +260,16 @@
     <string>Ctrl+T</string>
    </property>
   </action>
-  <action name="actionFindInSelectedBooks">
+  <action name="action_catalogs_select">
    <property name="icon">
     <iconset resource="../../bin/images.qrc">
-     <normaloff>:/images/book.png</normaloff>:/images/book.png</iconset>
+     <normaloff>:/images/catalog.png</normaloff>:/images/catalog.png</iconset>
    </property>
    <property name="text">
-    <string>Поиск по выбранным книгам</string>
+    <string>Выбор каталогов для поиска</string>
+   </property>
+   <property name="toolTip">
+    <string>Выбор каталогов для поиска</string>
    </property>
   </action>
  </widget>

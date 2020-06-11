@@ -38,6 +38,16 @@ Catalog *Storage::getCatalogByBook(BookItem *book)
     return catalog;
 }
 
+Catalog *Storage::getCatalogByName(QString name)
+{
+    for(int i = 0; i < catalogs.count(); i++){
+        if(catalogs[i]->getName() == name)
+            return catalogs[i];
+    }
+
+    return NULL;
+}
+
 
 BookItem *Storage::getBookByName(QString name)
 {
@@ -54,16 +64,6 @@ BookItem *Storage::getBookByName(QString name)
 
     return currentBook;
 }
-
-//QString Storage::getNameById(int id)
-//{
-//    return catalogs.at(id)->getName();
-//}
-
-//QString Storage::getPathById(int id)
-//{
-//    return catalogs.at(id)->getPath();
-//}
 
 QList<Catalog *> Storage::Catalogs()
 {
