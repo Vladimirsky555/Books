@@ -104,7 +104,8 @@ private slots:
     void result_file_Export();
 
     //подсветка
-    void on_edtSearch_textChanged(const QString &arg1);
+//    void on_edtSearch_textChanged(const QString &arg1);
+    void on_edtSearch_editingFinished();
 
 signals:
     void sendPattern(QString value);

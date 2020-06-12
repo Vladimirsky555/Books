@@ -751,9 +751,15 @@ bool SearchWindow::checkRegExp(QRegExp rx)
     }
 }
 
-void SearchWindow::on_edtSearch_textChanged(const QString &arg1)
+//void SearchWindow::on_edtSearch_textChanged(const QString &arg1)
+//{
+//    highlighter1->setPattern(arg1);
+//    highlighter1->rehighlight();
+//}
+
+
+void SearchWindow::on_edtSearch_editingFinished()
 {
-    highlighter1->setPattern(arg1);
+    highlighter1->setPattern(ui->edtSearch->text());
     highlighter1->rehighlight();
 }
-
