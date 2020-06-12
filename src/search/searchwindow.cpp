@@ -61,14 +61,7 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
         A->setIcon(QIcon(p));
         A->setText(tr("Экспорт цитат текста на дисплей"));
         connect(A, SIGNAL(triggered()),this, SLOT(text_display_Export()));
-        ui->lstResults->addAction(A);
-        listActions << A;
-    }{
-        QAction *A = exportTextToFile = new QAction(this);
-        QPixmap p(":/images/export-in-file.png");
-        A->setIcon(QIcon(p));
-        A->setText(tr("Экспорт цитат текста в файл"));
-        connect(A, SIGNAL(triggered()),this, SLOT(text_file_Export()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstResults->addAction(A);
         listActions << A;
     }{
@@ -77,6 +70,16 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
         A->setIcon(QIcon(p));
         A->setText(tr("Экспорт всех цитат на дисплей"));
         connect(A, SIGNAL(triggered()),this, SLOT(result_display_Export()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
+        ui->lstResults->addAction(A);
+        listActions << A;
+    }{
+        QAction *A = exportTextToFile = new QAction(this);
+        QPixmap p(":/images/export-in-file.png");
+        A->setIcon(QIcon(p));
+        A->setText(tr("Экспорт цитат текста в файл"));
+        connect(A, SIGNAL(triggered()),this, SLOT(text_file_Export()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstResults->addAction(A);
         listActions << A;
     }{
@@ -85,6 +88,7 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
         A->setIcon(QIcon(p));
         A->setText(tr("Экспорт всех цитат в файл"));
         connect(A, SIGNAL(triggered()),this, SLOT(result_file_Export()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstResults->addAction(A);
         listActions << A;
     }

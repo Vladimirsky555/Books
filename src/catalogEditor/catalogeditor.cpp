@@ -589,6 +589,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+Q"));
         A->setText(tr("Вставить в начало"));
         connect(A, SIGNAL(triggered()),this, SLOT(book_Insert_First()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }{
@@ -599,6 +600,7 @@ void catalogEditor::addActions()
         A->setText(tr("Вставить"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Insert()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }{
@@ -608,6 +610,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+E"));
         A->setText(tr("Вставить в конец"));
         connect(A, SIGNAL(triggered()),this, SLOT(book_Insert_End()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }{
@@ -618,6 +621,7 @@ void catalogEditor::addActions()
         A->setText(tr("Вверх"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Up()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }{
@@ -628,6 +632,7 @@ void catalogEditor::addActions()
         A->setText(tr("Вниз"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Down()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }{
@@ -638,6 +643,7 @@ void catalogEditor::addActions()
         A->setText(tr("Переименовать"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Edit()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }{
@@ -647,6 +653,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+L"));
         A->setText(tr("Экспорт в другой каталог"));
         connect(A, SIGNAL(triggered()),this, SLOT(book_Export()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }{
@@ -656,6 +663,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+N"));
         A->setText(tr("Пронумеровать главы"));
         connect(A, SIGNAL(triggered()),this, SLOT(book_add_Number()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }{
@@ -665,6 +673,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+P"));
         A->setText(tr("Дублировать"));
         connect(A, SIGNAL(triggered()),this, SLOT(book_Duplicate()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }{
@@ -675,6 +684,7 @@ void catalogEditor::addActions()
         A->setText(tr("Удалить"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Delete()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstBooks->addAction(A);
         bookActions << A;
     }
@@ -687,6 +697,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+A"));
         A->setText(tr("Вставить в начало"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Insert_First()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }{
@@ -696,6 +707,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+S"));
         A->setText(tr("Вставить"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Insert()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }  {
@@ -705,6 +717,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+D"));
         A->setText(tr("Вставить в конец"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Insert_End()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }{
@@ -714,6 +727,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+F"));
         A->setText(tr("Вверх"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Up()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }{
@@ -723,6 +737,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+G"));
         A->setText(tr("Вниз"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Down()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }{
@@ -732,6 +747,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+H"));
         A->setText(tr("Переименовать"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Edit()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }{
@@ -741,6 +757,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+H"));
         A->setText(tr("Экспорт в другую книгу"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Export()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }{
@@ -750,6 +767,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+N"));
         A->setText(tr("Пронумеровать разделы"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_add_Number()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }{
@@ -759,6 +777,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+P"));
         A->setText(tr("Дублировать"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Duplicate()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }{
@@ -768,6 +787,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+D"));
         A->setText(tr("Удалить"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Delete()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstChapters->addAction(A);
         chapterActions << A;
     }
@@ -780,6 +800,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+Z"));
         A->setText(tr("Вставить в начало"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Insert_First()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstSections->addAction(A);
         sectionActions << A;
     }{
@@ -789,6 +810,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+X"));
         A->setText(tr("Вставить"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Insert()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstSections->addAction(A);
         sectionActions << A;
     }{
@@ -798,6 +820,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+C"));
         A->setText(tr("Вставить в конец"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Insert_End()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstSections->addAction(A);
         sectionActions << A;
     }{
@@ -808,6 +831,7 @@ void catalogEditor::addActions()
         A->setText(tr("Вверх"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(section_Up()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstSections->addAction(A);
         sectionActions << A;
     }{
@@ -818,6 +842,7 @@ void catalogEditor::addActions()
         A->setText(tr("Вниз"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(section_Down()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstSections->addAction(A);
         sectionActions << A;
     }{
@@ -827,6 +852,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+N"));
         A->setText(tr("Переименовать"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Edit()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstSections->addAction(A);
         sectionActions << A;
     }{
@@ -836,6 +862,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+E"));
         A->setText(tr("Экспорт в другую главу"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Export()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstSections->addAction(A);
         sectionActions << A;
     }{
@@ -845,6 +872,7 @@ void catalogEditor::addActions()
         A->setShortcut(tr("Ctrl+M"));
         A->setText(tr("Удалить"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Delete()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
         ui->lstSections->addAction(A);
         sectionActions << A;
     }
