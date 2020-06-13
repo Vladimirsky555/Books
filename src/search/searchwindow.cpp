@@ -617,21 +617,29 @@ void SearchWindow::chooseFont()
 
 void SearchWindow::text_display_Export()
 {
-    QString tmp;
+    QString result;
     ui->lstText->clear();
     ui->edtText->clear();
     for(int i = 0; i < textItems.count(); i++){
 
-    tmp += QString::number(i+1) + ": ""\"" + textItems[i].line + "\"";
-    tmp += "<br>";
-    tmp += "(" + currentBook->getName() + ", " +
-           currentChapter->getName() + ", " +
-           currentSection->getName() + ")";
-    tmp += "<br>";
-    tmp += "<br>";
+    result += "<b><span style=\"color:#800000\">";
+    result += QString::number(i+1);
+    result += ": </span></b><br> \"";
+    result += textItems[i].line + "\"";
+    result += "<br>";
+    result += "<b><span style=\"color:#483D8B\">(";
+    result += currentBook->getName() + ", ";
+    result +=  currentChapter->getName() + ", ";
+    result += currentSection->getName();
+    result +=   ")</span></b>";
+    result += "<br>";
+    result += "<br>";
+    result += "<br>";
     }
 
-    ui->edtText->setHtml(tmp);
+
+
+    ui->edtText->setHtml(result);
 }
 
 void SearchWindow::text_file_Export()
@@ -676,16 +684,21 @@ void SearchWindow::result_display_Export()
             QRegExp rx(ui->edtSearch->text());
             if(!checkRegExp(rx))return;
             int pos = 0;
-            QString str = strList[j];
+            QString str = "\"" +strList[j] + "\"";
             while((pos = rx.indexIn(str, pos)) != -1){
                 pos += rx.matchedLength();
                 cnt++;
 
-                result += QString::number(cnt) + ": " + "\"" + str + "\"";
+                result += "<b><span style=\"color:#800000\">";
+                result += QString::number(cnt);
+                result += ": </span></b>";
+                result += str;
+                result += "<b><span style=\"color:#483D8B\"><br>(";
+                result += searchItems[i]._book->getName() + ", ";
+                result +=  searchItems[i]._chapter->getName() + ", ";
+                result += searchItems[i]._section->getName();
+                result +=   ")</span></b>";
                 result += "<br>";
-                result += "(" + searchItems[i]._book->getName() + ", " +
-                                      searchItems[i]._chapter->getName() + ", " +
-                                      searchItems[i]._section->getName() + ")";
                 result += "<br>";
                 result += "<br>";
             }
