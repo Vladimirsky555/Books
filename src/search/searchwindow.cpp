@@ -114,11 +114,6 @@ void SearchWindow::findInCatalogs()
 
     searchItems.clear();
 
-    ui->edtText->append("Режим исследования текстов!");
-    ui->edtText->append("");
-    ui->edtText->append("В квадратных скобках - число, указывающее на то, "
-                        "сколько раз в тексте встретились слово или фраза.");
-
     int c = 0;
     int n = 0;
 
@@ -185,24 +180,38 @@ void SearchWindow::findInCatalogs()
         ui->lstResults->item(i)->setIcon(QIcon(":/images/search_.png"));
     }
 
-    //Отображение информации о результатах в конце списка нижнего виджета
-    ui->lstResults->addItem(" ");
-    ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
-                            ui->edtSearch->text() + "\"" + " в " + QString::number(n) + " текстах");
-    ui->lstResults->addItem("Поиск завершен!");
-
-    //Отображение информации о результатах в окне поиска
+    //Отображение информации о результатах
+    QString result;
+    result += "<b><span style=\"color:#800000\">";
+    result += "Режим исследования текстов!";
+    result += "</span><br><br>";
+    result += "<span style=\"color:#483D8B\">";
+    result += "В квадратных скобках - число, указывающее на то, "
+              "сколько раз в тексте встретились слово или фраза.";
+    result += "<br>";
+    result += "<br><span style=\"color:#FF0000\">";
+    result += QString::number(c) + "</span> повторений фразы (слова) " + "\"" +
+            ui->edtSearch->text() + "\" в <span style=\"color:#FF0000\">"  + QString::number(n) +
+            "</span> текстах следующих каталогов:";
+    result += "</span></b>";
+    ui->edtText->append(result);
     ui->edtText->append(" ");
-    ui->edtText->append(" ");
-    ui->edtText->append(QString::number(c) + " повторений фразы (слова) " + "\"" +
-                                        ui->edtSearch->text() + "\" в "  + QString::number(n) + " текстах");
+    result = "";
 
     for(int i = 0; i < catalogsList.count(); i++){
         ui->edtText->append(QString::number(i+1) + ": " + catalogsList[i]->getName());
     }
 
-    ui->edtText->append(" ");
-    ui->edtText->append("Поиск завершен!");
+    result += "<br><br><b><span style=\"color:#483D8B\">";
+    result += "Поиск завершен!";
+    result += "</span></b><br>";
+    ui->edtText->append(result);
+
+
+    ui->lstResults->addItem(" ");
+    ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
+                            ui->edtSearch->text() + "\"" + " в " + QString::number(n) + " текстах");
+    ui->lstResults->addItem("Поиск завершен!");
 }
 
 void SearchWindow::findInBooks()
@@ -219,11 +228,6 @@ void SearchWindow::findInBooks()
     ui->edtText->clear();
 
     searchItems.clear();
-
-    ui->edtText->append("Режим исследования текстов!");
-    ui->edtText->append("");
-    ui->edtText->append("В квадратных скобках - число, указывающее на то, "
-                        "сколько раз в тексте встретились слово или фраза.");
 
     int c = 0;
     int n = 0;
@@ -276,7 +280,7 @@ void SearchWindow::findInBooks()
         }
     }
 
-    //Отображение списка результатов в нижнем виджете
+    //Вывод результатов
     for(int i = 0; i < searchItems.size(); i++){
         n++;
         searchItems[i].n = n;
@@ -288,25 +292,36 @@ void SearchWindow::findInBooks()
         ui->lstResults->item(i)->setIcon(QIcon(":/images/search_.png"));
     }
 
-    //Отображение информации о результатах в конце списка нижнего виджета
-    ui->lstResults->addItem(" ");
-    ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
-                            ui->edtSearch->text() + "\"" + " в " + QString::number(n) + " текстах");
-    ui->lstResults->addItem("Поиск завершен!");
-
-    //Отображение информации о результатах в окне поиска
+    //Отображение информации о результатах
+    QString result;
+    result += "<b><span style=\"color:#800000\">";
+    result += "Режим исследования текстов!";
+    result += "</span><br><br><span style=\"color:#483D8B\">";
+    result += "В квадратных скобках - число, указывающее на то, "
+              "сколько раз в тексте встретились слово или фраза.";
+    result += "<br><br><span style=\"color:#FF0000\">";
+    result += QString::number(c) + "</span> повторений фразы (слова) " + "\"" +
+            ui->edtSearch->text() + "\" в <span style=\"color:#FF0000\">"  + QString::number(n) +
+            "</span> текстах следующих книг:";
+    result += "</span></b>";
+    ui->edtText->append(result);
     ui->edtText->append(" ");
-    ui->edtText->append(" ");
-    ui->edtText->append(QString::number(c) + " повторений фразы (слова) " + "\"" +
-                                        ui->edtSearch->text() + "\" в "  + QString::number(n) + " текстах списка книг:");
-    ui->edtText->append(" ");
+    result = "";
 
     for(int i = 0; i < booksList.count(); i++){
         ui->edtText->append(QString::number(i+1) + ": " + booksList[i]->getName());
     }
 
-    ui->edtText->append(" ");
-    ui->edtText->append("Поиск завершен!");
+    result += "<br><br><b><span style=\"color:#483D8B\">";
+    result += "Поиск завершен!";
+    result += "</span></b><br>";
+    ui->edtText->append(result);
+
+
+    ui->lstResults->addItem(" ");
+    ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
+                            ui->edtSearch->text() + "\"" + " в " + QString::number(n) + " текстах");
+    ui->lstResults->addItem("Поиск завершен!");
 }
 
 void SearchWindow::contextMenuRequsted(const QPoint &p)
@@ -352,19 +367,14 @@ void SearchWindow::findInChapters()
     ui->lstResults->clear();
     ui->lstText->clear();
     searchItems.clear();
-//    currentBooks.clear();
     ui->edtText->clear();
-
-    ui->edtText->append("Режим исследования заголовков текстов!");
-    ui->edtText->append(" ");
-    ui->edtText->append(" ");
 
     int c = 0;
     int n = 0;
 
-    for(int k = 0; k < s->getCount(); k++){
+    for(int k = 0; k < catalogsList.count(); k++){
 
-        currentCatalog = s->getCatalogById(k);
+        currentCatalog = catalogsList.at(k);
 
         int cnt = 0;
 
@@ -442,8 +452,31 @@ void SearchWindow::findInChapters()
         }
     }
 
-
     //Отображение информации о результатах в окне поиска
+    QString result;
+
+    result += "<b><span style=\"color:#800000\">";
+    result += "Режим исследования заголовков текстов!";
+    result += "<br>";
+    result += "</span><br>";
+    result += "<span style=\"color:#483D8B\">";
+    result += "Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
+            ui->edtSearch->text() + "\" в " +  "заголовках следующих каталогов:";
+    result += "</span></b>";
+    result += "<br>";
+    ui->edtText->append(result);
+    result = "";
+
+    for(int i = 0; i < catalogsList.count(); i++){
+        ui->edtText->append(QString::number(i+1) + ": " + catalogsList[i]->getName());
+    }
+
+    result += "<br><b><span style=\"color:#483D8B\">";
+    result += "Результат поиска:";
+    result += "</span></b><br>";
+     ui->edtText->append(result);
+     result = "";
+
     for(int i = 0; i < searchItems.size(); i++){
         n++;
         searchItems[i].n = n;
@@ -452,15 +485,12 @@ void SearchWindow::findInChapters()
                             searchItems[i]._book->getName() + ", " +
                             searchItems[i]._chapter->getName() + ", " +
                             searchItems[i]._section->getName());
-
     }
 
-    ui->edtText->append(" ");
-    ui->edtText->append(" ");
-    ui->edtText->append("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
-                                        ui->edtSearch->text() + "\" в " +  "заголовках всех текстов!");
-     ui->edtText->append(" ");
-     ui->edtText->append("Поиск завершен!");
+    result += "<br><br><b><span style=\"color:#483D8B\">";
+    result += "Поиск завершен!";
+    result += "</span></b><br>";
+    ui->edtText->append(result);
 }
 
 void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
