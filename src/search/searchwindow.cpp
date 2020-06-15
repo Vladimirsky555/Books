@@ -183,7 +183,7 @@ void SearchWindow::findInCatalogs()
     //Отображение информации о результатах
     QString result;
     result += "<b><span style=\"color:#800000\">";
-    result += "Режим исследования текстов!";
+    result += "Режим исследования текстов";
     result += "</span><br><br>";
     result += "<span style=\"color:#483D8B\">";
     result += "В квадратных скобках - число, указывающее на то, "
@@ -295,7 +295,7 @@ void SearchWindow::findInBooks()
     //Отображение информации о результатах
     QString result;
     result += "<b><span style=\"color:#800000\">";
-    result += "Режим исследования текстов!";
+    result += "Режим исследования текстов";
     result += "</span><br><br><span style=\"color:#483D8B\">";
     result += "В квадратных скобках - число, указывающее на то, "
               "сколько раз в тексте встретились слово или фраза.";
@@ -456,7 +456,7 @@ void SearchWindow::findInChapters()
     QString result;
 
     result += "<b><span style=\"color:#800000\">";
-    result += "Режим исследования заголовков текстов!";
+    result += "Режим исследования заголовков текстов";
     result += "<br>";
     result += "</span><br>";
     result += "<span style=\"color:#483D8B\">";
