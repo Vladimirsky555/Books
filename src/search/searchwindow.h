@@ -22,8 +22,7 @@ struct searchItem {
     BookItem *_book;
     ListItem *_chapter;
     TextItem *_section;
-    int num;                       //Сколько раз фраза встретилась в конкретном тексте
-    int n;                           //Количество текстов, в которых встретилась фраза
+    int textCount;
 };
 
 //Структура, описывающая номер строки, в которой найдено искомое слово

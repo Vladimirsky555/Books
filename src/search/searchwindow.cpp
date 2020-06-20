@@ -114,9 +114,7 @@ void SearchWindow::findInCatalogs()
 
     searchItems.clear();
 
-    int c = 0;
-    int n = 0;
-
+     int c = 0;
      for(int k = 0; k < catalogsList.count(); k++){
 
           currentCatalog = catalogsList[k];
@@ -146,7 +144,7 @@ void SearchWindow::findInCatalogs()
                         s._book = currentBook;
                         s._chapter = currentChapter;
                         s._section = currentSection;
-                        s.num = cnt;
+                        s.textCount = cnt;
                         searchItems.append(s);
                     }
                     cnt = 0;
@@ -160,7 +158,7 @@ void SearchWindow::findInCatalogs()
     {
         for(int j = 0; j < searchItems.count() - 1; j++)
         {
-            if(searchItems[j].num < searchItems[j + 1].num)
+            if(searchItems[j].textCount < searchItems[j + 1].textCount)
             {
                 searchItem tmp = searchItems[j];
                 searchItems[j] = searchItems[j + 1];
@@ -170,11 +168,10 @@ void SearchWindow::findInCatalogs()
     }
 
     //Отображение списка результатов в нижнем виджете
-    for(int i = 0; i < searchItems.size(); i++){
-        n++;
-        searchItems[i].n = n;
+    int n = 1;
+    for(int i = 0; i < searchItems.size(); i++,n++){
         ui->lstResults->addItem(QString::number(n) + ": " + //Порядковый номер
-                                "[" + QString::number(searchItems[i].num) + "] " + //Число совпадений в тексте
+                                "[" + QString::number(searchItems[i].textCount) + "] " + //Число совпадений в тексте
                                 searchItems[i]._catalog->getName() + ", " + searchItems[i]._book->getName() + ", " +
                                 searchItems[i]._chapter->getName() + ", " + searchItems[i]._section->getName());
         ui->lstResults->item(i)->setIcon(QIcon(":/images/search_.png"));
@@ -230,9 +227,7 @@ void SearchWindow::findInBooks()
     searchItems.clear();
 
     int c = 0;
-    int n = 0;
     int cnt = 0;
-
     for(int l = 0; l < booksList.count(); l++){
         currentBook = booksList[l];
         currentCatalog = s->getCatalogByBook(currentBook);
@@ -258,7 +253,7 @@ void SearchWindow::findInBooks()
                         s._book = currentBook;
                         s._chapter = currentChapter;
                         s._section = currentSection;
-                        s.num = cnt;
+                        s.textCount = cnt;
                         searchItems.append(s);
                     }
                     cnt = 0;
@@ -271,7 +266,7 @@ void SearchWindow::findInBooks()
     {
         for(int j = 0; j < searchItems.count() - 1; j++)
         {
-            if(searchItems[j].num < searchItems[j + 1].num)
+            if(searchItems[j].textCount < searchItems[j + 1].textCount)
             {
                 searchItem tmp = searchItems[j];
                 searchItems[j] = searchItems[j + 1];
@@ -281,11 +276,10 @@ void SearchWindow::findInBooks()
     }
 
     //Вывод результатов
-    for(int i = 0; i < searchItems.size(); i++){
-        n++;
-        searchItems[i].n = n;
+    int n = 1;
+    for(int i = 0; i < searchItems.size(); i++,n++){
         ui->lstResults->addItem(QString::number(n) + ": " + //Порядковый номер
-                                "[" + QString::number(searchItems[i].num) + "] " + //Число совпадений в тексте
+                                "[" + QString::number(searchItems[i].textCount) + "] " + //Число совпадений в тексте
                                     searchItems[i]._catalog->getName() + ", " +
                                     searchItems[i]._book->getName() + ", " +
                                 searchItems[i]._chapter->getName() + ", " + searchItems[i]._section->getName());
@@ -370,8 +364,6 @@ void SearchWindow::findInChapters()
     ui->edtText->clear();
 
     int c = 0;
-    int n = 0;
-
     for(int k = 0; k < catalogsList.count(); k++){
 
         currentCatalog = catalogsList.at(k);
@@ -395,7 +387,7 @@ void SearchWindow::findInChapters()
                 searchItem s;
                 s._catalog = currentCatalog;
                 s._book = currentBook;
-                s.num = cnt;
+                s.textCount = cnt;
                 searchItems.append(s);
             }
 
@@ -418,7 +410,7 @@ void SearchWindow::findInChapters()
                     s._catalog = currentCatalog;
                     s._book = currentBook;
                     s._chapter = currentChapter;
-                    s.num = cnt;
+                    s.textCount = cnt;
                     searchItems.append(s);
                 }
 
@@ -442,7 +434,7 @@ void SearchWindow::findInChapters()
                         s._book = currentBook;
                         s._chapter = currentChapter;
                         s._section = currentSection;
-                        s.num = cnt;
+                        s.textCount = cnt;
                         searchItems.append(s);
                     }
 
@@ -477,9 +469,8 @@ void SearchWindow::findInChapters()
      ui->edtText->append(result);
      result = "";
 
-    for(int i = 0; i < searchItems.size(); i++){
-        n++;
-        searchItems[i].n = n;
+    int n = 1;
+    for(int i = 0; i < searchItems.size(); i++,n++){
         ui->edtText->append(QString::number(n) + ": " +
                             searchItems[i]._catalog->getName() + ", " +
                             searchItems[i]._book->getName() + ", " +
