@@ -17,7 +17,8 @@ class SearchWindow;
 class QAction;
 
 //Структура, формирующаяся по результатам поиска в одном цикле
-struct searchItem {
+struct searchItem
+{
     Catalog *_catalog;
     BookItem *_book;
     ListItem *_chapter;
@@ -26,7 +27,8 @@ struct searchItem {
 };
 
 //Структура, описывающая номер строки, в которой найдено искомое слово
-struct textItem {
+struct textItem
+{
     int id;
     QString line;
 };
@@ -47,6 +49,7 @@ class SearchWindow : public QWidget
 
     QList<Catalog*> catalogsList;//для поиска по каталогам или одному каталогу
     QList<BookItem*> booksList;//для поиска по книгам или в отдельной книге
+
     QList<searchItem> searchItems; //Массив структур, формирующийся по результатам поиска
     QList<textItem> textItems;
 
@@ -76,6 +79,11 @@ public:
 
     void findInCatalogs();//поиск по всем каталогам
     void findInBooks();
+
+    //Вспомогательные для поиска функции
+    void sortResult();
+    int findInOneText(int *c, QString txt);
+    void addSearchItem(int cnt);
 
 private slots:
     void contextMenuRequsted(const QPoint &p);
