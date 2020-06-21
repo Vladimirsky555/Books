@@ -5,7 +5,6 @@
 #include <QRegExp>
 #include <QMessageBox>
 
-#include "data/iteminfo.h"
 #include "helpers/qregexphighlighter.h"
 #include "search/booksselector.h"
 #include "search/catalogsselector.h"
@@ -75,9 +74,8 @@ public:
     explicit SearchWindow(Storage *s, QWidget *parent = 0);
     ~SearchWindow();
 
-    void loadFromFile(QString);
-
-    void findInCatalogs();//поиск по всем каталогам
+    //Поиск по каталогам или книгам
+    void findInCatalogs();
     void findInBooks();
 
     //Вспомогательные для поиска функции
