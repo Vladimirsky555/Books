@@ -18,6 +18,7 @@
 #include "catalogEditor/catalogeditor.h"
 #include "catalogEditor/catalogseditor.h"
 #include "dialog/logindialog.h"
+#include "loadworker.h"
 
 
 namespace Ui {
@@ -83,7 +84,6 @@ private slots:
     void on_btnFont_clicked();
 
     //Загрузка и сохранение в файл
-    void loadData(QString path);
     void saveData();
     void loadNamePathList();
     void saveNamePathList();

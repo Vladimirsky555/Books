@@ -8,22 +8,13 @@
 #include "helpers/qregexphighlighter.h"
 #include "search/booksselector.h"
 #include "search/catalogsselector.h"
+#include "search/worker.h"
 
 namespace Ui {
 class SearchWindow;
 }
 
 class QAction;
-
-//Структура, формирующаяся по результатам поиска в одном цикле
-struct searchItem
-{
-    Catalog *_catalog;
-    BookItem *_book;
-    ListItem *_chapter;
-    TextItem *_section;
-    int textCount;
-};
 
 //Структура, описывающая номер строки, в которой найдено искомое слово
 struct textItem
@@ -45,11 +36,10 @@ class SearchWindow : public QWidget
     QString currentText;
 
     bool resource;
+    int allCount;
 
     QList<Catalog*> catalogsList;//для поиска по каталогам или одному каталогу
     QList<BookItem*> booksList;//для поиска по книгам или в отдельной книге
-
-    QList<searchItem> searchItems; //Массив структур, формирующийся по результатам поиска
     QList<textItem> textItems;
 
     QList<QAction*> listActions;
@@ -79,7 +69,6 @@ public:
     void findInBooks();
 
     //Вспомогательные для поиска функции
-    void sortResult();
     int findInOneText(int *c, QString txt);
     void addSearchItem(int cnt);
 
@@ -108,8 +97,6 @@ private slots:
     void result_display_Export();//экспорт цитат из всего списка, где она встречается
     void result_file_Export();
 
-    //подсветка
-//    void on_edtSearch_textChanged(const QString &arg1);
     void on_edtSearch_editingFinished();
 
 signals:

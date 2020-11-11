@@ -2,18 +2,32 @@
 #define STORAGE_H
 
 #include <QObject>
+
 #include "catalog.h"
+#include "searchitem.h"
 
 class Storage : public QObject
 {
     Q_OBJECT
 
     QList<Catalog*> catalogs;
-
+    QList<SearchItem*> searchItems;
+    int c;//сколько всего найдено элементов
 
 public:
-    explicit Storage(QObject *parent = nullptr);
+    Storage(QObject *parent = nullptr);
 
+    //Функции результатов поиска
+    SearchItem* getSearchItem(int id);
+    void addSearchItem(SearchItem *si);
+    int getSearchItemsCount();
+    void sortResult();
+    void searchItemsClear();
+    void setC(int num);
+    void setinZeroC();
+    int getC();
+
+    //Функции данных
     Catalog* getCatalogById(int id);
     Catalog* getCatalogByPath(QString path);
     Catalog* getCatalogByBook(BookItem* book);
@@ -29,9 +43,6 @@ public:
     void up(int id);
     void down(int id);
     int getCount();
-
-signals:
-
 };
 
 #endif // STORAGE_H

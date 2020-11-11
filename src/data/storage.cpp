@@ -1,8 +1,68 @@
 #include "storage.h"
+#include <QtAlgorithms>
 
 Storage::Storage(QObject *parent) : QObject(parent)
 {
+    this->c = 0;
+}
 
+SearchItem *Storage::getSearchItem(int id)
+{
+    return searchItems.at(id);
+}
+
+void Storage::addSearchItem(SearchItem *si)
+{
+    searchItems.append(si);
+}
+
+int Storage::getSearchItemsCount()
+{
+    return searchItems.count();
+}
+
+void Storage::sortResult()
+{
+        SearchItem *tmp = new SearchItem();
+
+        for(int i = 0; i < searchItems.count(); i++)
+        {
+            for(int j = 0; j < searchItems.count() - 1; j++)
+            {
+                if(searchItems[j]->textCount < searchItems[j + 1]->textCount)
+                {
+                    tmp = searchItems[j];
+                    searchItems[j] = searchItems[j + 1];
+                    searchItems[j + 1] = tmp;
+                }
+            }
+        }
+
+//        delete tmp;
+}
+
+void Storage::searchItemsClear()
+{
+    for(int i = 0; i < searchItems.count(); i++)
+    {
+        delete searchItems[i];
+    }
+    searchItems.clear();
+}
+
+void Storage::setC(int num)
+{
+    this->c += num;
+}
+
+void Storage::setinZeroC()
+{
+    this->c = 0;
+}
+
+int Storage::getC()
+{
+    return this->c;
 }
 
 Catalog* Storage::getCatalogById(int id)

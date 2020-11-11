@@ -8,6 +8,9 @@
 #include <QDir>
 #include <QFile>
 #include <QRegExp>
+#include <QThread>
+#include <QThreadPool>
+#include <QMutex>
 
 //Конструктор-деструктор
 MainWindow::MainWindow(QWidget *parent) :
@@ -34,18 +37,24 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->cbxCatalogs->addItems(nameList);
 
-    //Грузим из файла названия каталогов и пути к ним
-    for(int i = 0; i < pathList.size(); i++)
-    {
-        Catalog *catalog = new Catalog(nameList[i], pathList[i]);
-        loadData(pathList[i]);
-        catalog->setBook(currentBooks);
-        s->addCatalog(catalog);
-    }
+    if(nameList.at(0) != "Первый каталог"){//Чтобы программа не вылетала
+        QMutex mutex(QMutex::Recursive);
+        QThreadPool* pool = QThreadPool::globalInstance();
 
-    currentCatalog = s->getCatalogById(0);
-    currentBooks = currentCatalog->Books();
-    refreshBooks();
+        //Грузим из файла названия каталогов и пути к ним
+        for(int i = 0; i < pathList.size(); i++)
+        {
+            LoadWorker* lw = new LoadWorker(s, nameList[i], pathList[i], &mutex, nullptr);
+            lw->setAutoDelete(true);
+            pool->start(lw);
+        }
+
+        pool->waitForDone();
+
+        currentCatalog = s->getCatalogById(0);
+        currentBooks = currentCatalog->Books();
+        refreshBooks();
+    }
 
     highlighter = new QRegexpHighlighter(this);
     highlighter->setDocument(ui->edtText->document());
@@ -70,24 +79,6 @@ MainWindow::~MainWindow()
 //        saveData();
     }
     delete ui;
-}
-
-void MainWindow::loadData(QString path)
-{
-    currentBooks.clear();
-    QFile f(path);
-    if(!f.exists()) return;
-
-    f.open(QFile::ReadOnly);
-    QDataStream reader(&f);
-
-    while(!reader.atEnd()){
-        QByteArray arr;
-        reader >> arr;
-        currentBooks.append(new BookItem(arr));
-    }
-
-    f.close();
 }
 
 void MainWindow::saveData()
@@ -116,6 +107,7 @@ void MainWindow::loadNamePathList()
         dir.mkpath("data/doc");
         nameList.append("Первый каталог");
         pathList.append("data/doc/first_catalog");//Чтобы программа не вылетала временный каталог
+        return;
     }
 
     f.open(QFile::ReadOnly);
@@ -147,8 +139,6 @@ void MainWindow::saveNamePathList()
 
     f.close();
 }
-
-
 
 void MainWindow::refreshCatalogs()
 {

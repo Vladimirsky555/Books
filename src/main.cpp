@@ -1,6 +1,6 @@
 #include "mainwindow/mainwindow.h"
-
 #include "application.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -9,5 +9,9 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
+
+
     return app.exec();
 }
+
+
