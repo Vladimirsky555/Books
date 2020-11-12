@@ -145,12 +145,12 @@ void SearchWindow::findInCatalogs()
 
             currentCatalog = catalogsList[k];
 
-            Worker* worker = new Worker(s, currentCatalog,
+            CatalogsWorker* cw = new CatalogsWorker(s, currentCatalog,
                                         ui->edtSearch->text(),
                                         nullptr);
 
-            worker->setAutoDelete(true);
-            pool->start(worker);
+            cw->setAutoDelete(true);
+            pool->start(cw);
         }
 
     pool->waitForDone();
@@ -214,26 +214,16 @@ void SearchWindow::findInBooks()
     ui->edtText->clear();
     s->searchItemsClear();
 
-    int c = 0;
-    int cnt = 0;
-    for(int l = 0; l < booksList.count(); l++){
-        currentBook = booksList[l];
-        currentCatalog = s->getCatalogByBook(currentBook);
+     QThreadPool* pool = QThreadPool::globalInstance();
 
-        for(int i = 0; i < currentBook->getCount(); i++){
-            currentChapter = currentBook->getChapterById(i);
-
-            for(int j = 0; j < currentChapter->getCount(); j++){
-                currentSection = currentChapter->getSectionById(j);
-
-                cnt = findInOneText(&c, currentSection->getData());
-                if(cnt != 0){
-                    addSearchItem(cnt);
-                }
-                cnt = 0;
-            }
-        }
+    for(int i = 0; i < booksList.count(); i++){
+        currentBook = booksList[i];
+        BooksWorker* bw = new BooksWorker(s, currentBook, ui->edtSearch->text(), nullptr);
+        bw->setAutoDelete(true);
+        pool->start(bw);
     }
+
+    pool->waitForDone();
 
     s->sortResult();
 
@@ -257,7 +247,7 @@ void SearchWindow::findInBooks()
     result += "В квадратных скобках - число, указывающее на то, "
               "сколько раз в тексте встретились слово или фраза.";
     result += "<br><br><span style=\"color:#FF0000\">";
-    result += QString::number(c) + "</span> повторений фразы (слова) " + "\"" +
+    result += QString::number(s->getC()) + "</span> повторений фразы (слова) " + "\"" +
             ui->edtSearch->text() + "\" в <span style=\"color:#FF0000\">"  + QString::number(n) +
             "</span> текстах следующих книг:";
     result += "</span></b>";
@@ -275,7 +265,7 @@ void SearchWindow::findInBooks()
     ui->edtText->append(result);
 
     ui->lstResults->addItem(" ");
-    ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
+    ui->lstResults->addItem("Итого: " + QString::number(s->getC()) + " повторений фразы (слова) " + "\"" +
                             ui->edtSearch->text() + "\"" + " в " + QString::number(n) + " текстах");
     ui->lstResults->addItem("Поиск завершен!");
 }

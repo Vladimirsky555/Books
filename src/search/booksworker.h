@@ -1,14 +1,13 @@
-#ifndef WORKER_H
-#define WORKER_H
+#ifndef BOOKSWORKER_H
+#define BOOKSWORKER_H
 
 #include <QObject>
 #include <QRunnable>
 
-
 #include "data/storage.h"
 #include "data/searchitem.h"
 
-class Worker : public QObject, public QRunnable
+class BooksWorker : public QObject, public QRunnable
 {
     Q_OBJECT
 
@@ -21,17 +20,13 @@ class Worker : public QObject, public QRunnable
     int c;
 
 public:
-    Worker(Storage *s, Catalog *currentCatalog, QString searchText,
-           QObject *parent = nullptr);
+    BooksWorker(Storage *s, BookItem *currentBook,
+                QString searchText, QObject *parent = nullptr);
 
-//    int findInOneText(int *c, QString txt);
     void run();
 
 private:
     bool checkRegExp(QRegExp rx);
-
-signals:
-    void sendCount(int c);
 };
 
-#endif // WORKER_H
+#endif // BOOKSWORKER_H

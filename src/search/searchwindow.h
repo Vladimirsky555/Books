@@ -5,10 +5,11 @@
 #include <QRegExp>
 #include <QMessageBox>
 
-#include "helpers/qregexphighlighter.h"
-#include "search/booksselector.h"
 #include "search/catalogsselector.h"
-#include "search/worker.h"
+#include "search/booksselector.h"
+#include "search/catalogsworker.h"
+#include "search/booksworker.h"
+#include "helpers/qregexphighlighter.h"
 
 namespace Ui {
 class SearchWindow;

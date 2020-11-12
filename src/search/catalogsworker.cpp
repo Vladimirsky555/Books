@@ -1,12 +1,9 @@
-#include "worker.h"
+#include "catalogsworker.h"
 
-#include <QThread>
 #include <QMessageBox>
-#include <QRegExp>
-#include <QDebug>
 
-Worker::Worker(Storage *s, Catalog *currentCatalog, QString searchText, QObject *parent) :
-     QObject(parent), QRunnable ()
+CatalogsWorker::CatalogsWorker(Storage *s, Catalog *currentCatalog, QString searchText, QObject *parent) :
+    QObject(parent), QRunnable ()
 {
     this->s = s;
     this->currentCatalog = currentCatalog;
@@ -14,7 +11,7 @@ Worker::Worker(Storage *s, Catalog *currentCatalog, QString searchText, QObject 
     this->c = 0;
 }
 
-bool Worker::checkRegExp(QRegExp rx)
+bool CatalogsWorker::checkRegExp(QRegExp rx)
 {
     if(rx.isValid() && !rx.isEmpty() && !rx.exactMatch("")){
         return true;
@@ -27,9 +24,8 @@ bool Worker::checkRegExp(QRegExp rx)
     }
 }
 
-void Worker::run()
+void CatalogsWorker::run()
 {
-    qInfo() << QThread::currentThread();
     int cnt = 0;
     for(int l = 0; l < currentCatalog->getCount(); l++){
         currentBook = currentCatalog->getBookById(l);
@@ -62,6 +58,7 @@ void Worker::run()
             }
         }
     }
+
     s->setC(c);
 }
 
