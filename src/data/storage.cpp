@@ -29,7 +29,7 @@ void Storage::sortResult()
         {
             for(int j = 0; j < searchItems.count() - 1; j++)
             {
-                if(searchItems[j]->textCount < searchItems[j + 1]->textCount)
+                if(searchItems[j]->getTextCount() < searchItems[j + 1]->getTextCount())
                 {
                     tmp = searchItems[j];
                     searchItems[j] = searchItems[j + 1];

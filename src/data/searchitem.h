@@ -12,7 +12,6 @@ class SearchItem : public QObject
 {
     Q_OBJECT
 
-public:
     Catalog *_catalog;
     BookItem *_book;
     ListItem *_chapter;
@@ -22,6 +21,20 @@ public:
 public:
     SearchItem(QObject *parent = 0);
 
+    Catalog* p_catalog();
+    void setCatalog(Catalog *value);
+
+    BookItem* p_book();
+    void setBook(BookItem *value);
+
+    ListItem* p_chapter();
+    void setChapter(ListItem *value);
+
+    TextItem* p_section();
+    void setSection(TextItem *value);
+
+    int getTextCount();
+    void setTextCount(int value);
 
 };
 

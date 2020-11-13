@@ -45,11 +45,11 @@ void BooksWorker::run()
 
             if(cnt != 0){
                 SearchItem *si = new SearchItem();
-                si->_catalog = currentCatalog;
-                si->_book = currentBook;
-                si->_chapter = currentChapter;
-                si->_section = currentSection;
-                si->textCount = cnt;
+                si->setCatalog(currentCatalog);
+                si->setBook(currentBook);
+                si->setChapter(currentChapter);
+                si->setSection(currentSection);
+                si->setTextCount(cnt);
                 s->addSearchItem(si);
             }
             cnt = 0;
