@@ -5,11 +5,12 @@
 #include <QRegExp>
 #include <QMessageBox>
 
-#include "search/catalogsselector.h"
-#include "search/booksselector.h"
-#include "search/catalogsworker.h"
-#include "search/booksworker.h"
+#include "data/searchitem.h"
+#include "data/searchstorage.h"
 #include "helpers/qregexphighlighter.h"
+#include "helpers/searchitemsmaker.h"
+#include "search/booksselector.h"
+#include "search/catalogsselector.h"
 
 namespace Ui {
 class SearchWindow;
@@ -29,6 +30,10 @@ class SearchWindow : public QWidget
     Q_OBJECT
 
     Storage *s;
+    SearchStorage *ss;
+    SearchItemsMaker *sim;//Переменная для формирования результата поиска и текста с цитатами
+
+
     Catalog *currentCatalog;
     BookItem* currentBook;
     ListItem* currentChapter;
@@ -37,10 +42,8 @@ class SearchWindow : public QWidget
     QString currentText;
 
     bool resource;
-    int allCount;
 
-    QList<Catalog*> catalogsList;//для поиска по каталогам или одному каталогу
-    QList<BookItem*> booksList;//для поиска по книгам или в отдельной книге
+    //QList<searchItem*> searchItems; //Массив структур, формирующийся по результатам поиска
     QList<textItem> textItems;
 
     QList<QAction*> listActions;
@@ -58,9 +61,6 @@ class SearchWindow : public QWidget
 
     Ui::SearchWindow *ui;
 
-private:
-    bool checkRegExp(QRegExp rx);
-
 public:
     explicit SearchWindow(Storage *s, QWidget *parent = 0);
     ~SearchWindow();
@@ -69,9 +69,9 @@ public:
     void findInCatalogs();
     void findInBooks();
 
-    //Вспомогательные для поиска функции
-    int findInOneText(int *c, QString txt);
-    void addSearchItem(int cnt);
+    void prepareWidgets();//подготовка виджетов
+    int showResult();//Отображение результатов поиска в нижнем виджете
+    void report(int c, int n);//отчёт о результатах
 
 private slots:
     void contextMenuRequsted(const QPoint &p);
@@ -98,6 +98,7 @@ private slots:
     void result_display_Export();//экспорт цитат из всего списка, где она встречается
     void result_file_Export();
 
+    //подсветка
     void on_edtSearch_editingFinished();
 
 signals:

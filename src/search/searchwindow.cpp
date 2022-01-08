@@ -6,8 +6,7 @@
 #include <QMenu>
 #include <QTextStream>
 #include <QFileDialog>
-#include <QThread>
-#include <QThreadPool>
+
 #include <QDebug>
 
 SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
@@ -20,10 +19,12 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
     this->currentBook = NULL;
     this->currentChapter = NULL;
     this->currentSection = NULL;
+    sim = NULL;
 
     this->s = s;
+    ss = new SearchStorage();
+
     this->resource = true;
-    this->catalogsList = s->Catalogs();//по умолчанию ищем по всем каталогам
 
     //Подсветка
     highlighter1 = new QRegexpHighlighter(this);
@@ -100,111 +101,29 @@ SearchWindow::~SearchWindow()
     delete ui;
 }
 
-int SearchWindow::findInOneText(int *c, QString txt)
-{
-    int cnt = 0;
-    QRegExp rx(ui->edtSearch->text());
-    if(!checkRegExp(rx)) return 0;
-    int pos = 0;
-    while((pos = rx.indexIn(txt, pos)) != -1){
-        pos += rx.matchedLength();
-        *c += 1;
-        cnt++;
-    }
-
-    return cnt;
-}
-
-void SearchWindow::addSearchItem(int cnt)
-{
-    SearchItem *si = new SearchItem();
-    si->setCatalog(currentCatalog);
-    si->setBook(currentBook);
-    si->setChapter(currentChapter);
-    si->setSection(currentSection);
-    si->setTextCount(cnt);
-    s->addSearchItem(si);
-}
-
 
 void SearchWindow::findInCatalogs()
 {
     emit sendPattern(ui->edtSearch->text());
-    ui->edtText->setEnabled(true);
-    ui->edtSource->setEnabled(true);
-    ui->label->setEnabled(true);
-    ui->lstResults->setEnabled(true);
-    ui->lstResults->clear();
-    ui->edtSource->clear();
-    ui->edtText->clear();
-    s->searchItemsClear();
-
-    QThreadPool* pool = QThreadPool::globalInstance();
-
-        for(int k = 0; k < catalogsList.count(); k++){
-
-            currentCatalog = catalogsList[k];
-
-            CatalogsWorker* cw = new CatalogsWorker(s, currentCatalog,
-                                        ui->edtSearch->text(),
-                                        nullptr);
-
-            cw->setAutoDelete(true);
-            pool->start(cw);
-        }
-
-    pool->waitForDone();
-    s->sortResult();
-
-    //Отображение списка результатов в нижнем виджете
-    int n = 0;
-    for(int i = 0; i < s->getSearchItemsCount(); i++,n++){
-        ui->lstResults->addItem(QString::number(n+1) + ": " + //Порядковый номер
-                                "[" + QString::number(s->getSearchItem(i)->getTextCount()) + "] " + //Число совпадений в тексте
-                                s->getSearchItem(i)->p_catalog()->getName() + ", " +
-                                s->getSearchItem(i)->p_book()->getName() + ", " +
-                                s->getSearchItem(i)->p_chapter()->getName() + ", " +
-                                s->getSearchItem(i)->p_section()->getName());
-        ui->lstResults->item(i)->setIcon(QIcon(":/images/search_.png"));
-
-    }
-
-    //Отображение информации о результатах
-    QString result;
-    result += "<b><span style=\"color:#800000\">";
-    result += "Режим исследования текстов";
-    result += "</span><br><br>";
-    result += "<span style=\"color:#483D8B\">";
-    result += "В квадратных скобках - число, указывающее на то, "
-              "сколько раз в тексте встретились слово или фраза.";
-    result += "<br>";
-    result += "<br><span style=\"color:#FF0000\">";
-    result += QString::number(s->getC()) + "</span> повторений фразы (слова) " + "\"" +
-            ui->edtSearch->text() + "\" в <span style=\"color:#FF0000\">"  + QString::number(n) +
-            "</span> текстах следующих каталогов:";
-    result += "</span></b>";
-    ui->edtText->append(result);
-    ui->edtText->append(" ");
-    result = "";
-
-    for(int i = 0; i < catalogsList.count(); i++){
-        ui->edtText->append(QString::number(i+1) + ": " + catalogsList[i]->getName());
-    }
-
-    result += "<br><br><b><span style=\"color:#483D8B\">";
-    result += "Поиск завершен!";
-    result += "</span></b><br>";
-    ui->edtText->append(result);
-
-    ui->lstResults->addItem(" ");
-    ui->lstResults->addItem("Итого: " + QString::number(s->getC()) + " повторений фразы (слова) " + "\"" +
-                            ui->edtSearch->text() + "\"" + " в " + QString::number(n) + " текстах");
-    ui->lstResults->addItem("Поиск завершен!");
+    prepareWidgets();
+    int c = sim->searchItemsMakerfromCatalogs();
+    ss->sortResult();
+    int n = showResult();
+    report(c, n);
 }
 
 void SearchWindow::findInBooks()
 {
     emit sendPattern(ui->edtSearch->text());
+    prepareWidgets();
+    int c = sim->searchItemsMakerfromBooks(s->booksList);
+    ss->sortResult();
+    int n = showResult();
+    report(c, n);
+}
+
+void SearchWindow::prepareWidgets()
+{
     ui->edtText->clear();
     ui->edtText->setEnabled(true);
     ui->edtSource->setEnabled(true);
@@ -213,34 +132,29 @@ void SearchWindow::findInBooks()
     ui->lstResults->clear();
     ui->edtSource->clear();
     ui->edtText->clear();
-    s->searchItemsClear();
+}
 
-     QThreadPool* pool = QThreadPool::globalInstance();
-
-    for(int i = 0; i < booksList.count(); i++){
-        currentBook = booksList[i];
-        BooksWorker* bw = new BooksWorker(s, currentBook, ui->edtSearch->text(), nullptr);
-        bw->setAutoDelete(true);
-        pool->start(bw);
-    }
-
-    pool->waitForDone();
-
-    s->sortResult();
-
-    //Вывод результатов
+int SearchWindow::showResult()
+{
+    //Отображение списка результатов в нижнем виджете
     int n = 0;
-    for(int i = 0; i < s->getSearchItemsCount(); i++,n++){
-        ui->lstResults->addItem(QString::number(n) + ": " + //Порядковый номер
-                                "[" + QString::number(s->getSearchItem(i)->getTextCount()) + "] " + //Число совпадений в тексте
-                                s->getSearchItem(i)->p_catalog()->getName() + ", " +
-                                s->getSearchItem(i)->p_book()->getName() + ", " +
-                                s->getSearchItem(i)->p_chapter()->getName() + ", " +
-                                s->getSearchItem(i)->p_section()->getName());
-        ui->lstResults->item(i)->setIcon(QIcon(":/images/search_.png"));
+    for(int i = 0; i < ss->searchItems.size(); i++,n++){
+        ui->lstResults->addItem(QString::number(n+1) + ": " + //Порядковый номер
+                                "[" + QString::number(ss->searchItems[i]->textCount) + "] " + //Число совпадений в тексте
+                                ss->searchItems[i]->_catalog->getName() + ", " +
+                                ss->searchItems[i]->_book->getName() + ", " +
+                                ss->searchItems[i]->_chapter->getName() + ", " +
+                                ss->searchItems[i]->_section->getName());
+        ui->lstResults->item(i)->setIcon(QIcon(":/images/search_2.png"));
     }
 
-    //Отображение информации о результатах
+    return n;
+}
+
+
+
+void SearchWindow::report(int c, int n)
+{
     QString result;
     result += "<b><span style=\"color:#800000\">";
     result += "Режим исследования текстов";
@@ -248,16 +162,19 @@ void SearchWindow::findInBooks()
     result += "В квадратных скобках - число, указывающее на то, "
               "сколько раз в тексте встретились слово или фраза.";
     result += "<br><br><span style=\"color:#FF0000\">";
-    result += QString::number(s->getC()) + "</span> повторений фразы (слова) " + "\"" +
-            ui->edtSearch->text() + "\" в <span style=\"color:#FF0000\">"  + QString::number(n) +
+    result += QString::number(c) + "</span> повторений фразы (слова) " + "\"" +
+            ui->edtSearch->text() + "\" в <span style=\"color:#FF0000\">"  +
+            QString::number(n) +
             "</span> текстах следующих книг:";
     result += "</span></b>";
     ui->edtText->append(result);
     ui->edtText->append(" ");
     result = "";
 
-    for(int i = 0; i < booksList.count(); i++){
-        ui->edtText->append(QString::number(i+1) + ": " + booksList[i]->getName());
+    for(int i = 0; i < s->booksList.count(); i++)
+    {
+        ui->edtText->append(QString::number(i+1) + ": " +
+                            s->booksList[i]->getName());
     }
 
     result += "<br><br><b><span style=\"color:#483D8B\">";
@@ -266,7 +183,7 @@ void SearchWindow::findInBooks()
     ui->edtText->append(result);
 
     ui->lstResults->addItem(" ");
-    ui->lstResults->addItem("Итого: " + QString::number(s->getC()) + " повторений фразы (слова) " + "\"" +
+    ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
                             ui->edtSearch->text() + "\"" + " в " + QString::number(n) + " текстах");
     ui->lstResults->addItem("Поиск завершен!");
 }
@@ -280,8 +197,6 @@ void SearchWindow::contextMenuRequsted(const QPoint &p)
 }
 
 
-
-
 //Функция, закрывающая окно поиска, если закрыть главное окно
 void SearchWindow::shutdown()
 {
@@ -291,9 +206,10 @@ void SearchWindow::shutdown()
 //Реализация поиска
 void SearchWindow::find()
 {
+    sim = new SearchItemsMaker(s, ss, ui->edtSearch->text());
+
     ui->lstText->clear();
     ui->btnFont->setEnabled(true);
-    s->setinZeroC();
 
     if(resource){
         findInCatalogs();
@@ -317,89 +233,11 @@ void SearchWindow::findInChapters()
 
     ui->lstResults->clear();
     ui->lstText->clear();
-    s->searchItemsClear();
+    ss->searchItems.clear();
     ui->edtText->clear();
 
-    int c = 0;
-    for(int k = 0; k < catalogsList.count(); k++){
-
-        currentCatalog = catalogsList.at(k);
-
-        int cnt = 0;
-
-        for(int l = 0; l < currentCatalog->getCount(); l++){
-
-            currentBook = currentCatalog->getBookById(l);
-
-            QRegExp rx(ui->edtSearch->text());
-            if(!checkRegExp(rx))return;
-            int pos = 0;
-            while((pos = rx.indexIn(currentBook->getName(), pos)) != -1){
-                pos += rx.matchedLength();
-                c++;
-                cnt++;
-            }
-
-            if(cnt != 0){
-                SearchItem *si = new SearchItem();
-                si->setCatalog(currentCatalog);
-                si->setBook(currentBook);
-                si->setTextCount(cnt);
-                s->addSearchItem(si);
-            }
-
-            cnt = 0;
-
-            for(int i = 0; i < currentBook->getCount(); i++){
-                currentChapter = currentBook->getChapterById(i);
-
-                QRegExp rx(ui->edtSearch->text());
-                if(!checkRegExp(rx))return;
-                int pos = 0;
-                while((pos = rx.indexIn(currentChapter->getName(), pos)) != -1){
-                    pos += rx.matchedLength();
-                    c++;
-                    cnt++;
-                }
-
-                if(cnt != 0){
-                    SearchItem *si = new SearchItem();
-                    si->setCatalog(currentCatalog);
-                    si->setBook(currentBook);
-                    si->setChapter(currentChapter);
-                    si->setTextCount(cnt);
-                    s->addSearchItem(si);
-                }
-
-                cnt = 0;
-
-                for(int j = 0; j < currentChapter->getCount(); j++){
-                    currentSection = currentChapter->getSectionById(j);
-
-                    QRegExp rx(ui->edtSearch->text());
-                    if(!checkRegExp(rx))return;
-                    int pos = 0;
-                    while((pos = rx.indexIn(currentSection->getName(), pos)) != -1){
-                        pos += rx.matchedLength();
-                        c++;
-                        cnt++;
-                    }
-
-                    if(cnt != 0){
-                        SearchItem *si = new SearchItem();
-                        si->setCatalog(currentCatalog);
-                        si->setBook(currentBook);
-                        si->setChapter(currentChapter);
-                        si->setSection(currentSection);
-                        si->setTextCount(cnt);
-                        s->addSearchItem(si);
-                    }
-
-                    cnt = 0;
-                }
-            }
-        }
-    }
+    sim = new SearchItemsMaker(s, ss, ui->edtSearch->text());
+    int c = sim->searchItemsMakerInChapters(currentChapter, currentSection);
 
     //Отображение информации о результатах в окне поиска
     QString result;
@@ -416,9 +254,8 @@ void SearchWindow::findInChapters()
     ui->edtText->append(result);
     result = "";
 
-    for(int i = 0; i < catalogsList.count(); i++){
-        ui->edtText->append(QString::number(i+1) + ": " +
-                            catalogsList[i]->getName());
+    for(int i = 0; i < s->catalogsList.count(); i++){
+        ui->edtText->append(QString::number(i+1) + ": " + s->catalogsList[i]->getName());
     }
 
     result += "<br><b><span style=\"color:#483D8B\">";
@@ -428,12 +265,12 @@ void SearchWindow::findInChapters()
     result = "";
 
     int n = 1;
-    for(int i = 0; i < s->getSearchItemsCount(); i++,n++){
-        ui->edtText->append(QString::number(n) + ": " +
-                            s->getSearchItem(i)->p_catalog()->getName() + ", " +
-                            s->getSearchItem(i)->p_book()->getName() + ", " +
-                            s->getSearchItem(i)->p_chapter()->getName() + ", " +
-                            s->getSearchItem(i)->p_section()->getName());
+    for(int i = 0; i < ss->searchItems.size(); i++,n++){
+        ui->edtText->append(QString::number(n+1) + ": " +
+                            ss->searchItems[i]->_catalog->getName() + ", " +
+                            ss->searchItems[i]->_book->getName() + ", " +
+                            ss->searchItems[i]->_chapter->getName() + ", " +
+                            ss->searchItems[i]->_section->getName());
     }
 
     result += "<br><br><b><span style=\"color:#483D8B\">";
@@ -450,15 +287,15 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
     textItems.clear();
     int id = index.row();
 
-    if(id >= s->getSearchItemsCount()){
+    if(id >= ss->searchItems.size()){
         QMessageBox::information(this, "Информация!", "Спасибо!");
         return;
     }
 
-    currentBook = s->getBookByName(s->getSearchItem(id)->p_book()->getName());
-    currentChapter = currentBook->getChapterByName(s->getSearchItem(id)->p_chapter()->getName());
-    currentSection = currentChapter->getSectionByName(s->getSearchItem(id)->p_section()->getName());
-    currentText = s->getSearchItem(id)->p_section()->getData();
+    currentBook = s->getBookByName(ss->searchItems[id]->_book->getName());
+    currentChapter = currentBook->getChapterByName(ss->searchItems[id]->_chapter->getName());
+    currentSection = currentChapter->getSectionByName(ss->searchItems[id]->_section->getName());
+    currentText = ss->searchItems[id]->_section->getData();
     ui->edtText->setHtml(currentText);
 
     //Вводим переменную, считающую сколько раз встречается слово в строке
@@ -466,7 +303,7 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
     int cnt = 0;
     for(int i = 0; i < ui->edtText->document()->blockCount(); i++){
         QRegExp rx(ui->edtSearch->text());
-        if(!checkRegExp(rx))return;
+        if(!sim->checkRegExp(rx))return;
         int pos = 0;
         QString str = ui->edtText->document()->findBlockByLineNumber(i).text();
         while((pos = rx.indexIn(str, pos)) != -1){
@@ -475,7 +312,8 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
 
             //В нижнем правом окошке выдаем информацию в каких строках
             //и сколько раз встретилось искомое слово
-            ui->lstText->addItem(QString::number(cnt)+ " [" + QString::number(i+1) + " строка" + "] ");
+            ui->lstText->addItem(QString::number(cnt)+ " "
+                    "[" + QString::number(i+1) + " строка" + "] ");
 
             textItem t;
             t.id = i+1;
@@ -485,17 +323,17 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
     }
 
     //Отправляем в главное окно результаты поиска по клику для синхронизации
-    emit sendAll(s->getSearchItem(id)->p_book(),
-                 s->getSearchItem(id)->p_chapter(),
-                 s->getSearchItem(id)->p_section(),
-                 s->getSearchItem(id)->p_catalog()->getPath());
+    emit sendAll(ss->searchItems[id]->_book,
+                 ss->searchItems[id]->_chapter,
+                 ss->searchItems[id]->_section,
+                 ss->searchItems[id]->_catalog->getPath());
 
     //Выводим всю информацию об источнике искомой фразы
-    ui->edtSource->setText(s->getSearchItem(id)->p_book()->getName() + ", " +
-                           s->getSearchItem(id)->p_chapter()->getName() + ", " +
-                           s->getSearchItem(id)->p_section()->getName());
+    ui->edtSource->setText(ss->searchItems[id]->_book->getName() + ", " +
+                           ss->searchItems[id]->_chapter->getName() + ", " +
+                           ss->searchItems[id]->_section->getName());
 
-    currentTitle = s->getSearchItem(id)->p_chapter()->getName();
+    currentTitle = ss->searchItems[id]->_chapter->getName();
 }
 
 //Реализация выбора ресурса для поиска
@@ -512,7 +350,7 @@ void SearchWindow::selectBooks()
 void SearchWindow::selectedBooks(QList<BookItem *> selectedBooks)
 {
     resource = false;//ищем по книгам
-    this->booksList = selectedBooks;
+    s->booksList = selectedBooks;
 }
 
 void SearchWindow::selectCatalogs()
@@ -528,15 +366,16 @@ void SearchWindow::selectCatalogs()
 void SearchWindow::selectedCatalogs(QList<Catalog *> catalogs)
 {
     resource = true;//ищем по каталогам
-    this->catalogsList = catalogs;
+    s->catalogsList = catalogs;
 }
 
 
 void SearchWindow::on_edtSearch_returnPressed()
 {   
+    sim = new SearchItemsMaker(s, ss, ui->edtSearch->text());
+
     ui->lstText->clear();
     ui->btnFont->setEnabled(true);
-    s->setinZeroC();
 
     if(resource){
         findInCatalogs();
@@ -599,11 +438,12 @@ void SearchWindow::chooseFont()
 }
 
 void SearchWindow::text_display_Export()
-{    
+{
+    QString result;
     ui->lstText->clear();
     ui->edtText->clear();
     for(int i = 0; i < textItems.count(); i++){
-        QString result;
+
         result += "<b><span style=\"color:#800000\">";
         result += QString::number(i+1);
         result += ": </span></b><br> \"";
@@ -617,9 +457,9 @@ void SearchWindow::text_display_Export()
         result += "<br>";
         result += "<br>";
         result += "<br>";
-
-        ui->edtText->append(result);
     }
+
+    ui->edtText->setHtml(result);
 }
 
 void SearchWindow::text_file_Export()
@@ -629,6 +469,8 @@ void SearchWindow::text_file_Export()
     if(filename.isEmpty())return;
 
     QFile file(filename);
+
+    //Open the file
     if(!file.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
         return;
 
@@ -648,42 +490,7 @@ void SearchWindow::result_display_Export()
 {    
     ui->edtText->clear();
     ui->lstText->clear();
-
-    int cnt = 0;
-    for(int i = 0; i < s->getSearchItemsCount(); i++){
-        QString result;
-        currentText = s->getSearchItem(i)->p_section()->getData();
-        QRegExp rx_("</p>");
-        QStringList strList = currentText.split(rx_);
-
-        for(int j = 0; j < strList.count(); j++){
-            QRegExp rx(ui->edtSearch->text());
-            if(!checkRegExp(rx))return;
-            int pos = 0;
-            QString str = "\"" +strList[j] + "\"";
-            while((pos = rx.indexIn(str, pos)) != -1){
-                pos += rx.matchedLength();
-                cnt++;
-
-                result += "<b><span style=\"color:#800000\">";
-                result += QString::number(cnt);
-                result += ": </span></b>";
-                result += str;
-                result += "<b><span style=\"color:#483D8B\"><br>(";
-                result += s->getSearchItem(i)->p_book()->getName() + ", ";
-                result +=  s->getSearchItem(i)->p_chapter()->getName() + ", ";
-                result += s->getSearchItem(i)->p_section()->getName();
-                result +=   ")</span></b>";
-                result += "<br>";
-                result += "<br>";
-                result += "<br>";
-
-                ui->edtText->append(result);
-            }
-        }
-
-        strList.clear();
-    }
+    ui->edtText->setHtml(sim->quoteMaker());
 }
 
 
@@ -700,15 +507,15 @@ void SearchWindow::result_file_Export()
     QTextStream out(&file);
 
     int cnt = 0;
-    for(int i = 0; i < s->getSearchItemsCount(); i++){
+    for(int i = 0; i < ss->searchItems.count(); i++){
 
-        currentText = s->getSearchItem(i)->p_section()->getData();
+        currentText = ss->searchItems[i]->_section->getData();
         QRegExp rx_("</p>");
         strList = currentText.split(rx_);
 
         for(int j = 0; j < strList.count(); j++){
             QRegExp rx(ui->edtSearch->text());
-            if(!checkRegExp(rx))return;
+            if(!sim->checkRegExp(rx))return;
             int pos = 0;
 
             QRegExp e("\<(/?[^>]+)>");
@@ -730,19 +537,6 @@ void SearchWindow::result_file_Export()
     file.close();
 }
 
-
-//Вспомогательные функции
-bool SearchWindow::checkRegExp(QRegExp rx)
-{
-    if(rx.isValid() && !rx.isEmpty() && !rx.exactMatch("")){
-        return true;
-    } else {
-        QMessageBox::information(this,
-                                 "Информсообщение",
-                                 trUtf8("Некорректный шаблон регулярного выражения!"));
-        return false;
-    }
-}
 
 
 void SearchWindow::on_edtSearch_editingFinished()

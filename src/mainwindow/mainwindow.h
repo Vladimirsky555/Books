@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QList>
 
 #include "data/iteminfo.h"
 #include "data/storage.h"
@@ -18,7 +17,6 @@
 #include "catalogEditor/catalogeditor.h"
 #include "catalogEditor/catalogseditor.h"
 #include "dialog/logindialog.h"
-#include "loadworker.h"
 
 
 namespace Ui {
@@ -30,9 +28,6 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
     Storage *s;
-    QList<BookItem*> currentBooks;//Массив книг каталога
-    QStringList pathList;//Массив путей к каталогам
-    QStringList nameList;
 
     Catalog *currentCatalog;
     BookItem* currentBook;
@@ -82,11 +77,6 @@ private slots:
 
     void on_edtPattern_textChanged(const QString &arg1);
     void on_btnFont_clicked();
-
-    //Загрузка и сохранение в файл
-    void saveData();
-    void loadNamePathList();
-    void saveNamePathList();
 
 signals:
     void shutdown();

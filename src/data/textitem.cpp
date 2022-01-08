@@ -34,13 +34,11 @@ void TextItem::setData(QString data)
     this->text = data;
 }
 
-QByteArray TextItem::saveIt(){
+QByteArray TextItem::saveIt()
+{
     QByteArray arr;
     QDataStream writer(&arr, QIODevice::WriteOnly);
-
     writer << this->name << this->text;
-
     return arr;
-
 }
 

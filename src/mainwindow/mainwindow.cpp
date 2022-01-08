@@ -5,12 +5,7 @@
 #include <QTextStream>
 #include <QFileDialog>
 #include <QFontDialog>
-#include <QDir>
-#include <QFile>
 #include <QRegExp>
-#include <QThread>
-#include <QThreadPool>
-#include <QMutex>
 
 //Конструктор-деструктор
 MainWindow::MainWindow(QWidget *parent) :
@@ -18,43 +13,24 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    s = new Storage();
+    setWindowTitle("Книги");
 
     currentCatalog = NULL;
     currentBook = NULL;
     currentChapter = NULL;
     currentSection = NULL;
-
     this->title = " ";
     this->admin = false;
 
-    setWindowTitle("Книги");
+    s = new Storage();
 
     ui->actionCatalogsEditor->setEnabled(false);
 
-    loadNamePathList();
+    ui->cbxCatalogs->addItems(s->nameList);
 
-    ui->cbxCatalogs->addItems(nameList);
-
-    if(nameList.at(0) != "Первый каталог"){//Чтобы программа не вылетала
-        QMutex mutex(QMutex::Recursive);
-        QThreadPool* pool = QThreadPool::globalInstance();
-
-        //Грузим из файла названия каталогов и пути к ним
-        for(int i = 0; i < pathList.size(); i++)
-        {
-            LoadWorker* lw = new LoadWorker(s, nameList[i], pathList[i], &mutex, nullptr);
-            lw->setAutoDelete(true);
-            pool->start(lw);
-        }
-
-        pool->waitForDone();
-
-        currentCatalog = s->getCatalogById(0);
-        currentBooks = currentCatalog->Books();
-        refreshBooks();
-    }
+    currentCatalog = s->getCatalogById(0);
+    s->setCurrentBooks(currentCatalog->Books());
+    refreshBooks();
 
     highlighter = new QRegexpHighlighter(this);
     highlighter->setDocument(ui->edtText->document());
@@ -75,76 +51,20 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     if(login.getIsLogined()){
-        saveNamePathList();
+        s->saveNamePathList();
 //        saveData();
     }
     delete ui;
 }
 
-void MainWindow::saveData()
-{
-    for(int i = 0; i < s->getCount(); i++){
 
-    QFile f(s->getCatalogById(i)->getPath());
-    f.open(QFile::WriteOnly | QFile::Truncate);
-    QDataStream str(&f);
-
-    currentBooks = s->getCatalogById(i)->Books();
-    for(int i = 0; i < currentBooks.size(); i++){
-        str << currentBooks[i]->saveIt();
-    }
-
-    f.close();
-    }
-}
-
-void MainWindow::loadNamePathList()
-{
-    QFile f("data/catalogs");
-    if(!f.exists()) {
-        QDir dir;
-        dir.mkpath("data");
-        dir.mkpath("data/doc");
-        nameList.append("Первый каталог");
-        pathList.append("data/doc/first_catalog");//Чтобы программа не вылетала временный каталог
-        return;
-    }
-
-    f.open(QFile::ReadOnly);
-    QDataStream str(&f);
-
-    int i = 0;
-    while(!str.atEnd()){
-        QString tmp;
-        str >> tmp;
-        nameList.append(tmp);
-
-        str >> tmp;
-        pathList.append(tmp);
-        i++;
-    }
-
-    f.close();
-}
-
-void MainWindow::saveNamePathList()
-{
-    QFile f("data/catalogs");
-    f.open(QFile::WriteOnly | QFile::Truncate);
-    QDataStream str(&f);
-
-    for(int i = 0; i < s->getCount(); i++){
-        str << s->getCatalogById(i)->getName() << s->getCatalogById(i)->getPath();
-    }
-
-    f.close();
-}
 
 void MainWindow::refreshCatalogs()
 {
     ui->cbxCatalogs->clear();
 
-    for(int i = 0; i < s->getCount(); i++){
+    for(int i = 0; i < s->getCount(); i++)
+    {
         ui->cbxCatalogs->addItem(s->getCatalogById(i)->getName());
     }
 }
@@ -163,7 +83,7 @@ void MainWindow::setAll(BookItem* book, ListItem* bookChapter, TextItem* bookSec
 {
     for(int i = 0; i < s->getCount(); i++){
         if(booksPath == s->getCatalogById(i)->getPath()){
-            currentBooks = s->getCatalogById(i)->Books();
+            s->setCurrentBooks(s->getCatalogById(i)->Books());
             ui->cbxCatalogs->setCurrentIndex(i);//Устанавливаем каталог в комбобокс, через индекс
         }
     }
@@ -177,8 +97,8 @@ void MainWindow::setAll(BookItem* book, ListItem* bookChapter, TextItem* bookSec
     refreshSections();
 
     //Определяем порядковый номер книги в массиве, чтобы выставить комбобокс
-    for(int i = 0; i < currentBooks.count(); i++){
-        if(currentBooks.at(i) == currentBook)
+    for(int i = 0; i < s->getCurrentBooks().count(); i++){
+        if(s->getCurrentBooks().at(i) == currentBook)
         ui->cbxBooks->setCurrentIndex(i);//Устанавливаем книгу в комбобокс через индекс
     }
 
@@ -200,8 +120,8 @@ void MainWindow::refreshBooks()
 {
     ui->cbxBooks->clear();
 
-    for(int i = 0; i < currentBooks.count(); i++){
-        ui->cbxBooks->addItem(currentBooks[i]->getName());
+    for(int i = 0; i < s->getCurrentBooks().count(); i++){
+        ui->cbxBooks->addItem(s->getCurrentBooks().at(i)->getName());
     }
 
     ui->lstSections->clear();
@@ -238,7 +158,8 @@ void MainWindow::refreshSections(){
 void MainWindow::read_selected_book()
 {
     ui->lstChapters->setEnabled(true);
-    currentBook = currentBooks[ui->cbxBooks->currentIndex()];
+    //currentBook = s->currentBooks[ui->cbxBooks->currentIndex()];
+    currentBook = s->getCurrentBooks().at(ui->cbxBooks->currentIndex());
     title = currentBook->getName();
     ui->actionContent->setEnabled(true);
     ui->lstSections->setEnabled(true);
@@ -312,7 +233,7 @@ void MainWindow::on_cbxCatalogs_currentIndexChanged(int index)
     setEnabledAll();
 
     currentCatalog = s->getCatalogById(index);
-    currentBooks = currentCatalog->Books();
+    s->setCurrentBooks(currentCatalog->Books());
     title = currentCatalog->getName();
 
     setWindowTitle(title);

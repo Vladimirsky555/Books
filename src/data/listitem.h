@@ -35,8 +35,6 @@ public:
     void deleteSection(TextItem*item);
     void deleteSectionById(int id);
 
-signals:
-
 };
 
 #endif // LISTITEM_H

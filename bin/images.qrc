@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>images/app.ico</file>
         <file>images/book.png</file>
         <file>images/edit.png</file>
         <file>images/search.png</file>
@@ -38,5 +37,7 @@
         <file>images/duplicate.png</file>
         <file>images/numbers.png</file>
         <file>images/read.png</file>
+        <file>images/app.ico</file>
+        <file>images/books.ico</file>
     </qresource>
 </RCC>

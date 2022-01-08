@@ -11,7 +11,7 @@ class TextItem : public QObject
     QString text;
 
 public:
-    explicit TextItem(QString name, QObject *parent = nullptr);
+    TextItem(QString name, QObject *parent = nullptr);
     TextItem(QByteArray arr, QObject *parent = nullptr);
 
     //user
@@ -22,9 +22,6 @@ public:
 
     //admin
     void setData(QString);
-
-signals:
-
 };
 
 #endif // TEXTITEM_H

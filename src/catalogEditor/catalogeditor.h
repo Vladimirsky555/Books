@@ -109,7 +109,6 @@ private slots:
     void on_lstSections_clicked(const QModelIndex &index);
 
     void shutdown();
-
     void on_btnSaveCatalog_clicked();
 
 private:

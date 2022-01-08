@@ -36,6 +36,8 @@ void BookItem::insertData(QString source, QString newText){
             return;
         }
     }
+
+    //delete tmp;
 }
 
 void BookItem::insertDataFirst(QString newText)

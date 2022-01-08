@@ -1,68 +1,97 @@
 #include "storage.h"
-#include <QtAlgorithms>
+
 
 Storage::Storage(QObject *parent) : QObject(parent)
 {
-    this->c = 0;
-}
+    loadNamePathList();
 
-SearchItem *Storage::getSearchItem(int id)
-{
-    return searchItems.at(id);
-}
-
-void Storage::addSearchItem(SearchItem *si)
-{
-    searchItems.append(si);
-}
-
-int Storage::getSearchItemsCount()
-{
-    return searchItems.count();
-}
-
-void Storage::sortResult()
-{
-        SearchItem *tmp = new SearchItem();
-
-        for(int i = 0; i < searchItems.count(); i++)
-        {
-            for(int j = 0; j < searchItems.count() - 1; j++)
-            {
-                if(searchItems[j]->getTextCount() < searchItems[j + 1]->getTextCount())
-                {
-                    tmp = searchItems[j];
-                    searchItems[j] = searchItems[j + 1];
-                    searchItems[j + 1] = tmp;
-                }
-            }
-        }
-
-//        delete tmp;
-}
-
-void Storage::searchItemsClear()
-{
-    for(int i = 0; i < searchItems.count(); i++)
+    //Грузим из файла названия каталогов и пути к ним
+    for(int i = 0; i < pathList.size(); i++)
     {
-        delete searchItems[i];
+        Catalog *catalog = new Catalog(nameList[i], pathList[i]);
+        loadData(pathList[i]);
+        catalog->setBook(currentBooks);
+        addCatalog(catalog);
     }
-    searchItems.clear();
+
+    this->catalogsList = Catalogs();
 }
 
-void Storage::setC(int num)
+void Storage::loadNamePathList()
 {
-    this->c += num;
+    QFile f("data/catalogs");
+    if(!f.exists()) {
+        QDir dir;
+        dir.mkpath("data");
+        dir.mkpath("data/doc");
+        nameList.append("Первый каталог");
+        pathList.append("data/doc/first_catalog");//Чтобы программа не вылетала временный каталог
+    }
+
+    f.open(QFile::ReadOnly);
+    QDataStream str(&f);
+
+    int i = 0;
+    while(!str.atEnd()){
+        QString tmp;
+        str >> tmp;
+        nameList.append(tmp);
+
+        str >> tmp;
+        pathList.append(tmp);
+        i++;
+    }
+
+    f.close();
 }
 
-void Storage::setinZeroC()
+void Storage::saveNamePathList()
 {
-    this->c = 0;
+    QFile f("data/catalogs");
+    f.open(QFile::WriteOnly | QFile::Truncate);
+    QDataStream str(&f);
+
+    for(int i = 0; i < getCount(); i++){
+        str << getCatalogById(i)->getName() << getCatalogById(i)->getPath();
+    }
+
+    f.close();
 }
 
-int Storage::getC()
+//Загрузка из одного каталога
+void Storage::loadData(QString path)
 {
-    return this->c;
+    currentBooks.clear();
+    QFile f(path);
+    if(!f.exists()) return;
+
+    f.open(QFile::ReadOnly);
+    QDataStream reader(&f);
+
+    while(!reader.atEnd()){
+        QByteArray arr;
+        reader >> arr;
+        currentBooks.append(new BookItem(arr));
+    }
+
+    f.close();
+}
+
+void Storage::saveData()
+{
+    for(int i = 0; i < getCount(); i++){
+
+    QFile f(getCatalogById(i)->getPath());
+    f.open(QFile::WriteOnly | QFile::Truncate);
+    QDataStream str(&f);
+
+    currentBooks = getCatalogById(i)->Books();
+    for(int i = 0; i < currentBooks.size(); i++){
+        str << currentBooks[i]->saveIt();
+    }
+
+    f.close();
+    }
 }
 
 Catalog* Storage::getCatalogById(int id)
@@ -123,6 +152,16 @@ BookItem *Storage::getBookByName(QString name)
     }
 
     return currentBook;
+}
+
+QList<BookItem*> Storage::getCurrentBooks()
+{
+    return this->currentBooks;
+}
+
+void Storage::setCurrentBooks(QList<BookItem *> currentBooks)
+{
+    this->currentBooks = currentBooks;
 }
 
 QList<Catalog *> Storage::Catalogs()
@@ -198,5 +237,7 @@ int Storage::getCount()
 {
     return catalogs.count();
 }
+
+
 
 

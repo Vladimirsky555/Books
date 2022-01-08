@@ -2,37 +2,46 @@
 #define STORAGE_H
 
 #include <QObject>
+#include <QDir>
+#include <QFile>
+#include <QDataStream>
 
 #include "catalog.h"
-#include "searchitem.h"
 
 class Storage : public QObject
 {
     Q_OBJECT
 
     QList<Catalog*> catalogs;
-    QList<SearchItem*> searchItems;
-    int c;//сколько всего найдено элементов
+    QList<BookItem*> currentBooks;//Массив книг каталога
+
+public:
+    QStringList pathList;//Массив путей к каталогам
+    QStringList nameList;
+
+    QList<Catalog*> catalogsList;//для поиска по каталогам или одному каталогу
+    QList<BookItem*> booksList;//Список книг для поиска
+
 
 public:
     Storage(QObject *parent = nullptr);
 
-    //Функции результатов поиска
-    SearchItem* getSearchItem(int id);
-    void addSearchItem(SearchItem *si);
-    int getSearchItemsCount();
-    void sortResult();
-    void searchItemsClear();
-    void setC(int num);
-    void setinZeroC();
-    int getC();
+    //Загрузка и сохранение в файл
+    void loadNamePathList();
+    void saveNamePathList();
+    void loadData(QString path);
+    void saveData();
 
-    //Функции данных
+
     Catalog* getCatalogById(int id);
     Catalog* getCatalogByPath(QString path);
     Catalog* getCatalogByBook(BookItem* book);
     Catalog* getCatalogByName(QString name);
     BookItem* getBookByName(QString name);
+
+    QList<BookItem*> getCurrentBooks();
+    void setCurrentBooks(QList<BookItem*> currentBooks);
+
     QList<Catalog*> Catalogs();
     void addCatalog(Catalog *catalog);
     void addAtTheEndOfCatalog(Catalog *catalog);
@@ -43,6 +52,10 @@ public:
     void up(int id);
     void down(int id);
     int getCount();
+
+
+signals:
+
 };
 
 #endif // STORAGE_H

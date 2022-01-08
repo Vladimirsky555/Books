@@ -26,6 +26,7 @@ catalogEditor::catalogEditor(Storage *s, Catalog *catalog, QWidget *parent) :
     ui->lstChapters->setEnabled(false);
     ui->lstSections->setEnabled(false);
     ui->edtText->setEnabled(false);
+    ui->btnSaveText->setEnabled(false);
 
     refreshBooks();
     addActions();
@@ -45,6 +46,7 @@ catalogEditor::~catalogEditor()
 //Одиночные клики по полю
 void catalogEditor::on_lstBooks_clicked(const QModelIndex &index)
 {    
+    ui->btnSaveText->setEnabled(false);
     int id = index.row();
     ui->lstChapters->setEnabled(true);
 
@@ -63,6 +65,7 @@ void catalogEditor::on_lstBooks_clicked(const QModelIndex &index)
 
 void catalogEditor::on_lstChapters_clicked(const QModelIndex &index)
 {
+    ui->btnSaveText->setEnabled(false);
     int id = index.row();
     if (id == -1) return;
     currentChapter = currentBook->getChapterById(id);

@@ -8,17 +8,17 @@ QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 5.0
+VERSION = 6.0
 QMAKE_TARGET_COMPANY = BearWin
-QMAKE_TARGET_PRODUCT = Unification Books
-QMAKE_TARGET_DESCRIPTION = Unification Books
+QMAKE_TARGET_PRODUCT = Books
+QMAKE_TARGET_DESCRIPTION = Books Maker plus Search
 QMAKE_TARGET_COPYRIGHT = BearWin
 
 TARGET = Books
 TEMPLATE = app
 
 INCLUDEPATH += $${_PRO_FILE_PWD_}/src
-win32: RC_ICONS = $$PWD/bin/images/book.ico
+win32: RC_ICONS = $$PWD/bin/images/app.ico
 
     RESOURCES       = \
         bin/images.qrc
@@ -31,33 +31,35 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
     src/data/catalog.h \
     src/data/iteminfo.h \
     src/data/listitem.h \
+    src/data/searchitem.h \
+    src/data/searchstorage.h \
     src/data/storage.h \
     src/data/textitem.h \
     src/dialog/catalogenter.h \
     src/dialog/exportdialog.h \
     src/dialog/logindialog.h \
-        src/diary/iteminfoform.h \        
+        src/diary/iteminfoform.h \
+    src/helpers/searchitemsmaker.h \
         src/helpers/qregexphighlighter.h \
         src/search/searchwindow.h \
         src/info/list.h \
         src/info/info.h \
         src/dialog/nameenter.h \
     src/search/booksselector.h \
-    src/search/catalogsselector.h \
-    src/data/searchitem.h \
-    src/mainwindow/loadworker.h \
-    src/search/booksworker.h \
-    src/search/catalogsworker.h
+    src/search/catalogsselector.h
 
     SOURCES += src/main.cpp\
         src/application.cpp \
         src/catalogEditor/catalogeditor.cpp \
     src/catalogEditor/catalogseditor.cpp \
     src/data/catalog.cpp \
+    src/data/searchitem.cpp \
+    src/data/searchstorage.cpp \
     src/data/storage.cpp \
     src/dialog/catalogenter.cpp \
     src/dialog/exportdialog.cpp \
     src/dialog/logindialog.cpp \
+    src/helpers/searchitemsmaker.cpp \
         src/mainwindow/mainwindow.cpp \
         src/data/bookitem.cpp \
         src/data/textitem.cpp \
@@ -70,11 +72,7 @@ win32: RC_ICONS = $$PWD/bin/images/book.ico
         src/info/info.cpp \
         src/dialog/nameenter.cpp \
     src/search/booksselector.cpp \
-    src/search/catalogsselector.cpp \
-    src/data/searchitem.cpp \
-    src/mainwindow/loadworker.cpp \
-    src/search/booksworker.cpp \
-    src/search/catalogsworker.cpp
+    src/search/catalogsselector.cpp
 
     FORMS += src/mainwindow/mainwindow.ui \
         src/catalogEditor/catalogeditor.ui \
