@@ -8,17 +8,17 @@ QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-VERSION = 6.0
+VERSION = 5.0
 QMAKE_TARGET_COMPANY = BearWin
-QMAKE_TARGET_PRODUCT = Books
-QMAKE_TARGET_DESCRIPTION = Books Maker plus Search
+QMAKE_TARGET_PRODUCT = Unification Books
+QMAKE_TARGET_DESCRIPTION = Unification Books
 QMAKE_TARGET_COPYRIGHT = BearWin
 
 TARGET = Books
 TEMPLATE = app
 
 INCLUDEPATH += $${_PRO_FILE_PWD_}/src
-win32: RC_ICONS = $$PWD/bin/images/app.ico
+win32: RC_ICONS = $$PWD/bin/images/app1.ico
 
     RESOURCES       = \
         bin/images.qrc
@@ -37,6 +37,7 @@ win32: RC_ICONS = $$PWD/bin/images/app.ico
     src/data/textitem.h \
     src/dialog/catalogenter.h \
     src/dialog/exportdialog.h \
+    src/dialog/keywordenter.h \
     src/dialog/logindialog.h \
         src/diary/iteminfoform.h \
     src/helpers/searchitemsmaker.h \
@@ -58,6 +59,7 @@ win32: RC_ICONS = $$PWD/bin/images/app.ico
     src/data/storage.cpp \
     src/dialog/catalogenter.cpp \
     src/dialog/exportdialog.cpp \
+    src/dialog/keywordenter.cpp \
     src/dialog/logindialog.cpp \
     src/helpers/searchitemsmaker.cpp \
         src/mainwindow/mainwindow.cpp \
@@ -79,6 +81,7 @@ win32: RC_ICONS = $$PWD/bin/images/app.ico
     src/catalogEditor/catalogseditor.ui \
     src/dialog/catalogenter.ui \
     src/dialog/exportdialog.ui \
+    src/dialog/keywordenter.ui \
     src/dialog/logindialog.ui \
         src/diary/iteminfoform.ui \        
         src/search/searchwindow.ui \

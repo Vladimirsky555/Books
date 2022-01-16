@@ -11,7 +11,6 @@
         <file>images/ok.png</file>
         <file>images/reading.png</file>
         <file>images/font.png</file>
-        <file>images/study.png</file>
         <file>images/labels.png</file>
         <file>images/search2.png</file>
         <file>images/export.png</file>
@@ -37,7 +36,7 @@
         <file>images/duplicate.png</file>
         <file>images/numbers.png</file>
         <file>images/read.png</file>
-        <file>images/app.ico</file>
-        <file>images/books.ico</file>
+        <file>images/divide.png</file>
+        <file>images/app1.ico</file>
     </qresource>
 </RCC>

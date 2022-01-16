@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "dialog/nameenter.h"
+#include "dialog/keywordenter.h"
 #include "dialog/exportdialog.h"
 
 class ListItem;
@@ -46,6 +47,7 @@ private:
     QAction *chapterAddNumber;
     QAction *chapterDuplicate;
     QAction *chapterDelete;
+    QAction *chapterAddOne;
 
     QList<QAction*> sectionActions;
     QAction *sectionUp;
@@ -56,6 +58,10 @@ private:
     QAction *sectionEdit;
     QAction *sectionExport;
     QAction *sectionDelete;
+    QAction *sectionAddOne;
+
+
+    QString currentText;//переменная хранящая текст для разделения
 
 public:
     catalogEditor(Storage *s, Catalog *catalog, QWidget *parent = nullptr);
@@ -91,6 +97,7 @@ private slots:
     void chapter_add_Number();
     void chapter_Duplicate();
     void chapter_Delete();
+    void chapter_AddOne();
 
     void section_Up();
     void section_Down();
@@ -100,6 +107,7 @@ private slots:
     void section_Edit();
     void section_Export();
     void section_Delete();
+    void section_addOne();
 
     void on_btnSaveText_clicked();//сохранение текста
 
@@ -112,6 +120,11 @@ private slots:
     void on_btnSaveCatalog_clicked();
 
 private:
+    //Вспомогательные методы для разделения книги на главы и добавления
+    void readFile(QString filePath);
+    void divideText();//Добавляем книгу с главами
+    void addText();//Добавляем текст из файла
+
     Ui::catalogEditor *ui;
 };
 

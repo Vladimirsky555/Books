@@ -7,6 +7,8 @@
 #include <QMenu>
 #include <QModelIndex>
 #include <QIntValidator>
+#include <QFileDialog>
+#include <QDebug>
 
 catalogEditor::catalogEditor(Storage *s, Catalog *catalog, QWidget *parent) :
     QWidget(parent),
@@ -218,15 +220,15 @@ void catalogEditor::book_Export()
 void catalogEditor::book_add_Number()
 {
     ui->lstChapters->clear();
-        for(int i = 0; i < currentBook->getCount(); i++)
-        {
-            ui->lstChapters->addItem("[" + QString::number(i + 1) + "] " +
-                                     currentBook->getChapterById(i)->getName());
-             ui->lstChapters->item(i)->setIcon(QIcon(":/images/chapter.png"));
-        }
+    for(int i = 0; i < currentBook->getCount(); i++)
+    {
+        ui->lstChapters->addItem("[" + QString::number(i + 1) + "] " +
+                                 currentBook->getChapterById(i)->getName());
+        ui->lstChapters->item(i)->setIcon(QIcon(":/images/chapter.png"));
+    }
 
-        ui->edtFirstSection->setText(QString::number(1));
-        ui->edtLastSection->setText(QString::number(currentBook->getCount()));
+    ui->edtFirstSection->setText(QString::number(1));
+    ui->edtLastSection->setText(QString::number(currentBook->getCount()));
 }
 
 void catalogEditor::book_Duplicate()
@@ -252,13 +254,13 @@ void catalogEditor::book_Duplicate()
 
     BookItem* newBook = catalog->insert_Duplicate(currentBook->getName() + "_копия");
 
-//    for(int i = 0; i < currentBook->getCount(); i++){
-     for(int i = first; i <= end; i++){
+    //    for(int i = 0; i < currentBook->getCount(); i++){
+    for(int i = first; i <= end; i++){
 
         currentChapter = currentBook->getChapterById(i - 1);
         ListItem* newChapter = newBook->insert_Duplicate(currentChapter->getName());
 
-       for(int j = 0; j < currentChapter->getCount(); j++){
+        for(int j = 0; j < currentChapter->getCount(); j++){
 
             currentSection = currentChapter->getSectionById(j);
             TextItem* newSection = newChapter->insert_Duplicate(currentSection->getName());
@@ -329,7 +331,7 @@ void catalogEditor::chapter_Edit()
 {
     NameEnter ne;
     if(currentChapter != NULL){
-    ne.setName(currentChapter->getName());
+        ne.setName(currentChapter->getName());
     } else {
         QMessageBox::information(this, "Предупреждение!", "Вы не выбрали ни одной книги!");
         return;
@@ -359,7 +361,7 @@ void catalogEditor::chapter_Delete()
     reply = QMessageBox::question(this, "Вопрос!", "Удаляем главу?",
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
-       // Удаляем указатель массива items
+        // Удаляем указатель массива items
 
         currentBook->deleteChapter(currentChapter);
 
@@ -372,6 +374,24 @@ void catalogEditor::chapter_Delete()
     }
 }
 
+void catalogEditor::chapter_AddOne()
+{
+    QFileDialog dialog;
+    QString filePath = dialog.getOpenFileName();
+
+    //Вычленяем название файла
+    QFile f(filePath);
+    QFileInfo fileInfo(f.fileName());
+    QString fileName(fileInfo.fileName().remove(QRegularExpression(".(txt)")));
+
+    currentBook->insertDataAtEnd(fileName);
+    refreshChapters();
+    currentChapter = currentBook->getChapterByName(fileName);
+
+    readFile(filePath);
+    divideText();
+}
+
 void catalogEditor::chapter_add_Number()
 {
     ui->lstSections->clear();
@@ -379,7 +399,7 @@ void catalogEditor::chapter_add_Number()
     {
         ui->lstSections->addItem("[" + QString::number(i + 1) + "] " +
                                  currentChapter->getSectionById(i)->getName());
-         ui->lstSections->item(i)->setIcon(QIcon(":/images/section.png"));
+        ui->lstSections->item(i)->setIcon(QIcon(":/images/section.png"));
     }
 
     ui->edtFirstSection->setText(QString::number(1));
@@ -507,6 +527,26 @@ void catalogEditor::section_Delete()
     currentSection = NULL;
 }
 
+void catalogEditor::section_addOne()
+{
+    ui->lstSections->setEnabled(true);
+
+    QFileDialog dialog;
+    QString filePath = dialog.getOpenFileName();
+
+    //Вычленяем название файла
+    QFile f(filePath);
+    QFileInfo fileInfo(f.fileName());
+    QString fileName(fileInfo.fileName().remove(QRegularExpression(".(txt)")));
+
+    currentChapter->insertDataAtEnd(fileName);
+    refreshSections();
+    currentSection = currentChapter->getSectionByName(fileName);
+
+    readFile(filePath);
+    addText();
+}
+
 
 //Обновление списков
 void catalogEditor::refreshBooks()
@@ -526,11 +566,11 @@ void catalogEditor::refreshBooks()
 void catalogEditor::refreshChapters(){
     ui->lstChapters->clear();
 
-        for(int i = 0; i < currentBook->getCount(); i++)
-        {
-            ui->lstChapters->addItem(currentBook->getChapterById(i)->getName());
-             ui->lstChapters->item(i)->setIcon(QIcon(":/images/chapter.png"));
-        }
+    for(int i = 0; i < currentBook->getCount(); i++)
+    {
+        ui->lstChapters->addItem(currentBook->getChapterById(i)->getName());
+        ui->lstChapters->item(i)->setIcon(QIcon(":/images/chapter.png"));
+    }
 
     ui->lstSections->clear();
     ui->edtText->clear();
@@ -543,7 +583,7 @@ void catalogEditor::refreshSections(){
     for(int i = 0; i < currentChapter->getCount(); i++)
     {
         ui->lstSections->addItem(currentChapter->getSectionById(i)->getName());
-         ui->lstSections->item(i)->setIcon(QIcon(":/images/section.png"));
+        ui->lstSections->item(i)->setIcon(QIcon(":/images/section.png"));
     }
 
     ui->edtText->clear();
@@ -580,6 +620,79 @@ void catalogEditor::on_btnSaveCatalog_clicked()
 
     QMessageBox::information(this, "Сообщение!", "Каталог сохранён!");
 }
+
+void catalogEditor::readFile(QString filePath)
+{
+    QFile file;
+    file.setFileName(filePath);
+    file.open(QIODevice::ReadOnly);
+
+    QByteArray arr = file.readAll();
+    currentText = QString::fromUtf8(arr);
+}
+
+void catalogEditor::divideText()
+{
+    ui->lstSections->setEnabled(true);
+
+    KeyWordEnter key;
+    key.exec();
+    QString pattern = key.getKey();
+
+    QString name;
+    QStringList strList; // список абзацев одного текста
+
+    //Сделалем подобие html-документа, иначе поиск будет бесполезен
+    QString result;
+    QRegExp rx_("\n");
+    strList = currentText.split(rx_);
+    for(int i = 0; i < strList.count(); i++)
+    {
+        result += "<p>" + strList.at(i) + "</p>";
+    }
+    currentText = result;
+
+    //Теперь делим по главам
+    QRegExp rx(pattern);
+    strList = currentText.split(rx);
+
+    for(int i = 0; i < strList.count(); i++)
+    {
+        if(i != 0){
+            name = pattern + QString::number(i);
+        } else {
+            name = "Вступление";
+        }
+
+        currentChapter->insertDataAtEnd(name);
+        currentSection = currentChapter->getSectionByName(name);
+
+        //Для вступления разделитель не нужен
+        if(i != 0){
+            currentSection->setData(pattern + strList.at(i));
+        }
+    }
+
+    refreshSections();
+}
+
+void catalogEditor::addText()
+{
+    QStringList strList; // список абзацев одного текста
+
+    //Сделалем подобие html-документа, иначе поиск будет бесполезен
+    QString result;
+    QRegExp rx_("\n");
+    strList = currentText.split(rx_);
+    for(int i = 0; i < strList.count(); i++)
+    {
+        result += "<p>" + strList.at(i) + "</p>";
+    }
+
+    currentSection->setData(result);//Добавляем преобразованный в html текст
+    refreshSections();
+}
+
 
 
 void catalogEditor::addActions()
@@ -694,6 +807,16 @@ void catalogEditor::addActions()
 
     //События списка с главами
     {
+        QAction *A = chapterAddOne = new QAction(this);
+        QPixmap p(":/images/divide.png");
+        A->setIcon(QIcon(p));
+        A->setShortcut(tr("Ctrl+N"));
+        A->setText(tr("Добавить главу (раздел)"));
+        connect(A, SIGNAL(triggered()),this, SLOT(chapter_AddOne()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
+        ui->lstChapters->addAction(A);
+        chapterActions << A;
+    }{
         QAction *A = chapterInsertFirst = new QAction(this);
         QPixmap p(":/images/insert-in-the-front.png");
         A->setIcon(QIcon(p));
@@ -797,6 +920,16 @@ void catalogEditor::addActions()
 
     //События списка разделов
     {
+        QAction *A = chapterAddOne = new QAction(this);
+        QPixmap p(":/images/divide.png");
+        A->setIcon(QIcon(p));
+        A->setShortcut(tr("Ctrl+Z"));
+        A->setText(tr("Добавить раздел"));
+        connect(A, SIGNAL(triggered()),this, SLOT(section_addOne()));
+        A->setFont(QFont ("MS Shell Dlg 2", 11));
+        ui->lstSections->addAction(A);
+        sectionActions << A;
+    }{
         QAction *A = sectionInsertFirst = new QAction(this);
         QPixmap p(":/images/insert-in-the-front.png");
         A->setIcon(QIcon(p));

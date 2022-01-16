@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>NameEnter</class>
- <widget class="QWidget" name="NameEnter">
+ <class>KeyWordEnter</class>
+ <widget class="QDialog" name="KeyWordEnter">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>377</width>
-    <height>72</height>
+    <width>394</width>
+    <height>78</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Dialog</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLineEdit" name="edtName">
+    <widget class="QLineEdit" name="edtKey">
      <property name="font">
       <font>
        <pointsize>12</pointsize>
