@@ -21,8 +21,7 @@ public:
     void setKey(QString key);
 
 private slots:
-    void on_btnCancel_clicked();
-    void on_btnOK_clicked();
+    void setKey();
 
 private:
     Ui::KeyWordEnter *ui;

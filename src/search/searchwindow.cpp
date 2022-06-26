@@ -306,8 +306,11 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
         if(!sim->checkRegExp(rx))return;
         int pos = 0;
         QString str = ui->edtText->document()->findBlockByLineNumber(i).text();
+
+        int check = 0;
         while((pos = rx.indexIn(str, pos)) != -1){
             pos += rx.matchedLength();
+            if(check > 1)continue;
             cnt++;
 
             //В нижнем правом окошке выдаем информацию в каких строках

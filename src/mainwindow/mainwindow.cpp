@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QFontDialog>
 #include <QRegExp>
+#include <QDesktopWidget>
 
 //Конструктор-деструктор
 MainWindow::MainWindow(QWidget *parent) :
@@ -14,6 +15,15 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Книги");
+
+    this->setGeometry(
+                QStyle::alignedRect(
+                    Qt::LeftToRight,
+                    Qt::AlignCenter,
+                    this->size(),
+                    qApp->desktop()->availableGeometry()
+                    )
+                );
 
     currentCatalog = NULL;
     currentBook = NULL;

@@ -9,6 +9,9 @@ KeyWordEnter::KeyWordEnter(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Ключевое слово для раздела текста");
+
+    ui->btnSetKey->setDefaultAction(ui->actionsetKey);
+    connect(ui->actionsetKey, SIGNAL(triggered()), this, SLOT(setKey()));
 }
 
 KeyWordEnter::~KeyWordEnter()
@@ -26,14 +29,7 @@ void KeyWordEnter::setKey(QString key)
     ui->edtKey->setText(key);
 }
 
-void KeyWordEnter::on_btnCancel_clicked()
-{
-    key = ui->edtKey->text();
-    close();
-}
-
-
-void KeyWordEnter::on_btnOK_clicked()
+void KeyWordEnter::setKey()
 {
     key = ui->edtKey->text();
 
@@ -46,4 +42,5 @@ void KeyWordEnter::on_btnOK_clicked()
 
     close();
 }
+
 

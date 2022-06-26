@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>394</width>
-    <height>78</height>
+    <width>371</width>
+    <height>48</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QLineEdit" name="edtKey">
      <property name="font">
@@ -24,58 +24,41 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <spacer name="horizontalSpacer">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnCancel">
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Закрыть</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normalon>:/images/close.png</normalon>
-        </iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnOK">
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Сохранить</string>
-       </property>
-       <property name="icon">
-        <iconset>
-         <normalon>:/images/save.jpg</normalon>
-        </iconset>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QToolButton" name="btnSetKey">
+     <property name="minimumSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../bin/images.qrc">
+       <normaloff>:/images/ok.png</normaloff>:/images/ok.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+    </widget>
    </item>
   </layout>
+  <action name="actionsetKey">
+   <property name="icon">
+    <iconset resource="../../bin/images.qrc">
+     <normaloff>:/images/ok.png</normaloff>:/images/ok.png</iconset>
+   </property>
+   <property name="text">
+    <string>setKey</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../bin/images.qrc"/>
+ </resources>
  <connections/>
 </ui>
