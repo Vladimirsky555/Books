@@ -8,7 +8,7 @@ CatalogEnter::CatalogEnter(QWidget *parent) :
     ui(new Ui::CatalogEnter)
 {
     ui->setupUi(this);
-     setWindowTitle("Добавить каталог");
+     setWindowTitle(tr("Добавить каталог"));
 
     setWindowFlags(Qt::Window
          | Qt::WindowMinimizeButtonHint
@@ -56,7 +56,7 @@ void CatalogEnter::on_btnSave_clicked()
     path = ui->edtPath->text();
 
     if(name == "" || path == ""){
-        QMessageBox::information(this, "Сообщение!", "Пустая строка!");
+        QMessageBox::information(this, tr("Сообщение!"), tr("Пустая строка!"));
         return;
     }
 

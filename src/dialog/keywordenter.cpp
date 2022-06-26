@@ -8,7 +8,7 @@ KeyWordEnter::KeyWordEnter(QWidget *parent) :
     ui(new Ui::KeyWordEnter)
 {
     ui->setupUi(this);
-    setWindowTitle("Ключевое слово для раздела текста");
+    setWindowTitle(tr("Ключевое слово для раздела текста"));
 
     ui->btnSetKey->setDefaultAction(ui->actionsetKey);
     connect(ui->actionsetKey, SIGNAL(triggered()), this, SLOT(setKey()));
@@ -35,7 +35,7 @@ void KeyWordEnter::setKey()
 
     if(key == ""){
         QMessageBox mb;
-        mb.setText("Пустая строка!");
+        mb.setText(tr("Пустая строка!"));
         mb.exec();
         return;
     }

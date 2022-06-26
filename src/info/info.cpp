@@ -6,7 +6,7 @@ Info::Info(QWidget *parent) :
     ui(new Ui::Info)
 {
     ui->setupUi(this);
-    setWindowTitle("О программе");
+    setWindowTitle(tr("О программе"));
 }
 
 Info::~Info()

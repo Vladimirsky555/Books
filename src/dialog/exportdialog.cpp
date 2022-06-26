@@ -8,7 +8,7 @@ ExportDialog::ExportDialog(Storage *s, Catalog *catalogFrom, BookItem *book, QWi
 {
     ui->setupUi(this);
 
-    setWindowTitle("Список каталогов");
+    setWindowTitle(tr("Список каталогов"));
     this->chapter = NULL;
     this->section = NULL;
 
@@ -31,7 +31,7 @@ ExportDialog::ExportDialog(Catalog *catalog, BookItem *bookFrom, ListItem *chapt
 {
     ui->setupUi(this);
 
-    setWindowTitle("Список книг");
+    setWindowTitle(tr("Список книг"));
     this->section = NULL;
 
     this->catalog = catalog;
@@ -52,7 +52,7 @@ ExportDialog::ExportDialog(BookItem *book, ListItem *chapterFrom, TextItem *sect
     ui(new Ui::ExportDialog)
 {
     ui->setupUi(this);
-    setWindowTitle("Список глав");
+    setWindowTitle(tr("Список глав"));
 
     this->book = book;
     this->chapterFrom = chapterFrom;

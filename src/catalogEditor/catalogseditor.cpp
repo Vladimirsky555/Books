@@ -24,7 +24,7 @@ CatalogsEditor::CatalogsEditor(Storage *s, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setWindowTitle("Редактор каталогов");
+    setWindowTitle(tr("Редактор каталогов"));
 
     ui->btnCatalog->setEnabled(false);
     ui->btnDel->setEnabled(false);
@@ -53,7 +53,7 @@ void CatalogsEditor::refresh()
     }
 
     if(s->getCount() == 0){
-        addCatalog("Добавьте первый каталог, потом удалите эту строку", "data/doc/temp.book");
+        addCatalog(tr("Добавьте первый каталог, потом удалите эту строку"), "data/doc/temp.book");
     }
 }
 
@@ -76,7 +76,7 @@ void CatalogsEditor::on_btnAdd_clicked()
     ce.exec();
 
     if (ce.getName() == "") {
-        QMessageBox::information(this, "Информация", "Файл не может быть пустым!");
+        QMessageBox::information(this, tr("Информация"), tr("Файл не может быть пустым!"));
         return;
     }
 
@@ -89,7 +89,7 @@ void CatalogsEditor::on_btnAdd_clicked()
 void CatalogsEditor::on_btnDel_clicked()
 {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Вопрос!", "Вы действительно хотите удалить каталог?",
+    reply = QMessageBox::question(this, tr("Вопрос!"), tr("Вы действительно хотите удалить каталог?"),
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         QFile(currentCatalog->getPath()).remove();//Удаляем файл
@@ -151,7 +151,7 @@ void CatalogsEditor::on_btnRename_clicked()
     if(currentCatalog != NULL){
     ne.setName(currentCatalog->getName());
     } else {
-        QMessageBox::information(this, "Предупреждение!", "Вы не выбрали ни одного каталога!");
+        QMessageBox::information(this, tr("Предупреждение!"), tr("Вы не выбрали ни одного каталога!"));
         return;
     }
     ne.exec();

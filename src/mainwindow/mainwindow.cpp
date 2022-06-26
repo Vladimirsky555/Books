@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    setWindowTitle("Книги");
+    setWindowTitle(tr("Книги"));
 
     this->setGeometry(
                 QStyle::alignedRect(
@@ -33,6 +33,29 @@ MainWindow::MainWindow(QWidget *parent) :
     this->admin = false;
 
     s = new Storage();
+
+
+    //Переключатель перевода с русского на английский
+    /*
+     * Поключаем к сигналу изменения пункта комбобокса лямбда-функцию, в которой будет
+     * изменяться перевод приложения.
+     * Поскольку QComboBox имеет перегрузку сигнатуры сигнала, то нам необходимо
+     * скастовать сигнал к нужной сигнатуре. В данном случае будем использовать
+     * название пункта при его изменении.
+     */
+
+    ui->cbxLan->addItems(QStringList() << "ru" << "en");
+
+    connect(ui->cbxLan, static_cast<void(QComboBox::*)(const QString &)>(&QComboBox::currentIndexChanged),
+            [=](const QString &str)
+    {
+        translator.load(":lang/books_" + str + ".qm");//Загружаем перевод
+        qApp->installTranslator(&translator);//Устанавливаем перевод в приложение
+    });
+
+    translator.load(":lang/books_ru.qm");//Загружаем перевод
+    qApp->installTranslator(&translator);//Устанавливаем перевод в приложение
+
 
     ui->actionCatalogsEditor->setEnabled(false);
 
@@ -290,7 +313,7 @@ void MainWindow::on_btnFont_clicked()
         ui->edtText->setText(txt);
 
     } else {
-        QMessageBox::information(this,"Сообщение","Шрифт не выбран!");
+        QMessageBox::information(this, tr("Сообщение") , tr("Шрифт не выбран!"));
     }
 }
 
@@ -302,11 +325,19 @@ void MainWindow::closeEvent(QCloseEvent *event)
     QWidget::closeEvent(event);
 }
 
+void MainWindow::changeEvent(QEvent *event)
+{
+    if(event->type() == QEvent::LanguageChange)
+    {
+        ui->retranslateUi(this);//переведём окно заново
+    }
+}
+
 //Экспорт названия книги, заголовка и текста в файл
 void MainWindow::on_actionExport_triggered()
 {
     //Save the file to disk
-    QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
+    QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"));
     //QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
     if(filename.isEmpty())return;
 
@@ -338,7 +369,7 @@ void MainWindow::on_actionCatalogsEditor_triggered()
 void MainWindow::on_actionAuthorization_triggered()
 {
     if(admin){
-        QMessageBox::information(this, "Сообщение!", "Вы уже авторизированы!");
+        QMessageBox::information(this, tr("Сообщение!"), tr("Вы уже авторизированы!"));
         return;
     }
 
@@ -357,3 +388,9 @@ void MainWindow::on_actionAuthorization_triggered()
         CatalogsEditor->show();
     }
 }
+
+void MainWindow::on_cbxLan_currentIndexChanged(int index)
+{
+
+}
+

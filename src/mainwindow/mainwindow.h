@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QTranslator>
 
 #include "data/iteminfo.h"
 #include "data/storage.h"
@@ -33,6 +34,8 @@ class MainWindow : public QMainWindow
     BookItem* currentBook;
     ListItem* currentChapter;
     TextItem* currentSection;
+
+    QTranslator translator;
 
     //Переменные виджетов
     ItemInfoForm *widget_o;
@@ -78,6 +81,8 @@ private slots:
     void on_edtPattern_textChanged(const QString &arg1);
     void on_btnFont_clicked();
 
+    void on_cbxLan_currentIndexChanged(int index);
+
 signals:
     void shutdown();
 
@@ -87,6 +92,7 @@ private:
     // QWidget interface
 protected:
     virtual void closeEvent(QCloseEvent *event);
+    virtual void changeEvent(QEvent *event);
 };
 
 #endif // MAINWINDOW_H

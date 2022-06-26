@@ -8,7 +8,7 @@ CatalogsSelector::CatalogsSelector(Storage *s, QWidget *parent) :
     ui->setupUi(this);
     this->s = s;
     ui->btnOk->setEnabled(false);
-    setWindowTitle("Выбор каталогов для поиска");
+    setWindowTitle(tr("Выбор каталогов для поиска"));
 
     ui->btnOk->setDefaultAction(ui->actionCatalogsSelect);//привязали к toolbutton
     connect(ui->actionCatalogsSelect, SIGNAL(triggered()),

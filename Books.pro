@@ -21,7 +21,8 @@ INCLUDEPATH += $${_PRO_FILE_PWD_}/src
 win32: RC_ICONS = $$PWD/bin/images/app1.ico
 
     RESOURCES       = \
-        bin/images.qrc
+        bin/images.qrc \
+    bin/lan.qrc
 	
 	HEADERS  += src/mainwindow/mainwindow.h \
         src/application.h \
@@ -90,4 +91,6 @@ win32: RC_ICONS = $$PWD/bin/images/app1.ico
         src/dialog/nameenter.ui \
        src/search/booksselector.ui \
        src/search/catalogsselector.ui
+
+TRANSLATIONS += books_en.ts
 

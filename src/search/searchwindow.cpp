@@ -14,7 +14,7 @@ SearchWindow::SearchWindow(Storage *s, QWidget *parent) :
     ui(new Ui::SearchWindow)
 {
     ui->setupUi(this);
-    setWindowTitle("Поисковик");
+    setWindowTitle(tr("Поисковик"));
 
     this->currentBook = NULL;
     this->currentChapter = NULL;
@@ -157,15 +157,15 @@ void SearchWindow::report(int c, int n)
 {
     QString result;
     result += "<b><span style=\"color:#800000\">";
-    result += "Режим исследования текстов";
+    result += tr("Режим исследования текстов");
     result += "</span><br><br><span style=\"color:#483D8B\">";
-    result += "В квадратных скобках - число, указывающее на то, "
-              "сколько раз в тексте встретились слово или фраза.";
+    result += tr("В квадратных скобках - число, указывающее на то, "
+              "сколько раз в тексте встретились слово или фраза.");
     result += "<br><br><span style=\"color:#FF0000\">";
-    result += QString::number(c) + "</span> повторений фразы (слова) " + "\"" +
+    result += QString::number(c) + tr("</span> повторений фразы (слова) ") + "\"" +
             ui->edtSearch->text() + "\" в <span style=\"color:#FF0000\">"  +
             QString::number(n) +
-            "</span> текстах следующих книг:";
+            tr("</span> текстах следующих книг:");
     result += "</span></b>";
     ui->edtText->append(result);
     ui->edtText->append(" ");
@@ -178,14 +178,14 @@ void SearchWindow::report(int c, int n)
     }
 
     result += "<br><br><b><span style=\"color:#483D8B\">";
-    result += "Поиск завершен!";
+    result += tr("Поиск завершен!");
     result += "</span></b><br>";
     ui->edtText->append(result);
 
     ui->lstResults->addItem(" ");
-    ui->lstResults->addItem("Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
-                            ui->edtSearch->text() + "\"" + " в " + QString::number(n) + " текстах");
-    ui->lstResults->addItem("Поиск завершен!");
+    ui->lstResults->addItem(tr("Итого: ") + QString::number(c) + tr(" повторений фразы (слова) ") + "\"" +
+                            ui->edtSearch->text() + "\"" + tr(" в ") + QString::number(n) + tr(" текстах"));
+    ui->lstResults->addItem(tr("Поиск завершен!"));
 }
 
 
@@ -243,12 +243,12 @@ void SearchWindow::findInChapters()
     QString result;
 
     result += "<b><span style=\"color:#800000\">";
-    result += "Режим исследования заголовков текстов";
+    result += tr("Режим исследования заголовков текстов");
     result += "<br>";
     result += "</span><br>";
     result += "<span style=\"color:#483D8B\">";
-    result += "Итого: " + QString::number(c) + " повторений фразы (слова) " + "\"" +
-            ui->edtSearch->text() + "\" в " +  "заголовках следующих каталогов:";
+    result += "Итого: " + QString::number(c) + tr(" повторений фразы (слова) ") + "\"" +
+            ui->edtSearch->text() + tr("\" в ") +  tr("заголовках следующих каталогов:");
     result += "</span></b>";
     result += "<br>";
     ui->edtText->append(result);
@@ -259,7 +259,7 @@ void SearchWindow::findInChapters()
     }
 
     result += "<br><b><span style=\"color:#483D8B\">";
-    result += "Результат поиска:";
+    result += tr("Результат поиска:");
     result += "</span></b><br>";
     ui->edtText->append(result);
     result = "";
@@ -274,7 +274,7 @@ void SearchWindow::findInChapters()
     }
 
     result += "<br><br><b><span style=\"color:#483D8B\">";
-    result += "Поиск завершен!";
+    result += tr("Поиск завершен!");
     result += "</span></b><br>";
     ui->edtText->append(result);
 }
@@ -288,7 +288,7 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
     int id = index.row();
 
     if(id >= ss->searchItems.size()){
-        QMessageBox::information(this, "Информация!", "Спасибо!");
+        QMessageBox::information(this, tr("Информация!"), tr("Спасибо!"));
         return;
     }
 
@@ -316,7 +316,7 @@ void SearchWindow::on_lstResults_clicked(const QModelIndex &index)
             //В нижнем правом окошке выдаем информацию в каких строках
             //и сколько раз встретилось искомое слово
             ui->lstText->addItem(QString::number(cnt)+ " "
-                    "[" + QString::number(i+1) + " строка" + "] ");
+                    "[" + QString::number(i+1) + tr(" строка") + "] ");
 
             textItem t;
             t.id = i+1;
@@ -436,7 +436,7 @@ void SearchWindow::chooseFont()
         ui->edtText->setText(txt);
 
     } else {
-        QMessageBox::information(this,"Сообщение","Шрифт не выбран");
+        QMessageBox::information(this, tr("Сообщение"), tr("Шрифт не выбран"));
     }
 }
 
@@ -502,7 +502,7 @@ void SearchWindow::result_file_Export()
     QStringList strList;
 
     //    QString filename = QFileDialog::getSaveFileName(this,"Сохранить как");
-    QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), tr("DOC (*.doc)"));
+    QString filename = QFileDialog::getSaveFileName(this, tr("Сохранить как"), QString(), "DOC (*.doc)");
     if(filename.isEmpty())return;
 
     QFile file(filename);

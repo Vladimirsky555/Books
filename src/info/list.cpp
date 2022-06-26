@@ -7,7 +7,7 @@ List::List(QString title, QList<ListItem*> items, QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setWindowTitle(title + " (Содержание)");
+    setWindowTitle(title + tr(" (Содержание)"));
 
     this->items = items;
 
@@ -27,7 +27,7 @@ List::List(QString title, QList<ListItem*> items, QWidget *parent) :
 
         for(int j = 0; j < current->getCount(); j++)
         {
-            if(current->getSectionById(j)->getName() != "Вступление"){
+            if(current->getSectionById(j)->getName() != tr("Вступление")){
                 ui->lstItems->append(current->getSectionById(j)->getName());
             }
         }

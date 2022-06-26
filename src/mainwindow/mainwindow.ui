@@ -82,6 +82,9 @@ p, li { white-space: pre-wrap; }
        </widget>
       </item>
       <item>
+       <widget class="QComboBox" name="cbxLan"/>
+      </item>
+      <item>
        <widget class="QPushButton" name="btnFont">
         <property name="toolTip">
          <string extracomment="Шрифт"/>

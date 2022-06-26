@@ -14,7 +14,7 @@ BooksSelector::BooksSelector(Storage *s, QWidget *parent) :
 
     ui->btnOk->setEnabled(false);
 
-    setWindowTitle("Выбор книг для поиска");
+    setWindowTitle(tr("Выбор книг для поиска"));
 
         ui->btnOk->setDefaultAction(ui->actionBookSelect);//привязали к toolbutton
           connect(ui->actionBookSelect, SIGNAL(triggered()),

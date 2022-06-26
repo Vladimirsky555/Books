@@ -113,7 +113,8 @@ void catalogEditor::book_Edit()
     if(currentBook != NULL){
         ne.setName(currentBook->getName());
     } else {
-        QMessageBox::information(this, "Предупреждение!", "Вы не выбрали ни одной книги!");
+        QMessageBox::information(this, tr("Предупреждение!"),
+                                 tr("Вы не выбрали ни одной книги!"));
         return;
     }
     ne.exec();
@@ -140,7 +141,7 @@ void catalogEditor::book_Insert_First()
     ne.exec();
 
     if (ne.getName() == "") {
-        QMessageBox::information(this, "Информация", "Файл не может быть пустым!");
+        QMessageBox::information(this, tr("Информация"), tr("Файл не может быть пустым!"));
         return;
     }
 
@@ -156,7 +157,7 @@ void catalogEditor::book_Insert()
     ne.exec();
 
     if (ne.getName() == "") {
-        QMessageBox::information(this, "Информация", "Файл не может быть пустым!");
+        QMessageBox::information(this, tr("Информация"), tr("Файл не может быть пустым!"));
         return;
     }
 
@@ -170,7 +171,7 @@ void catalogEditor::book_Insert_End()
     ne.exec();
 
     if (ne.getName() == "") {
-        QMessageBox::information(this, "Информация", "Файл не может быть пустым!");
+        QMessageBox::information(this, tr("Информация"), tr("Файл не может быть пустым!"));
         return;
     }
 
@@ -184,7 +185,7 @@ void catalogEditor::book_Delete()
     if(currentBook == NULL) return;
 
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Вопрос!", "Вы действительно хотите удалить книгу?",
+    reply = QMessageBox::question(this, tr("Вопрос!"), tr("Вы действительно хотите удалить книгу?"),
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         //Удаляем указатель массива books
@@ -240,15 +241,15 @@ void catalogEditor::book_Duplicate()
 
     //Проверки
     if(first <= 0) {
-        QMessageBox::warning(this, "Предупреждение!", "Перед копированием пронумеруйте главы, выбрав "
+        QMessageBox::warning(this, tr("Предупреждение!"), tr("Перед копированием пронумеруйте главы, выбрав "
                                                       "необходимые для создания новой книги. По умолчанию будет скопирована "
-                                                      "вся книга!");
+                                                      "вся книга!"));
         return;
     }
     if(end > currentBook->getCount()) {
-        QMessageBox::warning(this, "Предупреждение!", "Количество глав не совпадает с реальным. "
+        QMessageBox::warning(this, tr("Предупреждение!"), tr("Количество глав не совпадает с реальным. "
                                                       "Пронумеруйте главы, выбрав необходимые для создания новой книги. "
-                                                      "По умолчанию будет скопирована вся книга!");
+                                                      "По умолчанию будет скопирована вся книга!"));
         return;
     }
 
@@ -289,7 +290,7 @@ void catalogEditor::chapter_Insert_First()
     ne.exec();
 
     if (ne.getName() == "") {
-        QMessageBox::information(this, "Информация", "Файл не может быть пустым!");
+        QMessageBox::information(this, tr("Информация"), tr("Файл не может быть пустым!"));
         return;
     }
 
@@ -305,7 +306,7 @@ void catalogEditor::chapter_Insert()
     ne.exec();
 
     if (ne.getName() == "") {
-        QMessageBox::information(this, "Информация!", "Файл не может быть пустым!");
+        QMessageBox::information(this, tr("Информация!"), tr("Файл не может быть пустым!"));
         return;
     }
 
@@ -319,7 +320,7 @@ void catalogEditor::chapter_Insert_End()
     ne.exec();
 
     if (ne.getName() == "") {
-        QMessageBox::information(this, "Информация", "Файл не может быть пустым!");
+        QMessageBox::information(this, tr("Информация"), tr("Файл не может быть пустым!"));
         return;
     }
 
@@ -333,7 +334,7 @@ void catalogEditor::chapter_Edit()
     if(currentChapter != NULL){
         ne.setName(currentChapter->getName());
     } else {
-        QMessageBox::information(this, "Предупреждение!", "Вы не выбрали ни одной книги!");
+        QMessageBox::information(this, tr("Предупреждение!"), tr("Вы не выбрали ни одной книги!"));
         return;
     }
     ne.exec();
@@ -358,7 +359,7 @@ void catalogEditor::chapter_Delete()
     if(currentChapter == NULL) return;
 
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "Вопрос!", "Удаляем главу?",
+    reply = QMessageBox::question(this, tr("Вопрос!"), tr("Удаляем главу?"),
                                   QMessageBox::Yes|QMessageBox::No);
     if (reply == QMessageBox::Yes) {
         // Удаляем указатель массива items
@@ -415,15 +416,15 @@ void catalogEditor::chapter_Duplicate()
 
     //Проверки
     if(first <= 0 || end - first < 0) {
-        QMessageBox::warning(this, "Предупреждение!", "Перед копированием пронумеруйте разделы, выбрав"
+        QMessageBox::warning(this, tr("Предупреждение!"), tr("Перед копированием пронумеруйте разделы, выбрав"
                                                       "необходимые для создания новой главы. "
-                                                      "По умолчанию будет скопирована вся глава!");
+                                                      "По умолчанию будет скопирована вся глава!"));
         return;
     }
     if(end > currentChapter->getCount()) {
-        QMessageBox::warning(this, "Предупреждение!", "Количество разделов не совпадает с реальным. "
+        QMessageBox::warning(this, "Предупреждение!", tr("Количество разделов не совпадает с реальным. "
                                                       "Пронумеруйте главы, выбрав необходимые для создания новой главы. "
-                                                      "По умолчанию будет скопирована вся глава!");
+                                                      "По умолчанию будет скопирована вся глава!"));
         return;
     }
 
@@ -457,7 +458,7 @@ void catalogEditor::section_Insert_First()
     ne.exec();
 
     if (ne.getName() == "") {
-        QMessageBox::information(this, "Информация", "Файл не может быть пустым!");
+        QMessageBox::information(this, tr("Информация"), tr("Файл не может быть пустым!"));
         return;
     }
 
@@ -473,7 +474,7 @@ void catalogEditor::section_Insert()
     ne.exec();
 
     if (ne.getName() == "") {
-        QMessageBox::information(this, "Информация", "Файл не может быть пустым!");
+        QMessageBox::information(this, tr("Информация"), tr("Файл не может быть пустым!"));
         return;
     }
 
@@ -487,7 +488,7 @@ void catalogEditor::section_Insert_End()
     ne.exec();
 
     if (ne.getName() == "") {
-        QMessageBox::information(this, "Информация", "Файл не может быть пустым!");
+        QMessageBox::information(this, tr("Информация"), tr("Файл не может быть пустым!"));
         return;
     }
 
@@ -618,7 +619,7 @@ void catalogEditor::on_btnSaveCatalog_clicked()
 
     f.close();
 
-    QMessageBox::information(this, "Сообщение!", "Каталог сохранён!");
+    QMessageBox::information(this, tr("Сообщение!"), tr("Каталог сохранён!"));
 }
 
 void catalogEditor::readFile(QString filePath)
@@ -702,7 +703,7 @@ void catalogEditor::addActions()
         QAction *A = bookInsertFirst = new QAction(this);
         QPixmap p(":/images/insert-in-the-front.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+Q"));
+        A->setShortcut(Qt::Key_Q | Qt::CTRL);
         A->setText(tr("Вставить в начало"));
         connect(A, SIGNAL(triggered()),this, SLOT(book_Insert_First()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -712,7 +713,7 @@ void catalogEditor::addActions()
         QAction *A = bookInsert = new QAction(this);
         QPixmap p(":/images/insert-inside.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+W"));
+        A->setShortcut(Qt::Key_W | Qt::CTRL);
         A->setText(tr("Вставить"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Insert()));
@@ -723,7 +724,7 @@ void catalogEditor::addActions()
         QAction *A = bookInsertEnd = new QAction(this);
         QPixmap p(":/images/insert-at-the-end.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+E"));
+        A->setShortcut(Qt::Key_K | Qt::CTRL);
         A->setText(tr("Вставить в конец"));
         connect(A, SIGNAL(triggered()),this, SLOT(book_Insert_End()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -733,7 +734,7 @@ void catalogEditor::addActions()
         QAction *A = bookUp = new QAction(this);
         QPixmap p(":/images/up.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+R"));
+        A->setShortcut(Qt::Key_I | Qt::CTRL);
         A->setText(tr("Вверх"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Up()));
@@ -744,7 +745,7 @@ void catalogEditor::addActions()
         QAction *A = bookDown = new QAction(this);
         QPixmap p(":/images/down.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+T"));
+        A->setShortcut(Qt::Key_R | Qt::CTRL);
         A->setText(tr("Вниз"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Down()));
@@ -755,7 +756,7 @@ void catalogEditor::addActions()
         QAction *A = bookEdit = new QAction(this);
         QPixmap p(":/images/edit.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+Y"));
+        A->setShortcut(Qt::Key_E | Qt::CTRL);
         A->setText(tr("Переименовать"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Edit()));
@@ -766,7 +767,7 @@ void catalogEditor::addActions()
         QAction *A = bookExport = new QAction(this);
         QPixmap p(":/images/export-to-display.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+L"));
+        A->setShortcut(Qt::Key_L | Qt::CTRL);
         A->setText(tr("Экспорт в другой каталог"));
         connect(A, SIGNAL(triggered()),this, SLOT(book_Export()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -786,7 +787,7 @@ void catalogEditor::addActions()
         QAction *A = bookDuplicate = new QAction(this);
         QPixmap p(":/images/duplicate.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+P"));
+        A->setShortcut(Qt::Key_O | Qt::CTRL);
         A->setText(tr("Дублировать"));
         connect(A, SIGNAL(triggered()),this, SLOT(book_Duplicate()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -796,7 +797,7 @@ void catalogEditor::addActions()
         QAction *A = bookDelete = new QAction(this);
         QPixmap p(":/images/delete.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+U"));
+        A->setShortcut(Qt::Key_U | Qt::CTRL);
         A->setText(tr("Удалить"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(book_Delete()));
@@ -810,7 +811,7 @@ void catalogEditor::addActions()
         QAction *A = chapterAddOne = new QAction(this);
         QPixmap p(":/images/divide.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+N"));
+        A->setShortcut(Qt::Key_Y | Qt::CTRL);
         A->setText(tr("Добавить главу (раздел)"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_AddOne()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -820,7 +821,7 @@ void catalogEditor::addActions()
         QAction *A = chapterInsertFirst = new QAction(this);
         QPixmap p(":/images/insert-in-the-front.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+A"));
+        A->setShortcut(Qt::Key_A | Qt::CTRL);
         A->setText(tr("Вставить в начало"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Insert_First()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -830,7 +831,7 @@ void catalogEditor::addActions()
         QAction *A = chapterInsert = new QAction(this);
         QPixmap p(":/images/insert-inside.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+S"));
+        A->setShortcut(Qt::Key_S | Qt::CTRL);
         A->setText(tr("Вставить"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Insert()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -840,7 +841,7 @@ void catalogEditor::addActions()
         QAction *A = chapterInsertEnd = new QAction(this);
         QPixmap p(":/images/insert-at-the-end.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+D"));
+        A->setShortcut(Qt::Key_D | Qt::CTRL);
         A->setText(tr("Вставить в конец"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Insert_End()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -850,7 +851,7 @@ void catalogEditor::addActions()
         QAction *A = chapterUp = new QAction(this);
         QPixmap p(":/images/up.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+F"));
+        A->setShortcut(Qt::Key_F | Qt::CTRL);
         A->setText(tr("Вверх"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Up()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -860,7 +861,7 @@ void catalogEditor::addActions()
         QAction *A = chapterDown = new QAction(this);
         QPixmap p(":/images/down.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+G"));
+        A->setShortcut(Qt::Key_G | Qt::CTRL);
         A->setText(tr("Вниз"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Down()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -870,7 +871,7 @@ void catalogEditor::addActions()
         QAction *A = chapterEdit = new QAction(this);
         QPixmap p(":/images/edit.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+H"));
+        A->setShortcut(Qt::Key_T | Qt::CTRL);
         A->setText(tr("Переименовать"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Edit()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -880,7 +881,7 @@ void catalogEditor::addActions()
         QAction *A = chapterEdit = new QAction(this);
         QPixmap p(":/images/export-to-display.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+H"));
+        A->setShortcut(Qt::Key_H | Qt::CTRL);
         A->setText(tr("Экспорт в другую книгу"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Export()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -890,7 +891,7 @@ void catalogEditor::addActions()
         QAction *A = chapterAddNumber = new QAction(this);
         QPixmap p(":/images/numbers.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+N"));
+        A->setShortcut(Qt::Key_N | Qt::CTRL);
         A->setText(tr("Пронумеровать разделы"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_add_Number()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -900,7 +901,7 @@ void catalogEditor::addActions()
         QAction *A = chapterDuplicate = new QAction(this);
         QPixmap p(":/images/duplicate.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+P"));
+        A->setShortcut(Qt::Key_P | Qt::CTRL);
         A->setText(tr("Дублировать"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Duplicate()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -910,7 +911,7 @@ void catalogEditor::addActions()
         QAction *A = chapterDelete = new QAction(this);
         QPixmap p(":/images/delete.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+D"));
+        A->setShortcut(Qt::Key_D | Qt::CTRL);
         A->setText(tr("Удалить"));
         connect(A, SIGNAL(triggered()),this, SLOT(chapter_Delete()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -923,7 +924,7 @@ void catalogEditor::addActions()
         QAction *A = chapterAddOne = new QAction(this);
         QPixmap p(":/images/divide.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+Z"));
+        A->setShortcut(Qt::Key_W | Qt::CTRL);
         A->setText(tr("Добавить раздел"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_addOne()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -933,7 +934,7 @@ void catalogEditor::addActions()
         QAction *A = sectionInsertFirst = new QAction(this);
         QPixmap p(":/images/insert-in-the-front.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+Z"));
+        A->setShortcut(Qt::Key_Z | Qt::CTRL);
         A->setText(tr("Вставить в начало"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Insert_First()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -943,7 +944,7 @@ void catalogEditor::addActions()
         QAction *A = sectionInsert = new QAction(this);
         QPixmap p(":/images/insert-inside.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+X"));
+        A->setShortcut(Qt::Key_X | Qt::CTRL);
         A->setText(tr("Вставить"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Insert()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -963,7 +964,7 @@ void catalogEditor::addActions()
         QAction *A = sectionUp = new QAction(this);
         QPixmap p(":/images/up.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+V"));
+        A->setShortcut(Qt::Key_V | Qt::CTRL);
         A->setText(tr("Вверх"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(section_Up()));
@@ -974,7 +975,7 @@ void catalogEditor::addActions()
         QAction *A = sectionDown = new QAction(this);
         QPixmap p(":/images/down.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+B"));
+        A->setShortcut(Qt::Key_B | Qt::CTRL);
         A->setText(tr("Вниз"));
         //Переносим добавление в модель
         connect(A, SIGNAL(triggered()),this, SLOT(section_Down()));
@@ -985,7 +986,7 @@ void catalogEditor::addActions()
         QAction *A = sectionEdit = new QAction(this);
         QPixmap p(":/images/edit.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+N"));
+        A->setShortcut(Qt::Key_N | Qt::CTRL);
         A->setText(tr("Переименовать"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Edit()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -995,7 +996,7 @@ void catalogEditor::addActions()
         QAction *A = sectionExport = new QAction(this);
         QPixmap p(":/images/export-to-display.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+E"));
+        A->setShortcut(Qt::Key_E | Qt::CTRL);
         A->setText(tr("Экспорт в другую главу"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Export()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));
@@ -1005,7 +1006,7 @@ void catalogEditor::addActions()
         QAction *A = sectionDelete = new QAction(this);
         QPixmap p(":/images/delete.png");
         A->setIcon(QIcon(p));
-        A->setShortcut(tr("Ctrl+M"));
+        A->setShortcut(Qt::Key_M | Qt::CTRL);
         A->setText(tr("Удалить"));
         connect(A, SIGNAL(triggered()),this, SLOT(section_Delete()));
         A->setFont(QFont ("MS Shell Dlg 2", 11));

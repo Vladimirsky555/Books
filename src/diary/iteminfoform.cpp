@@ -11,7 +11,7 @@ ItemInfoForm::ItemInfoForm(QString book, QString title, QString theme, QWidget *
     QWidget(parent), ui(new Ui::ItemInfoForm)
 {
     ui->setupUi(this);
-    setWindowTitle("Новая запись");
+    setWindowTitle(tr("Новая запись"));
 
     current = NULL;
     this->book = book;
@@ -127,7 +127,7 @@ void ItemInfoForm::on_lstNotes_clicked(const QModelIndex &index)
 void ItemInfoForm::on_btnSave_clicked()
 {
     if (theme == "") {
-        QMessageBox::information(this, "Информация","Все поля обязательны");
+        QMessageBox::information(this, tr("Информация"), tr("Все поля обязательны"));
         return;
     }
 
@@ -135,7 +135,7 @@ void ItemInfoForm::on_btnSave_clicked()
     if (current == NULL) {
         for (int i = 0; i < noteList.size(); i++) {
             if (noteList.at(i)->getTheme() == theme) {
-                QMessageBox::information(this, "Информация","Это ещё одна запись в этом разделе!");
+                QMessageBox::information(this, tr("Информация"), tr("Это ещё одна запись в этом разделе!"));
             }
         }
 
@@ -146,7 +146,7 @@ void ItemInfoForm::on_btnSave_clicked()
         if (current->getTheme() != theme) {
             for (int i = 0; i < noteList.size(); i++) {
                 if (noteList.at(i)->getTheme() == theme) {
-                    QMessageBox::information(this, "Информация","Это ещё одна запись в этом разделе!");
+                    QMessageBox::information(this, tr("Информация"), tr("Это ещё одна запись в этом разделе!"));
                 }
             }
         }

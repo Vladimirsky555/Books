@@ -24,7 +24,7 @@ void Storage::loadNamePathList()
         QDir dir;
         dir.mkpath("data");
         dir.mkpath("data/doc");
-        nameList.append("Первый каталог");
+        nameList.append(tr("Первый каталог"));
         pathList.append("data/doc/first_catalog");//Чтобы программа не вылетала временный каталог
     }
 

@@ -8,7 +8,7 @@ NameEnter::NameEnter(QWidget *parent) :
     ui(new Ui::NameEnter)
 {
     ui->setupUi(this);
-    setWindowTitle("Добавление/Вставка/Переименование");
+    setWindowTitle(tr("Добавление/Вставка/Переименование"));
 
     setWindowFlags(Qt::Window
          | Qt::WindowMinimizeButtonHint
@@ -30,7 +30,7 @@ void NameEnter::on_btnOK_clicked()
 
     if(name == ""){
         QMessageBox mb;
-        mb.setText("Пустая строка!");
+        mb.setText(tr("Пустая строка!"));
         mb.exec();
         return;
     }

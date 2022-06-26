@@ -9,7 +9,7 @@ LoginDialog::LoginDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setWindowTitle("Авторизация");
+    setWindowTitle(tr("Авторизация"));
 
     this->login = "";
     this->password = "";
@@ -31,7 +31,7 @@ bool LoginDialog::getIsLogined()
 void LoginDialog::autification()
 {
     if(this->login == "" || this->password == ""){
-        QMessageBox::information(this, "Информация!", "Введите логин и пароль!");
+        QMessageBox::information(this, tr("Информация!"), tr("Введите логин и пароль!"));
         return;
     }
 
