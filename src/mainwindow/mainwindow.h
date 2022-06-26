@@ -81,8 +81,6 @@ private slots:
     void on_edtPattern_textChanged(const QString &arg1);
     void on_btnFont_clicked();
 
-    void on_cbxLan_currentIndexChanged(int index);
-
 signals:
     void shutdown();
 

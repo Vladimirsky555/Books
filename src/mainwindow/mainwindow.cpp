@@ -389,8 +389,3 @@ void MainWindow::on_actionAuthorization_triggered()
     }
 }
 
-void MainWindow::on_cbxLan_currentIndexChanged(int index)
-{
-
-}
-
